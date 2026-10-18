@@ -23,4 +23,10 @@
 ## Static implementation and delivery
 - Implement with semantic plain HTML, CSS, and vanilla JavaScript.
 - Load Inter, BubbledotICG-FinePos, and Font Awesome 6.5.2 from the approved public CDNs.
-- Serve `manus-routes.json` for the `/` route and keep the project compatible with the configured Preview runtime.
+- Serve `manus-routes.json` for `/` and `/dashboard.html` and keep the project compatible with the configured Preview runtime.
+
+## Dashboard authentication and controls
+- Provide a `/dashboard.html` experience with a Discord OAuth login gate, user state, logout, manageable-server selection, six module controls, and mobile-responsive layouts.
+- Use an encrypted server-side session cookie; keep Discord OAuth secrets, the Railway API key, and the session secret out of browser code and public GitHub files.
+- Proxy authorized settings reads and writes through a server endpoint to the external Railway bot API, with Discord permission checks for Administrator or Manage Server users.
+- Expose the required environment variables through secure hosting configuration and document the Railway adapter contract without assuming direct Postgres access from the browser.

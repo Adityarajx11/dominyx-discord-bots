@@ -1,5 +1,6 @@
 {
   "routes": [
-    { "path": "/", "title": "Dominyx Discord Bots" }
+    { "path": "/", "title": "Dominyx Discord Bots" },
+    { "path": "/dashboard.html", "title": "Dominyx Control Dashboard" }
   ]
 }

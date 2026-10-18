@@ -60,6 +60,24 @@ document.querySelectorAll('[data-bot-invite]').forEach((link) => {
   if (invite && invite.startsWith('http')) link.href = invite;
 });
 
+const authCtas = document.querySelectorAll('[data-auth-cta]');
+async function syncAuthCtas() {
+  try {
+    const response = await fetch('/api/auth/me', { credentials: 'include' });
+    if (!response.ok) return;
+    const session = await response.json();
+    if (!session.authenticated) return;
+    authCtas.forEach((cta) => {
+      cta.href = '/dashboard.html';
+      cta.innerHTML = 'Open Dashboard <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>';
+      cta.classList.add('is-authenticated');
+    });
+  } catch {
+    // The logged-out Login with Discord state remains the safe default.
+  }
+}
+syncAuthCtas();
+
 const menuToggle = document.querySelector('.menu-toggle');
 const mobileMenu = document.querySelector('#mobile-menu');
 const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link, .mobile-connect');

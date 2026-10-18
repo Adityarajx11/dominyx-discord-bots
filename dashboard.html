@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09080d" />
+    <title>Dominyx Control — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/dashboard.css" />
+  </head>
+  <body>
+    <div class="dashboard-bg" aria-hidden="true"><div class="dashboard-glow"></div><div class="dashboard-noise"></div></div>
+    <div class="dashboard-page">
+      <header class="dashboard-topbar">
+        <a class="dashboard-brand" href="/"><span class="brand-orb">D</span><span>DOMINYX <small>/ CONTROL</small></span></a>
+        <div class="topbar-right"><span class="live-state"><i></i> SYSTEM ONLINE</span><div class="user-chip" id="user-chip" hidden><span class="user-avatar" id="user-avatar"></span><span id="user-name"></span></div><a class="topbar-link" href="/">Back to site</a><a class="logout-link" id="logout-link" href="/api/auth/logout" hidden>Log out</a></div>
+      </header>
+
+      <main>
+        <section class="auth-gate" id="auth-gate">
+          <div class="auth-mark"><i class="fa-brands fa-discord"></i></div>
+          <span class="eyebrow">DOMINYX CONTROL / AUTHENTICATION</span>
+          <h1>Run your server<br /><span>from one place.</span></h1>
+          <p>Sign in with Discord to select a server and manage the Dominyx modules you have permission to control.</p>
+          <a class="discord-login" href="/api/auth/login"><i class="fa-brands fa-discord"></i> Login with Discord</a>
+          <p class="auth-note" id="auth-note">You will only see servers where you have Administrator or Manage Server permissions.</p>
+        </section>
+
+        <section class="dashboard-shell" id="dashboard-shell" hidden>
+          <aside class="server-rail"><div class="rail-heading"><span>Your servers</span><i class="fa-solid fa-plus"></i></div><div class="server-list" id="server-list"><div class="loading-line"></div><div class="loading-line short"></div></div><div class="rail-foot"><span class="rail-dot"></span><span>DISCORD OAUTH</span></div></aside>
+          <div class="control-panel">
+            <div class="control-heading"><div><span class="eyebrow">DOMINYX CONTROL / SERVER</span><h1 id="server-title">Select a server</h1><p id="server-subtitle">Choose a server from the rail to load its modules.</p></div><div class="server-status"><span class="status-pulse"></span><span id="server-status-text">AWAITING SERVER</span></div></div>
+            <div class="dashboard-divider"></div>
+            <div class="bot-switcher" id="bot-switcher"></div>
+            <section class="settings-panel" id="settings-panel"><div class="settings-top"><div><span class="eyebrow" id="settings-kicker">MODULE / MUSIC</span><h2 id="settings-title">Select a module</h2></div><label class="toggle-label"><input id="bot-enabled" type="checkbox" /><span class="toggle-track"></span><span>Enabled</span></label></div><p class="settings-description" id="settings-description">Your selected module settings will appear here.</p><form id="settings-form" class="settings-form"></form><div class="settings-actions"><span id="save-status">Changes are local until you save.</span><button class="save-button" id="save-button" type="submit" form="settings-form">Save changes <i class="fa-solid fa-arrow-up-right"></i></button></div></section>
+            <div class="dashboard-footnote"><i class="fa-solid fa-lock"></i><span>Settings are sent server-side to your Railway bot API. Discord and Postgres credentials never reach the browser.</span></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="/dashboard.js" defer></script>
+  </body>
+</html>
