@@ -1,3 +1,13 @@
+// Replace these six placeholders with each bot's Discord OAuth2 invite URL.
+const botInviteLinks = {
+  music: 'PASTE_MUSIC_OAUTH_URL_HERE',
+  security: 'PASTE_SECURITY_OAUTH_URL_HERE',
+  greet: 'PASTE_GREET_OAUTH_URL_HERE',
+  ping: 'PASTE_PING_OAUTH_URL_HERE',
+  ticket: 'PASTE_TICKET_OAUTH_URL_HERE',
+  level: 'PASTE_LEVEL_OAUTH_URL_HERE'
+};
+
 const botData = {
   music: {
     icon: 'fa-headphones',
@@ -42,6 +52,12 @@ const botData = {
     command: ['/level', 'up the room']
   }
 };
+
+document.querySelectorAll('[data-bot-invite]').forEach((link) => {
+  const key = link.dataset.botInvite;
+  const invite = botInviteLinks[key];
+  if (invite && invite.startsWith('http')) link.href = invite;
+});
 
 const menuToggle = document.querySelector('.menu-toggle');
 const mobileMenu = document.querySelector('#mobile-menu');
