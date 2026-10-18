@@ -28,7 +28,8 @@ const botData = {
     label: 'GREET / FIRST IMPRESSION',
     title: 'Make joining feel human.',
     description: 'Welcome every new member with the tone, roles, and context your community deserves.',
-    command: ['/welcome', 'a member']
+    command: ['/welcome', 'a member'],
+    format: 'quote'
   },
   ping: {
     icon: 'fa-bolt',
@@ -113,6 +114,7 @@ const readoutLabel = document.querySelector('#readout-label');
 const readoutTitle = document.querySelector('#readout-title');
 const readoutDescription = document.querySelector('#readout-description');
 const readoutCommand = document.querySelector('#readout-command');
+const botReadout = document.querySelector('#bot-readout');
 const botTabs = document.querySelectorAll('.bot-tab');
 
 function renderBot(key) {
@@ -128,6 +130,7 @@ function renderBot(key) {
   if (readoutLabel) readoutLabel.textContent = bot.label;
   if (readoutTitle) readoutTitle.textContent = bot.title;
   if (readoutDescription) readoutDescription.textContent = bot.description;
+  botReadout?.classList.toggle('is-quote', bot.format === 'quote');
   if (readoutCommand) {
     readoutCommand.innerHTML = `${bot.command[0]} <b>${bot.command[1]}</b>`;
   }
