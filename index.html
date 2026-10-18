@@ -83,24 +83,25 @@
       </main>
 
       <section class="modules-slide" id="modules" aria-labelledby="modules-title">
-        <div class="module-slide-copy"><span class="section-kicker">01 / DOMINYX MODULES</span><h2 id="modules-title">Run the room<br /><span>your way.</span></h2><p>Switch between focused tools without leaving the flow. This is your command layer, tuned for the way your community actually moves.</p><a class="outline-button" href="#bot-suite">View the full suite <i class="fa-solid fa-arrow-right"></i></a></div>
-        <div class="module-console">
-          <div class="bot-launcher" id="bots">
-            <div class="launcher-heading"><span>DOMINYX MODULES</span><span class="launcher-status"><i></i> SELECT A BOT</span></div>
+        <div class="module-slide-heading"><span class="section-kicker">01 / DOMINYX MODULES</span><h2 id="modules-title">Choose your<br /><span>community layer.</span></h2><p>Six focused bots. One shared operating rhythm. Select a module to see how Dominyx keeps your server moving.</p></div>
+        <div class="module-console" id="bots">
+          <div class="module-console-header"><span>SELECT MODULE / 06</span><span class="launcher-status"><i></i> CONNECTED · 99.9%</span></div>
+          <div class="module-console-grid">
             <div class="bot-tabs" role="tablist" aria-label="Explore Dominyx bots">
-              <button class="bot-tab is-selected" type="button" role="tab" aria-selected="true" aria-controls="bot-readout" data-bot="music"><i class="fa-solid fa-headphones"></i><span>Music</span></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="security"><i class="fa-solid fa-shield-halved"></i><span>Security</span></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="greet"><i class="fa-solid fa-hand-sparkles"></i><span>Greet</span></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="ping"><i class="fa-solid fa-bolt"></i><span>Ping</span></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="ticket"><i class="fa-solid fa-ticket"></i><span>Ticket</span></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="level"><i class="fa-solid fa-chart-line"></i><span>Level</span></button>
+              <button class="bot-tab is-selected" type="button" role="tab" aria-selected="true" aria-controls="bot-readout" data-bot="music"><span class="bot-tab-mark">MU</span><span class="bot-tab-copy"><strong>Music</strong><small>voice + playlists</small></span><i class="bot-tab-live"></i></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="security"><span class="bot-tab-mark">SE</span><span class="bot-tab-copy"><strong>Security</strong><small>trust + control</small></span><i class="bot-tab-live"></i></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="greet"><span class="bot-tab-mark">GR</span><span class="bot-tab-copy"><strong>Greet</strong><small>join + belong</small></span><i class="bot-tab-live"></i></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="ping"><span class="bot-tab-mark">PI</span><span class="bot-tab-copy"><strong>Ping</strong><small>signal + route</small></span><i class="bot-tab-live"></i></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="ticket"><span class="bot-tab-mark">TI</span><span class="bot-tab-copy"><strong>Ticket</strong><small>help + resolve</small></span><i class="bot-tab-live"></i></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="level"><span class="bot-tab-mark">LV</span><span class="bot-tab-copy"><strong>Level</strong><small>xp + progress</small></span><i class="bot-tab-live"></i></button>
             </div>
             <div class="bot-readout" id="bot-readout" role="tabpanel" aria-live="polite">
-              <div class="readout-icon" id="readout-icon"><i class="fa-solid fa-headphones"></i></div>
-              <div class="readout-copy"><span class="readout-label" id="readout-label">MUSIC / NOW PLAYING</span><strong id="readout-title">Keep the room moving.</strong><p id="readout-description">Queue the energy, skip the clutter, and make every voice channel feel alive.</p></div>
-              <span class="readout-command" id="readout-command">/play <b>your vibe</b></span>
+              <div class="readout-main"><span class="readout-label" id="readout-label">MODULE / MUSIC</span><strong id="readout-title">Keep the room moving.</strong><p id="readout-description">Bring a clean listening layer to every voice channel. Queue a playlist, hand off the controls, and let the room stay in rhythm.</p><div class="readout-tags" id="readout-tags"><span>PLAYLISTS</span><span>QUEUE CONTROL</span><span>VOICE CHANNELS</span></div><a class="readout-cta auth-cta" href="/api/auth/login" data-auth-cta>Open dashboard <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
+              <div class="readout-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="readout-metrics"><div><strong id="readout-stat-one">24/7</strong><small id="readout-stat-one-label">VOICE UPTIME</small></div><div><strong id="readout-stat-two">01 click</strong><small id="readout-stat-two-label">TO TAKE OVER</small></div><div><strong id="readout-stat-three">0 clutter</strong><small id="readout-stat-three-label">IN TEXT CHAT</small></div></div>
             </div>
           </div>
+          <span class="module-console-footer">DOMINYX / MODULES</span>
         </div>
       </section>
 

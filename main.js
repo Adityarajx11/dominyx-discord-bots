@@ -10,47 +10,53 @@ const botInviteLinks = {
 
 const botData = {
   music: {
-    icon: 'fa-headphones',
-    label: 'MUSIC / NOW PLAYING',
+    label: 'MODULE / MUSIC',
     title: 'Keep the room moving.',
-    description: 'Queue the energy, skip the clutter, and make every voice channel feel alive.',
-    command: ['/play', 'your vibe']
+    description: 'Bring a clean listening layer to every voice channel. Queue a playlist, hand off the controls, and let the room stay in rhythm.',
+    tags: ['PLAYLISTS', 'QUEUE CONTROL', 'VOICE CHANNELS'],
+    metrics: ['24/7', '01 click', '0 clutter'],
+    metricLabels: ['VOICE UPTIME', 'TO TAKE OVER', 'IN TEXT CHAT']
   },
   security: {
-    icon: 'fa-shield-halved',
-    label: 'SECURITY / LOCKED IN',
-    title: 'Calm is a feature.',
-    description: 'Automod, verification, and audit signals that keep chaos outside the server.',
-    command: ['/secure', 'the room']
+    label: 'MODULE / SECURITY',
+    title: 'Keep the chaos outside.',
+    description: 'Anti-raid, anti-nuke, automod filters, and clear moderation signals for a calmer community.',
+    tags: ['ANTI-RAID', 'ANTI-NUKE', 'MOD-LOGS'],
+    metrics: ['24/7', '01 shield', '0 noise'],
+    metricLabels: ['SERVER WATCH', 'TO LOCK DOWN', 'IN THE FEED']
   },
   greet: {
-    icon: 'fa-hand-sparkles',
-    label: 'GREET / FIRST IMPRESSION',
+    label: 'MODULE / GREET',
     title: 'Make joining feel human.',
-    description: 'Welcome every new member with the tone, roles, and context your community deserves.',
-    command: ['/welcome', 'a member'],
+    description: 'Welcome cards, auto-roles, goodbye messages, and a first impression that feels like your community.',
+    tags: ['WELCOME CARDS', 'AUTO-ROLES', 'GOODBYES'],
+    metrics: ['01 card', '02 flows', '100% warm'],
+    metricLabels: ['FIRST IMPRESSION', 'JOIN + LEAVE', 'COMMUNITY FEEL'],
     format: 'quote'
   },
   ping: {
-    icon: 'fa-bolt',
-    label: 'PING / INSTANT SIGNAL',
+    label: 'MODULE / PING',
     title: 'Say it once. Reach everyone.',
-    description: 'Route the right alert to the right people without turning your server into noise.',
-    command: ['/ping', 'your crew']
+    description: 'Route YouTube live alerts to the right people with custom messages, schedules, and role mentions.',
+    tags: ['LIVE ALERTS', 'ROLE MENTIONS', 'SCHEDULES'],
+    metrics: ['01 signal', '0 missed', '10 min'],
+    metricLabels: ['PER EVENT', 'IN THE LOOP', 'POLL WINDOW']
   },
   ticket: {
-    icon: 'fa-ticket',
-    label: 'TICKET / HELP DESK',
+    label: 'MODULE / TICKET',
     title: 'Support, without the queue.',
-    description: 'Give questions a place to land and your team a cleaner way to answer them.',
-    command: ['/ticket', 'open a line']
+    description: 'Private ticket panels, staff claims, priorities, auto-close, and transcripts that keep support moving.',
+    tags: ['PANELS', 'STAFF CLAIMS', 'TRANSCRIPTS'],
+    metrics: ['01 click', '100% private', '0 chaos'],
+    metricLabels: ['TO OPEN', 'SUPPORT THREADS', 'IN THE QUEUE']
   },
   level: {
-    icon: 'fa-chart-line',
-    label: 'LEVEL / MOMENTUM',
+    label: 'MODULE / LEVEL',
     title: 'Turn activity into status.',
-    description: 'Reward the people who make the community worth coming back to every day.',
-    command: ['/level', 'up the room']
+    description: 'Reward the people who make the community worth coming back to with XP, ranks, leaderboards, and roles.',
+    tags: ['XP + RANKS', 'LEADERBOARDS', 'ROLE REWARDS'],
+    metrics: ['01 rank', '∞ momentum', '0 grind'],
+    metricLabels: ['PER MEMBER', 'IN THE SERVER', 'WITHOUT FRICTION']
   }
 };
 
@@ -127,11 +133,12 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
   });
 });
 
-const readoutIcon = document.querySelector('#readout-icon i');
 const readoutLabel = document.querySelector('#readout-label');
 const readoutTitle = document.querySelector('#readout-title');
 const readoutDescription = document.querySelector('#readout-description');
-const readoutCommand = document.querySelector('#readout-command');
+const readoutTags = document.querySelector('#readout-tags');
+const readoutStats = [document.querySelector('#readout-stat-one'), document.querySelector('#readout-stat-two'), document.querySelector('#readout-stat-three')];
+const readoutStatLabels = [document.querySelector('#readout-stat-one-label'), document.querySelector('#readout-stat-two-label'), document.querySelector('#readout-stat-three-label')];
 const botReadout = document.querySelector('#bot-readout');
 const botTabs = document.querySelectorAll('.bot-tab');
 
@@ -143,15 +150,13 @@ function renderBot(key) {
     tab.classList.toggle('is-selected', selected);
     tab.setAttribute('aria-selected', String(selected));
   });
-  readoutIcon?.classList.remove(...Array.from(readoutIcon.classList).filter((name) => name.startsWith('fa-') && name !== 'fa-solid'));
-  if (readoutIcon) readoutIcon.classList.add(bot.icon);
   if (readoutLabel) readoutLabel.textContent = bot.label;
   if (readoutTitle) readoutTitle.textContent = bot.title;
   if (readoutDescription) readoutDescription.textContent = bot.description;
   botReadout?.classList.toggle('is-quote', bot.format === 'quote');
-  if (readoutCommand) {
-    readoutCommand.innerHTML = `${bot.command[0]} <b>${bot.command[1]}</b>`;
-  }
+  if (readoutTags) readoutTags.innerHTML = bot.tags.map((tag) => `<span>${tag}</span>`).join('');
+  readoutStats.forEach((node, index) => { if (node) node.textContent = bot.metrics[index]; });
+  readoutStatLabels.forEach((node, index) => { if (node) node.textContent = bot.metricLabels[index]; });
 }
 
 botTabs.forEach((tab) => tab.addEventListener('click', () => renderBot(tab.dataset.bot)));
