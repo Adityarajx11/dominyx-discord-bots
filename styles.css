@@ -359,3 +359,10 @@ button { color: inherit; font: inherit; }
 .module-console .bot-tabs { background: rgba(255,255,255,.035); }
 .module-console .bot-readout { background: radial-gradient(circle at 78% 34%, rgba(217,194,255,.22), transparent 31%), linear-gradient(145deg, rgba(255,255,255,.065), rgba(7,7,11,.08)); }
 .readout-tags span { background: rgba(255,255,255,.035); }
+
+/* Match the darker suite cards */
+.module-console { background: linear-gradient(145deg, rgba(22,22,26,.62), rgba(6,6,9,.52)); border-color: rgba(255,255,255,.19); }
+.module-console-grid { background: rgba(5,5,9,.28); }
+.module-console .bot-tabs { background: rgba(10,10,14,.34); }
+.module-console .bot-readout { background: radial-gradient(circle at 78% 34%, rgba(217,194,255,.13), transparent 31%), linear-gradient(145deg, rgba(22,22,27,.6), rgba(6,6,10,.48)); }
+.readout-tags span { background: rgba(8,8,12,.22); }
