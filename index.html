@@ -31,7 +31,7 @@
 
         <nav class="nav-pill desktop-nav" aria-label="Primary navigation">
           <a class="nav-link is-active" href="#top">Home</a>
-          <a class="nav-link" href="#bot-suite">Bots</a>
+          <a class="nav-link" href="#modules">Modules</a>
           <a class="nav-link" href="#why-story">Why Dominyx</a>
           <a class="nav-link" href="#connect">Connect</a>
         </nav>
@@ -48,7 +48,7 @@
         <nav class="mobile-sheet" aria-label="Mobile navigation">
           <div class="mobile-sheet-top"><span>DOMINYX / 06 MODULES</span><span class="live-dot">LIVE</span></div>
           <a class="mobile-link is-active" href="#top">Home <span>01</span></a>
-          <a class="mobile-link" href="#bot-suite">Bots <span>02</span></a>
+          <a class="mobile-link" href="#modules">Modules <span>02</span></a>
           <a class="mobile-link" href="#why-story">Why Dominyx <span>03</span></a>
           <a class="mobile-link" href="#connect">Connect <span>04</span></a>
           <a class="mobile-connect" href="#connect">Add to Discord <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
@@ -75,11 +75,17 @@
           <p class="hero-copy anim" style="--d: 0.38s">Dominyx gives your server a sharper operating system — music, security, welcomes, tickets, pings, and progression in one clean command layer.</p>
 
           <div class="hero-actions anim" style="--d: 0.47s" id="connect">
-            <a class="primary-button" href="#bot-suite">Explore the bots <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+            <a class="primary-button" href="#modules">Explore the modules <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
             <a class="text-button" href="#connect">Built for Discord <span class="text-button-mark"><i class="fa-brands fa-discord"></i></span></a>
           </div>
 
-          <div class="bot-launcher anim" id="bots" style="--d: 0.56s">
+        </section>
+      </main>
+
+      <section class="modules-slide" id="modules" aria-labelledby="modules-title">
+        <div class="module-slide-copy"><span class="section-kicker">01 / DOMINYX MODULES</span><h2 id="modules-title">Run the room<br /><span>your way.</span></h2><p>Switch between focused tools without leaving the flow. This is your command layer, tuned for the way your community actually moves.</p><a class="outline-button" href="#bot-suite">View the full suite <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="module-console">
+          <div class="bot-launcher" id="bots">
             <div class="launcher-heading"><span>DOMINYX MODULES</span><span class="launcher-status"><i></i> SELECT A BOT</span></div>
             <div class="bot-tabs" role="tablist" aria-label="Explore Dominyx bots">
               <button class="bot-tab is-selected" type="button" role="tab" aria-selected="true" aria-controls="bot-readout" data-bot="music"><i class="fa-solid fa-headphones"></i><span>Music</span></button>
@@ -95,8 +101,8 @@
               <span class="readout-command" id="readout-command">/play <b>your vibe</b></span>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
       <footer class="stats-footer" aria-label="Dominyx platform metrics">
         <div class="stat-item anim" style="--d: 0.62s"><span class="stat-symbol" aria-hidden="true">&lt;</span><div><strong><span class="stat-number" data-count="24">0</span><small>ms</small></strong><span class="stat-label">Average response</span></div></div>

@@ -245,3 +245,13 @@ button { color: inherit; font: inherit; }
 @media (max-width: 360px) {
   .section-heading h2, .why-copy h2 { font-size: 39px; }.suite-grid { grid-template-columns: 1fr; }.bot-card { min-height: 188px; }.bot-card-meta { flex-direction: row; align-items: center; }.connect-section h2 { font-size: 45px; }
 }
+
+.modules-slide { position: relative; z-index: 2; width: min(100%, 1060px); min-height: 78vh; display: grid; grid-template-columns: .82fr 1.18fr; align-items: center; gap: clamp(38px, 8vw, 120px); margin: 0 auto; padding: clamp(72px, 10vw, 150px) 0; border-top: 1px solid rgba(255,255,255,.16); }
+.module-slide-copy h2 { margin: 15px 0 0; font-family: var(--display); font-size: clamp(47px, 6vw, 78px); font-weight: 400; letter-spacing: -.07em; line-height: .98; }.module-slide-copy h2 span { color: var(--signal); }
+.module-slide-copy p { max-width: 355px; margin: 25px 0 28px; color: #a2a2a2; font-size: 13px; line-height: 1.7; }
+.module-console { position: relative; padding: clamp(20px, 3vw, 38px); border: 1px solid rgba(255,255,255,.17); border-radius: 10px; background: linear-gradient(145deg, rgba(31,31,31,.52), rgba(6,6,6,.72)); box-shadow: 0 28px 80px rgba(0,0,0,.32); backdrop-filter: blur(13px); }
+.module-console::before { content: 'LIVE CONTROL SURFACE / 06'; position: absolute; top: 12px; right: 18px; color: rgba(216,255,62,.7); font-family: "Space Mono", monospace; font-size: 8px; letter-spacing: .12em; }.module-console .bot-launcher { width: 100%; margin: 0; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.22); }.module-console .bot-readout { min-height: 78px; }
+
+@media (max-width: 720px) {
+  .modules-slide { min-height: auto; grid-template-columns: 1fr; gap: 34px; padding: 72px 0; }.module-slide-copy p { font-size: 12px; }.module-console { padding: 18px 13px; }.module-console::before { top: 9px; right: 13px; font-size: 6px; }.module-console .bot-launcher { padding-top: 14px; }
+}
