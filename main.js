@@ -94,6 +94,20 @@ window.addEventListener('resize', () => {
   if (window.innerWidth > 720) setMenu(false);
 });
 
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    const targetId = link.getAttribute('href');
+    if (!targetId || targetId === '#') return;
+    const target = document.querySelector(targetId);
+    if (!target) return;
+    event.preventDefault();
+    const offset = Math.max(18, Math.min(42, window.innerHeight * 0.04));
+    const destination = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top: destination, behavior: 'smooth' });
+    history.replaceState(null, '', targetId);
+  });
+});
+
 const readoutIcon = document.querySelector('#readout-icon i');
 const readoutLabel = document.querySelector('#readout-label');
 const readoutTitle = document.querySelector('#readout-title');
