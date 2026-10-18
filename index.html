@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="description" content="Dominyx gives Discord communities a sharper way to run music, security, welcomes, tickets, levels, and more." />
+    <title>Dominyx — Discord Bots That Run The Server</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="bg" aria-hidden="true">
+        <video class="bg-video" autoplay muted loop playsinline>
+          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4" type="video/mp4" />
+        </video>
+        <div class="bg-veil"></div>
+        <div class="bg-grid"></div>
+      </div>
+
+      <header class="site-header">
+        <a class="brand-lockup" href="#top" aria-label="Dominyx home">
+          <span class="brand-mark" aria-hidden="true"><span>D</span></span>
+          <span class="brand-word">DOMINYX</span>
+        </a>
+
+        <nav class="nav-pill desktop-nav" aria-label="Primary navigation">
+          <a class="nav-link is-active" href="#top">Home</a>
+          <a class="nav-link" href="#bots">Bots</a>
+          <a class="nav-link" href="#why">Why Dominyx</a>
+          <a class="nav-link" href="#connect">Connect</a>
+        </nav>
+
+        <a class="header-cta desktop-cta" href="#connect">Add to Discord <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+
+        <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </header>
+
+      <div class="mobile-menu" id="mobile-menu" aria-hidden="true" hidden>
+        <div class="mobile-menu-backdrop" data-menu-close></div>
+        <nav class="mobile-sheet" aria-label="Mobile navigation">
+          <div class="mobile-sheet-top"><span>DOMINYX / 06 MODULES</span><span class="live-dot">LIVE</span></div>
+          <a class="mobile-link is-active" href="#top">Home <span>01</span></a>
+          <a class="mobile-link" href="#bots">Bots <span>02</span></a>
+          <a class="mobile-link" href="#why">Why Dominyx <span>03</span></a>
+          <a class="mobile-link" href="#connect">Connect <span>04</span></a>
+          <a class="mobile-connect" href="#connect">Add to Discord <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+        </nav>
+      </div>
+
+      <main class="main-content" id="top">
+        <section class="hero" id="why" aria-labelledby="hero-title">
+          <div class="hero-kicker anim" style="--d: 0.05s">
+            <span class="trust-avatars" aria-hidden="true">
+              <span class="trust-avatar"><i class="fa-brands fa-discord"></i></span>
+              <span class="trust-avatar"><i class="fa-solid fa-shield-halved"></i></span>
+              <span class="trust-avatar"><i class="fa-solid fa-bolt"></i></span>
+            </span>
+            <span class="trust-copy">Built for communities that move fast</span>
+            <span class="signal-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+          </div>
+
+          <h1 class="hero-title" id="hero-title">
+            <span class="headline-line anim" style="--d: 0.12s">One Discord.</span>
+            <span class="headline-line headline-line-accent anim" style="--d: 0.3s">Six Ways To Run It.</span>
+          </h1>
+
+          <p class="hero-copy anim" style="--d: 0.38s">Dominyx gives your server a sharper operating system — music, security, welcomes, tickets, pings, and progression in one clean command layer.</p>
+
+          <div class="hero-actions anim" style="--d: 0.47s" id="connect">
+            <a class="primary-button" href="#bots">Explore the bots <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+            <a class="text-button" href="#connect">Built for Discord <span class="text-button-mark"><i class="fa-brands fa-discord"></i></span></a>
+          </div>
+
+          <div class="bot-launcher anim" id="bots" style="--d: 0.56s">
+            <div class="launcher-heading"><span>DOMINYX MODULES</span><span class="launcher-status"><i></i> SELECT A BOT</span></div>
+            <div class="bot-tabs" role="tablist" aria-label="Explore Dominyx bots">
+              <button class="bot-tab is-selected" type="button" role="tab" aria-selected="true" aria-controls="bot-readout" data-bot="music"><i class="fa-solid fa-headphones"></i><span>Music</span></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="security"><i class="fa-solid fa-shield-halved"></i><span>Security</span></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="greet"><i class="fa-solid fa-hand-sparkles"></i><span>Greet</span></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="ping"><i class="fa-solid fa-bolt"></i><span>Ping</span></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="ticket"><i class="fa-solid fa-ticket"></i><span>Ticket</span></button>
+              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="level"><i class="fa-solid fa-chart-line"></i><span>Level</span></button>
+            </div>
+            <div class="bot-readout" id="bot-readout" role="tabpanel" aria-live="polite">
+              <div class="readout-icon" id="readout-icon"><i class="fa-solid fa-headphones"></i></div>
+              <div class="readout-copy"><span class="readout-label" id="readout-label">MUSIC / NOW PLAYING</span><strong id="readout-title">Keep the room moving.</strong><p id="readout-description">Queue the energy, skip the clutter, and make every voice channel feel alive.</p></div>
+              <span class="readout-command" id="readout-command">/play <b>your vibe</b></span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="stats-footer" aria-label="Dominyx platform metrics">
+        <div class="stat-item anim" style="--d: 0.62s"><span class="stat-symbol" aria-hidden="true">&lt;</span><div><strong><span class="stat-number" data-count="24">0</span><small>ms</small></strong><span class="stat-label">Average response</span></div></div>
+        <div class="stat-item anim" style="--d: 0.70s"><span class="stat-symbol" aria-hidden="true">%</span><div><strong><span class="stat-number" data-count="99.99" data-decimals="2">0</span><small>%</small></strong><span class="stat-label">Reliable uptime</span></div></div>
+        <div class="stat-item anim" style="--d: 0.78s"><span class="stat-symbol" aria-hidden="true">*</span><div><strong><span class="stat-number" data-count="24">0</span><small>/7</small></strong><span class="stat-label">Always on</span></div></div>
+        <div class="stat-item anim" style="--d: 0.86s"><span class="stat-symbol" aria-hidden="true">#</span><div><strong><span class="stat-number" data-count="6">0</span><small> bots</small></strong><span class="stat-label">One command layer</span></div></div>
+      </footer>
+    </div>
+    <script src="/main.js" defer></script>
+  </body>
+</html>
