@@ -49,9 +49,14 @@ const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link,
 const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 const bgVideo = document.querySelector('.bg-video');
 
-if (reduceMotion && bgVideo) {
-  bgVideo.pause();
-  bgVideo.removeAttribute('autoplay');
+if (bgVideo) {
+  const startBackgroundVideo = () => {
+    bgVideo.play().catch(() => {
+      // Autoplay is muted, but some embedded browsers still require a retry.
+    });
+  };
+  bgVideo.addEventListener('canplay', startBackgroundVideo);
+  startBackgroundVideo();
 }
 
 function setMenu(open) {
