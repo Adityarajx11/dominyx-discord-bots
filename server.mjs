@@ -63,7 +63,7 @@ async function canManageGuild(session, guildId) {
 async function handleApi(req, res, url) {
   if (url.pathname === '/api/health') return json(res, 200, { ok: true, dashboard: true, discordConfigured: configReady(), railwayConfigured: Boolean(process.env.RAILWAY_BOT_API_URL && process.env.RAILWAY_BOT_API_KEY) });
   if (url.pathname === '/api/auth/login') {
-    if (!configReady()) return json(res, 503, { error: 'dashboard_not_configured', missing: ['DISCORD_CLIENT_ID', 'DISCORD_CLIENT_SECRET', 'DOMINYX_SESSION_SECRET'] });
+    if (!configReady()) return redirect(res, '/dashboard.html?error=oauth_not_configured');
     const state = crypto.randomBytes(24).toString('base64url');
     appendCookie(res, `${STATE_COOKIE}=${encodeURIComponent(state)}; ${cookieFlags(req, 600)}`);
     const params = new URLSearchParams({ client_id: process.env.DISCORD_CLIENT_ID, redirect_uri: redirectUriFor(req), response_type: 'code', scope: 'identify guilds' });

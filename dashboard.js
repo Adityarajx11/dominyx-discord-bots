@@ -21,7 +21,7 @@ async function api(path, options = {}) {
 }
 function avatarUrl(user) { return user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=64` : ''; }
 function initials(text) { return (text || 'D').split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase(); }
-function showError(message) { const note = $('#auth-note'); if (note) { note.textContent = message; note.classList.add('is-error'); } }
+function showError(message) { const friendly = { oauth_not_configured: 'Secure setup is pending. Add the Discord OAuth values in the project input card before signing in.' }[message] || message; const note = $('#auth-note'); if (note) { note.textContent = friendly; note.classList.add('is-error'); } }
 
 function renderUser() {
   $('#user-chip').hidden = false; $('#logout-link').hidden = false; $('#user-name').textContent = state.user.global_name || state.user.username;
