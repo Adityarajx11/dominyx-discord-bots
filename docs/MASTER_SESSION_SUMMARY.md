@@ -4,7 +4,7 @@
 
 **Repository:** https://github.com/adixlucifer0011/dominyx-discord-bots
 
-**Current checkpoint:** `298c348` — organized docs, refined footer metrics, and root README
+**Current checkpoint:** the latest clean `main` commit in GitHub; this summary is kept in sync with the packaged tree
 
 **Working directory:** `/home/ubuntu/dominyx`
 
