@@ -12,14 +12,14 @@
 
 ## Product direction
 
-Dominyx is a Discord bot network and control surface for six focused bots: Music, Security, Greet, Ping, Ticket, and Level. The public site is a premium black-and-crimson landing page with a moving full-viewport video layer, dot-matrix display typography, Inter interface typography, a compact pill navigation, responsive mobile navigation, and a scrollable product story.
+Dominyx is a Discord bot network and control surface for six focused bots: Music, Security, Greet, Ping, Ticket, and Level. The public site is a premium black-and-crimson landing page with a custom animated signal-field background, dot-matrix display typography, Inter interface typography, a compact pill navigation, responsive mobile navigation, and a scrollable product story.
 
 The dashboard is a separate authenticated control surface. It is intentionally more operational than the marketing site, but it uses the same black, crimson, glass, orbital, and dot-matrix visual language.
 
 ## Public website delivered
 
-- Full-screen hero with the supplied CloudFront MP4 as a muted, autoplaying, looping background video.
-- Visible background video treatment with layered veil and grid texture for legibility.
+- Full-screen hero with a custom animated black-and-crimson signal field, orbit rings, gradient glow, and red grid texture; the inherited template video was removed.
+- Visible custom background treatment with layered veil, orbit rings, gradient glow, and grid texture for legibility.
 - Dominyx circular wordmark and centered desktop navigation.
 - Responsive mobile hamburger navigation with overlay sheet.
 - Discord-focused hero copy and login CTA.
