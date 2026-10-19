@@ -378,3 +378,9 @@ button { color: inherit; font: inherit; }
 @keyframes dominyxFieldDrift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(4%, 3%, 0) scale(1.08); } }
 @keyframes dominyxOrbit { from { transform: rotate(0deg) scale(1); } to { transform: rotate(360deg) scale(1.06); } }
 @media (prefers-reduced-motion: reduce) { .bg::before, .bg::after { animation: none; } }
+
+/* Restored template motion, recolored for Dominyx */
+.bg-video { display: block; opacity: .82; filter: grayscale(1) sepia(.92) saturate(7) hue-rotate(304deg) brightness(.58) contrast(1.28); mix-blend-mode: screen; }
+.bg::before, .bg::after { display: none; }
+.bg-veil { background: radial-gradient(circle at 50% 42%, rgba(0,0,0,.14) 0%, rgba(0,0,0,.43) 62%, rgba(0,0,0,.78) 100%), linear-gradient(180deg, rgba(0,0,0,.3) 0%, rgba(16,0,3,.12) 38%, rgba(0,0,0,.74) 100%); }
+.bg-grid { opacity: .07; background-image: linear-gradient(rgba(255,59,59,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,59,59,.08) 1px, transparent 1px); }

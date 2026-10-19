@@ -1,8 +1,8 @@
 # Dominyx delivery outcomes
 
 ## Responsive full-site composition
-- Use a full-viewport first-screen composition with a custom animated black-and-crimson signal field, then continue into a scrollable suite, principles, connection CTA, and footer.
-- Keep the signal field visible enough to add motion and depth while retaining a premium black-and-crimson Dominyx overlay system, semantic structure, responsive typography, and reduced-motion-friendly UI behavior.
+- Use a full-viewport first-screen composition with the restored moving motion background recolored into black and crimson, then continue into a scrollable suite, principles, connection CTA, and footer.
+- Keep the recolored motion background visible enough to add depth while retaining a premium black-and-crimson Dominyx overlay system, semantic structure, responsive typography, and reduced-motion-friendly UI behavior.
 
 ## Dominyx header and navigation
 - Center a desktop header with a real circular Dominyx mark, pill navigation, and a primary CTA.
