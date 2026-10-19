@@ -2,7 +2,7 @@
 
 ## Responsive full-site composition
 - Use a full-viewport first-screen composition with the exact supplied CloudFront MP4 as a muted, autoplaying, looping background video, then continue into a scrollable suite, principles, connection CTA, and footer.
-- Keep the video visible enough to read its moving numeric texture while retaining a premium black-and-lime Dominyx overlay system, semantic structure, responsive typography, and reduced-motion-friendly UI behavior.
+- Keep the video visible enough to read its moving numeric texture while retaining a premium black-and-lavender Dominyx overlay system, semantic structure, responsive typography, and reduced-motion-friendly UI behavior.
 
 ## Dominyx header and navigation
 - Center a desktop header with a real circular Dominyx mark, pill navigation, and a primary CTA.
@@ -27,6 +27,6 @@
 
 ## Dashboard authentication and controls
 - Provide a `/dashboard.html` experience with a Discord OAuth login gate, user state, logout, manageable-server selection, six module controls, and mobile-responsive layouts.
-- Use an encrypted server-side session cookie; keep Discord OAuth secrets, the Railway API key, and the session secret out of browser code and public GitHub files.
-- Proxy authorized settings reads and writes through a server endpoint to the external Railway bot API, with Discord permission checks for Administrator or Manage Server users.
-- Expose the required environment variables through secure hosting configuration and document the Railway adapter contract without assuming direct Postgres access from the browser.
+- Use an encrypted server-side session cookie; keep Discord OAuth secrets, bot tokens, the shared Railway Postgres URL, and the session secret out of browser code and public GitHub files.
+- Proxy authorized settings reads and writes through a server endpoint, with Discord permission checks for Administrator or Manage Server users; the intended old-project-compatible adapter uses server-side Discord bot tokens plus the shared Postgres database, not a browser-side Railway API.
+- Expose the required environment variables through secure hosting configuration and document the direct Discord/Postgres adapter contract without assuming direct Postgres access from the browser.
