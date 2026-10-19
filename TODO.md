@@ -2,7 +2,7 @@
 
 ## Responsive full-site composition
 - Use a full-viewport first-screen composition with the exact supplied CloudFront MP4 as a muted, autoplaying, looping background video, then continue into a scrollable suite, principles, connection CTA, and footer.
-- Keep the video visible enough to read its moving numeric texture while retaining a premium black-and-lavender Dominyx overlay system, semantic structure, responsive typography, and reduced-motion-friendly UI behavior.
+- Keep the video visible enough to read its moving numeric texture while retaining a premium black-and-crimson Dominyx overlay system, semantic structure, responsive typography, and reduced-motion-friendly UI behavior.
 
 ## Dominyx header and navigation
 - Center a desktop header with a real circular Dominyx mark, pill navigation, and a primary CTA.
