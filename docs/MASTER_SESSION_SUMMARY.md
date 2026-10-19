@@ -4,7 +4,7 @@
 
 **Repository:** https://github.com/adixlucifer0011/dominyx-discord-bots
 
-**Current checkpoint:** `a68e4bc` before this documentation/metric pass
+**Current checkpoint:** `298c348` — organized docs, refined footer metrics, and root README
 
 **Working directory:** `/home/ubuntu/dominyx`
 
