@@ -139,13 +139,15 @@ On Vercel keep `PG_POOL_MAX=1`. The serverless runtime freezes the filesystem an
 git push origin main          # Vercel deploys automatically on push
 ```
 
-The production domain is `aurex-control.vercel.app`. A Vercel alias created by hand does not follow later deployments, so use the helper script after any manual deploy:
+The production domain is `aurex-control.vercel.app`. Vercel moves it to each new deployment on its own. After a manual deploy, use the helper script to see the result:
 
 ```powershell
 ./scripts/deploy.ps1
 ```
 
-It deploys, repoints the alias, and prints the health response.
+It deploys and prints the health response.
+
+If the deployment output ever shows an old address, a leftover alias from a previous project name is still attached. Check with `vercel alias ls` and remove the stale one with `vercel alias rm <name>`.
 
 ### Checking the deployment
 

@@ -1,8 +1,7 @@
-# Deploys the dashboard and repoints the production alias at the new deployment.
+# Deploys the dashboard and prints the health response.
 #
-# A Vercel alias created with `vercel alias set` does not follow later
-# deployments on its own, so without this step the domain keeps serving an
-# older build while the API answers from the newest one.
+# The project's production domain is aurex-control.vercel.app. Vercel moves it
+# to the new deployment automatically, so there is no alias to repoint by hand.
 param(
   [string]$Project = 'aurex-control',
   [string]$Alias = 'aurex-control.vercel.app'
@@ -21,21 +20,10 @@ if ($output -notmatch '"status":\s*"ok"') {
   exit 1
 }
 
-$match = [regex]::Match($output, 'https://[a-z0-9-]+-[a-z0-9]+-adityarajx11\.vercel\.app')
-if (-not $match.Success) {
-  Write-Host 'Could not find the new deployment URL in the output:'
-  Write-Host $output
-  exit 1
-}
+$url = [regex]::Match($output, 'Production URL:\s*(https://[^\s"]+)').Groups[1].Value
+Write-Host "Deployed: $url"
 
-$deployment = $match.Value
-Write-Host "Deployed: $deployment"
-
-& $vercel alias set $deployment $Alias 2>&1 |
-  Select-String -Pattern 'Success|Error' |
-  ForEach-Object { Write-Host "  $_" }
-
-Start-Sleep -Seconds 4
+Start-Sleep -Seconds 5
 
 Write-Host ''
 Write-Host "Health at https://$Alias :"
