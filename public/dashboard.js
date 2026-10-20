@@ -111,7 +111,7 @@ const moduleUi = {
   },
 };
 
-const state = { user: null, guilds: [], guildId: null, selectedBot: 'music', settings: {}, modules: {}, channels: [], roles: [], csrf: null };
+const state = { user: null, guilds: [], guildId: null, selectedBot: 'music', settings: {}, modules: {}, channels: [], roles: [], csrf: null, invites: {}, bots: null };
 
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) =>
@@ -154,6 +154,8 @@ const ERROR_MESSAGES = {
   invalid_oauth_state: 'The login session expired. Please try signing in again.',
   not_authenticated: 'Your session expired. Please sign in again.',
   guild_forbidden: 'You do not have permission to manage this Discord server.',
+  guilds_scope_missing:
+    'Discord did not share your server list. Sign out and sign in again, and allow access to your servers when Discord asks.',
   database_not_configured: 'DATABASE_URL is not set on the server, so module settings cannot be loaded.',
   origin_rejected: 'The request origin was rejected. Reload the dashboard and try again.',
   csrf_failed: 'Security token mismatch. Reload the dashboard and try again.',
@@ -267,7 +269,7 @@ function botBadges(bots) {
 function renderGuilds() {
   const list = $('#server-list');
   if (!state.guilds.length) {
-    list.innerHTML = '<p class="empty-note">No manageable servers found.</p>';
+    list.innerHTML = '<p class="empty-note">No servers found where you have Administrator or Manage Server permission.</p>';
     return;
   }
   list.innerHTML = state.guilds
@@ -282,6 +284,30 @@ function renderGuilds() {
   list.querySelectorAll('[data-guild]').forEach((button) =>
     button.addEventListener('click', () => selectGuild(button.dataset.guild)),
   );
+}
+
+// Shown when the selected server has no Aurex module in it.
+function renderModuleBanner() {
+  const banner = $('#module-banner');
+  if (!banner) return;
+
+  if (state.bots && Object.keys(state.bots).length) {
+    banner.hidden = true;
+    return;
+  }
+
+  const links = $('#module-banner-links');
+  const names = Object.keys(state.invites || {});
+  links.innerHTML = names
+    .map((key) => {
+      const label = moduleUi[key]?.name || key;
+      const href = state.invites[key];
+      if (!href) return '';
+      return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)} <i class="fa-solid fa-arrow-up-right-from-square"></i></a>`;
+    })
+    .join('');
+
+  banner.hidden = false;
 }
 
 function renderBotSwitcher() {
@@ -327,6 +353,13 @@ function channelOptions(types) {
 
 function selectMarkup(name, options, value, placeholder) {
   const current = value === null || value === undefined ? '' : String(value);
+
+  if (!options.length) {
+    // No channels or roles could be read, which means no module is in the
+    // server to read them with.
+    return `<div class="field"><label for="setting-${escapeHtml(name)}">${escapeHtml(placeholder)}</label><select id="setting-${escapeHtml(name)}" name="${escapeHtml(name)}" disabled><option value="">Unavailable — no module installed</option></select></div>`;
+  }
+
   const body = options
     .map((option) => `<option value="${escapeHtml(option.value)}" ${option.value === current ? 'selected' : ''}>${escapeHtml(option.label)}</option>`)
     .join('');
@@ -409,19 +442,25 @@ async function selectGuild(guildId) {
     state.settings = data.settings || {};
     state.channels = data.channels || [];
     state.roles = data.roles || [];
+    state.bots = data.bots || null;
+
+    const moduleCount = Object.keys(data.bots || {}).length;
     $('#server-subtitle').textContent = data.guild?.name
-      ? `Managing ${data.guild.name} — ${Object.keys(data.bots || {}).length} Aurex module(s) active.`
+      ? `Managing ${data.guild.name} — ${moduleCount} Aurex module(s) installed.`
       : 'Configure modules and save changes.';
-    $('#server-status-text').textContent = 'CONNECTED';
+    $('#server-status-text').textContent = moduleCount ? 'CONNECTED' : 'NO MODULE';
     renderSettings();
+    renderModuleBanner();
     $('#save-status').textContent = 'Changes are local until you save.';
   } catch (error) {
     state.settings = {};
     state.channels = [];
     state.roles = [];
+    state.bots = null;
     $('#server-subtitle').textContent = showError(error.message, error.code);
     $('#server-status-text').textContent = 'OFFLINE';
     renderSettings();
+    renderModuleBanner();
   }
 }
 
@@ -522,17 +561,23 @@ async function init() {
   renderUser();
   renderBotSwitcher();
 
-  // The field contract is only needed for the dashboard, so it loads alongside
-  // the guild list instead of holding the page up.
-  const [modules, guilds] = await Promise.all([
+  // The field contract and the invite links are only needed for the dashboard,
+  // so they load alongside the guild list instead of holding the page up.
+  const guilds = await Promise.all([
     api('/api/modules').then((data) => { state.modules = data; }).catch(() => {}),
-    api('/api/guilds'),
-  ]);
+    api('/api/invites').then((data) => { state.invites = data || {}; }).catch(() => {}),
+    api('/api/guilds').then((data) => data).catch((err) => {
+      showError(err.message, err.code);
+      return [];
+    }),
+  ]).then((results) => results[2]);
 
   renderGuilds();
 
   if (guilds[0]) await selectGuild(guilds[0].id);
-  else $('#server-subtitle').textContent = 'No manageable servers found for this Discord account.';
+  else if (!state.guilds.length) {
+    $('#server-subtitle').textContent = 'No servers where you have Administrator or Manage Server permission.';
+  }
 }
 
 $('#settings-form').addEventListener('submit', saveSettings);

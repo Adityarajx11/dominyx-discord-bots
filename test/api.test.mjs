@@ -353,6 +353,42 @@ test('an unknown module is rejected', async () => {
   assert.equal(res.json.error, 'unknown_module');
 });
 
+test('a server with no module installed still loads its settings', async () => {
+  const login = await request({ url: '/api/auth/login' });
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
+  const callback = await request({
+    url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
+    headers: { cookie: cookiesFrom(login) },
+  });
+  const cookie = cookiesFrom(callback);
+
+  const guilds = await request({ url: '/api/guilds', headers: { cookie } });
+  assert.equal(guilds.statusCode, 200);
+  assert.ok(Array.isArray(guilds.json));
+  for (const guild of guilds.json) {
+    assert.ok('bots' in guild, 'each server reports which modules are installed');
+  }
+});
+
+test('the settings response always reports modules, channels and roles', async () => {
+  const login = await request({ url: '/api/auth/login' });
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
+  const callback = await request({
+    url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
+    headers: { cookie: cookiesFrom(login) },
+  });
+  const cookie = cookiesFrom(callback);
+
+  const res = await request({
+    url: '/api/guilds/guild-1/settings',
+    headers: { cookie },
+  });
+  assert.equal(res.statusCode, 200);
+  assert.ok('bots' in res.json, 'the response says which modules are installed');
+  assert.ok(Array.isArray(res.json.channels), 'channels are always an array');
+  assert.ok(Array.isArray(res.json.roles), 'roles are always an array');
+});
+
 test('server modules expose their field metadata', async () => {
   const res = await request({ url: '/api/modules' });
   assert.equal(res.statusCode, 200);

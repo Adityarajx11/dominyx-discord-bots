@@ -293,8 +293,22 @@ async function handleApi(req, res, url) {
     const session = await requireSession(req, res);
     if (!session) return;
 
+    let guilds;
     try {
-      const [guilds, botMap] = await Promise.all([getUserGuilds(session.accessToken), getBotGuildMap()]);
+      guilds = await getUserGuilds(session.accessToken);
+    } catch (error) {
+      if (error.code === 'guilds_scope_missing') {
+        return json(res, 403, {
+          error: 'guilds_scope_missing',
+          message:
+            'Discord did not share your server list. Sign out and sign in again, and allow access to your servers when Discord asks.',
+        });
+      }
+      return json(res, 502, { error: 'discord_guilds_failed', message: error.message });
+    }
+
+    try {
+      const botMap = await getBotGuildMap();
       const manageable = guilds
         .filter((guild) => canManage(guild.permissions))
         .map((guild) => ({

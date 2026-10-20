@@ -49,6 +49,11 @@
             <div class="control-heading"><div><span class="eyebrow">AUREX CONTROL / SERVER</span><h1 id="server-title">Select a server</h1><p id="server-subtitle">Choose a server from the rail to load its modules.</p></div><div class="server-status"><span class="status-pulse"></span><span id="server-status-text">AWAITING SERVER</span></div></div>
             <div class="dashboard-divider"></div>
             <div class="bot-switcher" id="bot-switcher"></div>
+            <div class="module-banner" id="module-banner" hidden>
+              <div class="module-banner-head"><i class="fa-solid fa-circle-info"></i><span>No Aurex module is installed in this server</span></div>
+              <p>Your settings are saved and will be waiting when a module is added, but the bots need to be in the server to read the channels, roles and configuration below.</p>
+              <div class="module-banner-links" id="module-banner-links"></div>
+            </div>
             <section class="settings-panel" id="settings-panel"><div class="settings-top"><div><span class="eyebrow" id="settings-kicker">MODULE / MUSIC</span><h2 id="settings-title">Select a module</h2></div><label class="toggle-label"><input id="bot-enabled" type="checkbox" /><span class="toggle-track"></span><span>Enabled</span></label></div><p class="settings-description" id="settings-description">Your selected module settings will appear here.</p><form id="settings-form" class="settings-form"></form><div class="settings-actions"><span id="save-status">Changes are local until you save.</span><button class="save-button" id="save-button" type="submit" form="settings-form">Save changes <i class="fa-solid fa-arrow-up-right"></i></button></div></section>
             <div class="dashboard-footnote"><i class="fa-solid fa-lock"></i><span>Settings are saved server-side to the shared Postgres database. Discord and database credentials never reach the browser.</span></div>
           </div>
