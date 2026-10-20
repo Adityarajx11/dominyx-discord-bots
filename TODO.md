@@ -1,11 +1,11 @@
-# Dominyx delivery outcomes
+# Aurex delivery outcomes
 
 ## Responsive full-site composition
 - Use a full-viewport first-screen composition with the restored moving motion background recolored into neutral black, white, and gray, then continue into a scrollable suite, principles, connection CTA, and footer.
-- Keep the recolored motion background visible enough to add depth while retaining a premium neutral black, white, and gray Dominyx overlay system, semantic structure, responsive typography, and reduced-motion-friendly UI behavior.
+- Keep the recolored motion background visible enough to add depth while retaining a premium neutral black, white, and gray Aurex overlay system, semantic structure, responsive typography, and reduced-motion-friendly UI behavior.
 
-## Dominyx header and navigation
-- Center a desktop header with a real circular Dominyx mark, pill navigation, and a primary CTA.
+## Aurex header and navigation
+- Center a desktop header with a real circular Aurex mark, pill navigation, and a primary CTA.
 - Include clear in-viewport navigation for the bot suite and the brand story.
 - Provide an accessible mobile hamburger control with animated overlay sheet, navigation, CTA, and bot exploration links.
 

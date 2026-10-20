@@ -1,6 +1,6 @@
-# Dominyx Discord Bots
+# Aurex Discord Bots
 
-Dominyx is a six-bot Discord platform for Music, Security, Greet, Ping, Ticket, and Level. The repository contains the public landing page and the Discord-authenticated dashboard that manages all six modules from one console.
+Aurex is a six-bot Discord platform for Music, Security, Greet, Ping, Ticket, and Level. The repository contains the public landing page and the Discord-authenticated dashboard that manages all six modules from one console.
 
 ## Quick start
 
@@ -19,7 +19,7 @@ Runs the backend test suite against an in-memory Postgres with a mocked Discord 
 
 ## Main routes
 
-- `/` — public Dominyx landing page
+- `/` — public Aurex landing page
 - `/dashboard.html` — Discord login and bot-management dashboard
 - `/api/health` — reports which subsystems are configured
 - `/api/modules` — the field contract for the six modules

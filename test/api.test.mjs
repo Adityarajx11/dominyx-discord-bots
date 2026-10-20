@@ -17,8 +17,8 @@ const { handler } = await import('../server.mjs');
 const ENV_KEYS = [
   'DISCORD_CLIENT_ID',
   'DISCORD_CLIENT_SECRET',
-  'DOMINYX_SESSION_SECRET',
-  'DOMINYX_PUBLIC_URL',
+  'AUREX_SESSION_SECRET',
+  'AUREX_PUBLIC_URL',
   'BOT_TOKEN',
   'DATABASE_URL',
   'BOT_ID_MUSIC',
@@ -37,8 +37,8 @@ for (const key of ENV_KEYS) {
 
 process.env.DISCORD_CLIENT_ID = 'client-123';
 process.env.DISCORD_CLIENT_SECRET = 'secret-456';
-process.env.DOMINYX_SESSION_SECRET = 'a-very-long-session-secret-for-tests';
-process.env.DOMINYX_PUBLIC_URL = 'http://localhost:3000';
+process.env.AUREX_SESSION_SECRET = 'a-very-long-session-secret-for-tests';
+process.env.AUREX_PUBLIC_URL = 'http://localhost:3000';
 process.env.BOT_TOKEN = 'general-bot-token';
 process.env.NODE_ENV = 'test';
 
@@ -53,7 +53,7 @@ test.after(() => {
 
 const GUILD = {
   id: 'guild-1',
-  name: 'Dominyx Test Server',
+  name: 'Aurex Test Server',
   icon: null,
   owner: true,
   permissions: '8',
@@ -180,7 +180,7 @@ test('login redirects to Discord with a state cookie', async () => {
   assert.ok(res.headers.location.startsWith('https://discord.com/oauth2/authorize'));
   assert.ok(res.headers.location.includes('client_id=client-123'));
   assert.ok(res.headers.location.includes('scope=identify+guilds'));
-  assert.ok(cookieValue(res, 'dominyx_oauth_state'));
+  assert.ok(cookieValue(res, 'aurex_oauth_state'));
 });
 
 test('callback rejects a mismatched oauth state', async () => {
@@ -191,7 +191,7 @@ test('callback rejects a mismatched oauth state', async () => {
 
 test('full login -> guild list -> settings -> save flow', async () => {
   const login = await request({ url: '/api/auth/login' });
-  const state = decodeURIComponent(cookieValue(login, 'dominyx_oauth_state'));
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
 
   const callback = await request({
     url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
@@ -200,7 +200,7 @@ test('full login -> guild list -> settings -> save flow', async () => {
   assert.equal(callback.statusCode, 302);
   assert.equal(callback.headers.location, '/dashboard.html');
 
-  const sessionCookie = cookieValue(callback, 'dominyx_session');
+  const sessionCookie = cookieValue(callback, 'aurex_session');
   assert.ok(sessionCookie, 'session cookie should be set');
   assert.ok(!callback.body.includes('user-access-token'));
 
@@ -219,7 +219,7 @@ test('full login -> guild list -> settings -> save flow', async () => {
     headers: { cookie: cookiesFrom(callback) },
   });
   assert.equal(settings.statusCode, 200);
-  assert.equal(settings.json.guild.name, 'Dominyx Test Server');
+  assert.equal(settings.json.guild.name, 'Aurex Test Server');
   assert.equal(settings.json.channels.length, 3);
   assert.equal(settings.json.roles.length, 1, 'the @everyone role should be filtered out');
   assert.equal(settings.json.settings.music.defaultVolume, 100);
@@ -231,7 +231,7 @@ test('full login -> guild list -> settings -> save flow', async () => {
     headers: {
       cookie: cookiesFrom(callback),
       origin: 'http://localhost:3000',
-      'x-dominyx-csrf': csrf,
+      'x-aurex-csrf': csrf,
     },
     body: { module: 'music', values: { defaultVolume: 55, stay247: true, djRoleId: 'role-dj' } },
   });
@@ -253,7 +253,7 @@ test('full login -> guild list -> settings -> save flow', async () => {
 
 test('saving without a csrf token is rejected', async () => {
   const login = await request({ url: '/api/auth/login' });
-  const state = decodeURIComponent(cookieValue(login, 'dominyx_oauth_state'));
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
   const callback = await request({
     url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
     headers: { cookie: cookiesFrom(login) },
@@ -272,7 +272,7 @@ test('saving without a csrf token is rejected', async () => {
 
 test('saving from a foreign origin is rejected', async () => {
   const login = await request({ url: '/api/auth/login' });
-  const state = decodeURIComponent(cookieValue(login, 'dominyx_oauth_state'));
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
   const callback = await request({
     url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
     headers: { cookie: cookiesFrom(login) },
@@ -285,7 +285,7 @@ test('saving from a foreign origin is rejected', async () => {
     headers: {
       cookie: cookiesFrom(callback),
       origin: 'https://evil.example',
-      'x-dominyx-csrf': me.json.csrf,
+      'x-aurex-csrf': me.json.csrf,
     },
     body: { module: 'music', values: { defaultVolume: 10 } },
   });
@@ -302,7 +302,7 @@ test('unauthenticated settings access is rejected', async () => {
 
 test('invalid values produce field level errors', async () => {
   const login = await request({ url: '/api/auth/login' });
-  const state = decodeURIComponent(cookieValue(login, 'dominyx_oauth_state'));
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
   const callback = await request({
     url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
     headers: { cookie: cookiesFrom(login) },
@@ -315,7 +315,7 @@ test('invalid values produce field level errors', async () => {
     headers: {
       cookie: cookiesFrom(callback),
       origin: 'http://localhost:3000',
-      'x-dominyx-csrf': me.json.csrf,
+      'x-aurex-csrf': me.json.csrf,
     },
     body: { module: 'music', values: { defaultVolume: 9999 } },
   });
@@ -327,7 +327,7 @@ test('invalid values produce field level errors', async () => {
 
 test('an unknown module is rejected', async () => {
   const login = await request({ url: '/api/auth/login' });
-  const state = decodeURIComponent(cookieValue(login, 'dominyx_oauth_state'));
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
   const callback = await request({
     url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
     headers: { cookie: cookiesFrom(login) },
@@ -340,7 +340,7 @@ test('an unknown module is rejected', async () => {
     headers: {
       cookie: cookiesFrom(callback),
       origin: 'http://localhost:3000',
-      'x-dominyx-csrf': me.json.csrf,
+      'x-aurex-csrf': me.json.csrf,
     },
     body: { module: 'not-a-bot', values: {} },
   });

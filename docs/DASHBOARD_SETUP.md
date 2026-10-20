@@ -1,4 +1,4 @@
-# Dominyx Dashboard setup
+# Aurex Dashboard setup
 
 The dashboard uses Discord OAuth2 for login and keeps the Discord access token in an encrypted, HttpOnly server cookie. It limits users to servers where Discord reports Administrator or Manage Server permission. Bot tokens and database credentials remain server-only and are never sent to browser JavaScript.
 
@@ -13,7 +13,7 @@ The dashboard uses Discord OAuth2 for login and keeps the Discord access token i
 | `/api/auth/callback` | GET | Exchanges the code, sets the encrypted session cookie. |
 | `/api/auth/me` | GET | Returns the signed-in user and the CSRF token. |
 | `/api/auth/logout` | GET | Clears the session cookie. |
-| `/api/guilds` | GET | Lists servers the user can manage, plus which Dominyx modules are installed. |
+| `/api/guilds` | GET | Lists servers the user can manage, plus which Aurex modules are installed. |
 | `/api/guilds/:id/settings` | GET | Loads module settings, the guild, its channels, and its roles. |
 | `/api/guilds/:id/settings` | PUT | Validates and saves one module's settings, then writes an audit entry. |
 
@@ -27,8 +27,8 @@ Set these in your host's encrypted secret manager. Never commit a `.env` file, a
 DISCORD_CLIENT_ID        Discord application (client) ID
 DISCORD_CLIENT_SECRET    Discord application client secret
 DISCORD_REDIRECT_URI     https://your-domain.example/api/auth/callback
-DOMINYX_PUBLIC_URL       https://your-domain.example
-DOMINYX_SESSION_SECRET   32+ random characters
+AUREX_PUBLIC_URL       https://your-domain.example
+AUREX_SESSION_SECRET   32+ random characters
 DATABASE_URL             Postgres connection string shared with the bots
 BOT_TOKEN                General bot token for guild/channel/role reads
 BOT_TOKEN_MUSIC          Per-module bot tokens
@@ -109,9 +109,9 @@ On Vercel keep `PG_POOL_MAX=1`. The serverless runtime freezes the filesystem an
 
 ### The OAuth callback must match the host
 
-`DISCORD_REDIRECT_URI` and `DOMINYX_PUBLIC_URL` have to point at the host the site is served from, and the redirect URI must be registered in the Discord Developer Portal:
+`DISCORD_REDIRECT_URI` and `AUREX_PUBLIC_URL` have to point at the host the site is served from, and the redirect URI must be registered in the Discord Developer Portal:
 
-| Environment | `DOMINYX_PUBLIC_URL` | `DISCORD_REDIRECT_URI` |
+| Environment | `AUREX_PUBLIC_URL` | `DISCORD_REDIRECT_URI` |
 | --- | --- | --- |
 | Local | `http://localhost:3000` | `http://localhost:3000/api/auth/callback` |
 | Production | `https://your-domain.example` | `https://your-domain.example/api/auth/callback` |
@@ -138,9 +138,9 @@ The server listens on `PORT` (default `3000`) and binds to `0.0.0.0`.
 ## Security model
 
 - **Secrets stay server-side.** Discord client secrets, bot tokens, and `DATABASE_URL` are never sent to the browser. The public site and the dashboard fetch only field metadata.
-- **Encrypted session.** The session cookie holds the Discord access token encrypted with AES-256-GCM using `DOMINYX_SESSION_SECRET`, with the key derived via SHA-256. The cookie is `HttpOnly`, `SameSite=None` in production, and `Secure` in production.
+- **Encrypted session.** The session cookie holds the Discord access token encrypted with AES-256-GCM using `AUREX_SESSION_SECRET`, with the key derived via SHA-256. The cookie is `HttpOnly`, `SameSite=None` in production, and `Secure` in production.
 - **Token refresh.** Discord access tokens expire. The session stores the refresh token and expiry, and the server refreshes automatically without logging the user out.
-- **CSRF protection.** Every write requires an `x-dominyx-csrf` header matching the CSRF token embedded in the encrypted session, and the `Origin` header must match the deployment origin.
+- **CSRF protection.** Every write requires an `x-aurex-csrf` header matching the CSRF token embedded in the encrypted session, and the `Origin` header must match the deployment origin.
 - **Permission re-checks.** Guild access is verified against Discord on every request using the signed-in user's own token — not a cached flag.
 - **Strict validation.** Every value is checked against the field contract before it reaches the database. Unknown fields are ignored rather than written, and out-of-range values are rejected with a per-field error.
 - **Audit trail.** Each successful save writes a row to `dashboard_audit_log` with the user, guild, module, and the exact before/after values.

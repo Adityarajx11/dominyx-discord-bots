@@ -464,5 +464,5 @@ export default handler;
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   http
     .createServer((req, res) => handler(req, res))
-    .listen(env.port, '0.0.0.0', () => console.log(`Dominyx dashboard listening on ${env.port}`));
+    .listen(env.port, '0.0.0.0', () => console.log(`Aurex dashboard listening on ${env.port}`));
 }

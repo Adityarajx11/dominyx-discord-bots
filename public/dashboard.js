@@ -340,7 +340,7 @@ async function selectGuild(guildId) {
     state.channels = data.channels || [];
     state.roles = data.roles || [];
     $('#server-subtitle').textContent = data.guild?.name
-      ? `Managing ${data.guild.name} — ${Object.keys(data.bots || {}).length} Dominyx module(s) active.`
+      ? `Managing ${data.guild.name} — ${Object.keys(data.bots || {}).length} Aurex module(s) active.`
       : 'Configure modules and save changes.';
     $('#server-status-text').textContent = 'CONNECTED';
     renderSettings();
@@ -401,7 +401,7 @@ async function saveSettings(event) {
   try {
     const result = await api(`/api/guilds/${encodeURIComponent(state.guildId)}/settings`, {
       method: 'PUT',
-      headers: state.csrf ? { 'x-dominyx-csrf': state.csrf } : {},
+      headers: state.csrf ? { 'x-aurex-csrf': state.csrf } : {},
       body: JSON.stringify({ module: state.selectedBot, values }),
     });
     state.settings[state.selectedBot] = result.settings || {};
