@@ -36,7 +36,24 @@ test('every module exposes an enabled toggle', () => {
   for (const key of MODULE_KEYS) {
     assert.equal(MODULES[key].fields.enabled.type, 'boolean', key);
     assert.equal(MODULES[key].fields.enabled.column, 'enabled', key);
+    assert.equal(MODULES[key].fields.enabled.default, true, key);
   }
+});
+
+// The bots read the same tables. This pins the contract on the dashboard side
+// so it cannot drift away from packages/core/lib/settings.js in the bot repo.
+test('the dashboard and the bots agree on the table names', () => {
+  assert.deepEqual(
+    Object.fromEntries(Object.values(MODULES).map((module) => [module.key, module.table])),
+    {
+      music: 'music_settings',
+      level: 'level_config',
+      greet: 'greet_settings',
+      ticket: 'ticket_config',
+      ping: 'ping_settings',
+      guard: 'guard_settings',
+    },
+  );
 });
 
 test('reads return defaults before anything is written', async () => {
