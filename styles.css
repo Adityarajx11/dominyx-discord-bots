@@ -411,3 +411,10 @@ button { color: inherit; font: inherit; }
   .bot-tab-live { width: 5px; height: 5px; margin-top: 14px; }
   .module-console .bot-tab:hover, .module-console .bot-tab.is-selected { transform: none; }
 }
+
+/* Scroll zoom: the motion field gently moves closer as the page leaves the hero. */
+.bg-video { transform: scale(calc(1 + var(--scroll-zoom, 0))); transform-origin: 50% 46%; will-change: transform; transition: transform .12s linear; }
+.hero { transform: translateY(var(--scroll-hero-lift, 0px)); will-change: transform; }
+@media (prefers-reduced-motion: reduce) {
+  .bg-video, .hero { transform: none; transition: none; }
+}

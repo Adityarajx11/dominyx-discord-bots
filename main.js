@@ -102,6 +102,20 @@ const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link,
 const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 const bgVideo = document.querySelector('.bg-video');
 
+let scrollFrame = 0;
+function updateScrollMotion() {
+  scrollFrame = 0;
+  if (reduceMotion) return;
+  const progress = Math.min(Math.max(window.scrollY / Math.max(window.innerHeight * 0.9, 1), 0), 1);
+  document.documentElement.style.setProperty('--scroll-zoom', (progress * 0.12).toFixed(4));
+  document.documentElement.style.setProperty('--scroll-hero-lift', `${(progress * -24).toFixed(2)}px`);
+}
+function requestScrollMotion() {
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScrollMotion);
+}
+window.addEventListener('scroll', requestScrollMotion, { passive: true });
+updateScrollMotion();
+
 if (bgVideo) {
   const startBackgroundVideo = () => {
     bgVideo.play().catch(() => {
