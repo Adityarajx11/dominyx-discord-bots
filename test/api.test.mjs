@@ -389,6 +389,24 @@ test('the login request asks Discord for offline access', async () => {
   assert.ok(location.includes('scope=identify+guilds'), 'the server list scope must be requested');
 });
 
+test('the installed module lookup returns the modules for a guild', async () => {
+  const { getInstalledModules } = await import('../lib/discord.js');
+
+  const map = {
+    music: new Set(['guild-1', 'guild-2']),
+    level: new Set(['guild-1']),
+    guard: new Set(['guild-2']),
+  };
+
+  assert.deepEqual(getInstalledModules('guild-1', map), { music: true, level: true });
+  assert.deepEqual(getInstalledModules('guild-2', map), { music: true, guard: true });
+  assert.equal(getInstalledModules('guild-3', map), null, 'a guild with no module returns null');
+  assert.equal(getInstalledModules('guild-1', {}), null);
+
+  // The result has to survive being sent to the browser.
+  assert.equal(JSON.parse(JSON.stringify({ bots: getInstalledModules('guild-1', map) })).bots.level, true);
+});
+
 test('a server owner is always able to manage their server', async () => {
   const login = await request({ url: '/api/auth/login' });
   const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
