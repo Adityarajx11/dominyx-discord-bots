@@ -489,48 +489,50 @@ async function init() {
   const error = new URLSearchParams(location.search).get('error');
   if (error) showError(error);
 
-  try {
-    state.modules = await api('/api/modules');
-  } catch {
-    state.modules = {};
-  }
-
-  // The gate stays hidden until the session is known, so a signed-in user never
-  // sees the authentication screen flash before the dashboard appears.
   const loading = $('#auth-loading');
   const gate = $('#auth-gate');
   const shell = $('#dashboard-shell');
 
+  const reveal = (what) => {
+    if (loading) loading.hidden = true;
+    if (gate) gate.hidden = what !== 'gate';
+    if (shell) shell.hidden = what !== 'shell';
+  };
+
+  // One round trip decides between the authentication page and the dashboard,
+  // so the page appears as soon as possible.
+  let session;
   try {
-    const session = await api('/api/auth/me');
-
-    if (!session.authenticated) {
-      if (loading) loading.hidden = true;
-      if (gate) gate.hidden = false;
-      return;
-    }
-
-    state.user = session.user;
-    state.csrf = session.csrf;
-
-    if (loading) loading.hidden = true;
-    if (gate) gate.hidden = true;
-    if (shell) shell.hidden = false;
-
-    renderUser();
-    renderBotSwitcher();
-
-    state.guilds = await api('/api/guilds');
-    renderGuilds();
-
-    if (state.guilds[0]) await selectGuild(state.guilds[0].id);
-    else $('#server-subtitle').textContent = 'No manageable servers found for this Discord account.';
+    session = await api('/api/auth/me');
   } catch (err) {
-    if (loading) loading.hidden = true;
-    if (gate) gate.hidden = false;
-    if (shell) shell.hidden = true;
+    reveal('gate');
     showError(err.message, err.code);
+    return;
   }
+
+  if (!session.authenticated) {
+    reveal('gate');
+    return;
+  }
+
+  state.user = session.user;
+  state.csrf = session.csrf;
+  reveal('shell');
+
+  renderUser();
+  renderBotSwitcher();
+
+  // The field contract is only needed for the dashboard, so it loads alongside
+  // the guild list instead of holding the page up.
+  const [modules, guilds] = await Promise.all([
+    api('/api/modules').then((data) => { state.modules = data; }).catch(() => {}),
+    api('/api/guilds'),
+  ]);
+
+  renderGuilds();
+
+  if (guilds[0]) await selectGuild(guilds[0].id);
+  else $('#server-subtitle').textContent = 'No manageable servers found for this Discord account.';
 }
 
 $('#settings-form').addEventListener('submit', saveSettings);
