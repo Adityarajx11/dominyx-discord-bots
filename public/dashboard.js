@@ -168,13 +168,77 @@ const ERROR_MESSAGES = {
   oauth_failed: 'Discord sign-in failed. Please try again, and tell the owner if it keeps happening.',
 };
 
+// Each error gets a short explanation and, where the fix is on the server,
+// the exact thing that has to change.
+const ERROR_DETAILS = {
+  oauth_invalid_client: {
+    title: 'Discord rejected the sign-in',
+    body:
+      'Your Discord login worked, but the server could not prove it owns the Discord application, so the sign-in was refused.',
+    foot:
+      'The application secret was rotated on Discord. Reset it in the Discord Developer Portal, then update <code>DISCORD_CLIENT_SECRET</code> on the server.',
+  },
+  oauth_redirect_mismatch: {
+    title: 'This address is not a registered redirect',
+    body:
+      'Discord refused the sign-in because the address it sent the user back to is not listed for the application.',
+    foot: 'Add <code>' + window.location.origin + '/api/auth/callback</code> under Discord Developer Portal → OAuth2 → Redirects.',
+  },
+  oauth_code_rejected: {
+    title: 'That sign-in link was already used',
+    body: 'Each Discord authorisation code works only once. The link was opened twice, so the second attempt was rejected.',
+    foot: 'Use the Login with Discord button above to start a fresh sign-in.',
+  },
+  oauth_code_expired: {
+    title: 'That sign-in link expired',
+    body: 'Discord authorisation codes are short lived. This one expired before it was used.',
+    foot: 'Use the Login with Discord button above to start a fresh sign-in.',
+  },
+  oauth_failed: {
+    title: 'Discord sign-in failed',
+    body: 'Something went wrong while completing the sign-in. It usually clears with a second attempt.',
+    foot: 'Use the Login with Discord button above to try again.',
+  },
+  access_denied: {
+    title: 'Sign-in was cancelled',
+    body: 'The Discord authorisation was declined, so no session was created.',
+    foot: 'Use the Login with Discord button above whenever you are ready.',
+  },
+  invalid_oauth_state: {
+    title: 'That sign-in attempt expired',
+    body: 'The sign-in was started in a different browser or tab, so the security token did not match.',
+    foot: 'Use the Login with Discord button above to start a fresh sign-in.',
+  },
+  oauth_not_configured: {
+    title: 'Sign-in is not configured yet',
+    body: 'The server is missing the Discord application values, so it cannot start a sign-in.',
+    foot: 'Set <code>DISCORD_CLIENT_ID</code>, <code>DISCORD_CLIENT_SECRET</code> and <code>AUREX_SESSION_SECRET</code> on the server.',
+  },
+};
+
 function showError(message, code) {
-  const friendly = ERROR_MESSAGES[code] || ERROR_MESSAGES[message] || message;
+  const key = code || message;
+  const friendly = ERROR_MESSAGES[key] || ERROR_MESSAGES[message] || message;
+
   const note = $('#auth-note');
   if (note) {
     note.textContent = friendly;
     note.classList.add('is-error');
   }
+
+  const alert = $('#auth-alert');
+  if (alert) {
+    const details = ERROR_DETAILS[key];
+    if (details) {
+      $('#auth-alert-title').textContent = details.title;
+      $('#auth-alert-body').textContent = details.body;
+      $('#auth-alert-foot').innerHTML = details.foot;
+      alert.hidden = false;
+    } else {
+      alert.hidden = true;
+    }
+  }
+
   return friendly;
 }
 

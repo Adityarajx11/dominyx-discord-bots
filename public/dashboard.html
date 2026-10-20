@@ -28,6 +28,11 @@
           <p>Sign in with Discord to select a server and manage the Aurex modules you have permission to control.</p>
           <a class="discord-login" href="/api/auth/login"><i class="fa-brands fa-discord"></i> Login with Discord</a>
           <p class="auth-note" id="auth-note">You will only see servers where you have Administrator or Manage Server permissions.</p>
+          <div class="auth-alert" id="auth-alert" hidden>
+            <div class="auth-alert-head"><i class="fa-solid fa-triangle-exclamation"></i><span id="auth-alert-title">Sign-in problem</span></div>
+            <p id="auth-alert-body"></p>
+            <p class="auth-alert-foot" id="auth-alert-foot"></p>
+          </div>
         </section>
 
         <section class="dashboard-shell" id="dashboard-shell" hidden>
