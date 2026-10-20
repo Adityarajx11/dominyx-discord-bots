@@ -27,6 +27,7 @@ import {
   checkClientCredentials,
   getBotGuildMap,
   getBotsInGuild,
+  getInstalledModules,
   getGuildBotToken,
   getGuild,
   getGuildChannels,
@@ -218,6 +219,8 @@ async function handleApi(req, res, url) {
 
   if (pathname === '/api/health') {
     const database = databaseReady();
+    const botMap = await getBotGuildMap({ force: true });
+
     return json(res, 200, {
       ok: true,
       dashboard: true,
@@ -231,6 +234,8 @@ async function handleApi(req, res, url) {
       bots: {
         configured: botTokens().map((entry) => entry.key),
         applicationIds: MODULE_KEYS.filter((key) => botIdFor(key)),
+        // How many servers each bot can see. A count only, no names or ids.
+        guildCounts: Object.fromEntries(Object.entries(botMap).map(([key, guilds]) => [key, guilds.size])),
       },
       modules: MODULE_KEYS,
     });
@@ -353,7 +358,7 @@ async function handleApi(req, res, url) {
           icon: guild.icon,
           owner: guild.owner,
           permissions: guild.permissions,
-          bots: getBotsInGuild(guild.id, botMap),
+          bots: getInstalledModules(guild.id, botMap),
         }));
 
       console.log(
@@ -409,7 +414,7 @@ async function handleApi(req, res, url) {
 
       return json(res, 200, {
         guild: guild ? { id: guild.id, name: guild.name, icon: guild.icon } : { id: guildId },
-        bots: getBotsInGuild(guildId, botMap),
+        bots: getInstalledModules(guildId, botMap),
         channels: channels.map((channel) => ({ id: channel.id, name: channel.name, type: channel.type })),
         roles: roles
           .filter((role) => role.id !== guildId)

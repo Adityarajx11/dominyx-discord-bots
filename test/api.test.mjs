@@ -372,6 +372,13 @@ test('a server with no module installed still loads its settings', async () => {
   assert.ok(Array.isArray(guilds.json.servers));
   for (const guild of guilds.json.servers) {
     assert.ok('bots' in guild, 'each server reports which modules are installed');
+    // The value must be a plain object of module names, not a promise that
+    // serialises to an empty object.
+    assert.equal(typeof guild.bots, 'object');
+    assert.ok(guild.bots === null || Object.keys(guild.bots).length > 0 || guild.bots !== undefined);
+    if (guild.bots !== null) {
+      assert.ok(Object.keys(guild.bots).length > 0, 'a resolved module map must not be empty');
+    }
   }
 });
 
@@ -421,6 +428,14 @@ test('the settings response always reports modules, channels and roles', async (
   assert.ok('bots' in res.json, 'the response says which modules are installed');
   assert.ok(Array.isArray(res.json.channels), 'channels are always an array');
   assert.ok(Array.isArray(res.json.roles), 'roles are always an array');
+  // A resolved module map must be a plain object with real keys, never a
+  // promise that serialises to {}.
+  if (res.json.bots !== null) {
+    assert.ok(typeof res.json.bots === 'object');
+    for (const key of Object.keys(res.json.bots)) {
+      assert.ok(res.json.bots[key] === true, 'each module flag must be true');
+    }
+  }
 });
 
 test('server modules expose their field metadata', async () => {
