@@ -133,6 +133,37 @@ It listens on `PORT` (default `3000`), binds to `0.0.0.0`, and serves the same f
 
 On Vercel keep `PG_POOL_MAX=1`. The serverless runtime freezes the filesystem and reuses a single connection.
 
+### Deploying
+
+```bash
+git push origin main          # Vercel deploys automatically on push
+```
+
+The production domain is `aurex-control.vercel.app`. A Vercel alias created by hand does not follow later deployments, so use the helper script after any manual deploy:
+
+```powershell
+./scripts/deploy.ps1
+```
+
+It deploys, repoints the alias, and prints the health response.
+
+### Checking the deployment
+
+```bash
+curl https://aurex-control.vercel.app/api/health
+```
+
+The response reports whether the Discord application secret is still valid and whether the database is reachable:
+
+```json
+{
+  "oauth": { "configured": true, "credentialsValid": true },
+  "database": { "configured": true, "reachable": true }
+}
+```
+
+`credentialsValid: false` means the Discord application secret was rotated and `DISCORD_CLIENT_SECRET` needs the new value. `reachable: false` means `DATABASE_URL` no longer points at a live database.
+
 ### The OAuth callback must match the host
 
 `DISCORD_REDIRECT_URI` and `AUREX_PUBLIC_URL` have to point at the host the site is served from, and the redirect URI must be registered in the Discord Developer Portal:
