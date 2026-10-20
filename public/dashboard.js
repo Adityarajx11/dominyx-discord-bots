@@ -269,7 +269,7 @@ function botBadges(bots) {
 function renderGuilds() {
   const list = $('#server-list');
   if (!state.guilds.length) {
-    list.innerHTML = '<p class="empty-note">No servers found where you have Administrator or Manage Server permission.</p>';
+    list.innerHTML = `<p class="empty-note">${escapeHtml(state.guildsMessage || 'No servers found where you have Administrator or Manage Server permission.')}</p>`;
     return;
   }
   list.innerHTML = state.guilds
@@ -566,18 +566,35 @@ async function init() {
   const guilds = await Promise.all([
     api('/api/modules').then((data) => { state.modules = data; }).catch(() => {}),
     api('/api/invites').then((data) => { state.invites = data || {}; }).catch(() => {}),
-    api('/api/guilds').then((data) => data).catch((err) => {
+    api('/api/guilds').then((data) => {
+      if (Array.isArray(data)) return { servers: data, total: data.length, manageable: data.length, scopeGranted: true };
+      state.guildsMessage = guildsMessage(data);
+      return data;
+    }).catch((err) => {
       showError(err.message, err.code);
-      return [];
+      state.guildsMessage = err.message;
+      return { servers: [], total: 0, manageable: 0, scopeGranted: true };
     }),
   ]).then((results) => results[2]);
 
+  state.guilds = guilds.servers || [];
   renderGuilds();
 
-  if (guilds[0]) await selectGuild(guilds[0].id);
+  if (state.guilds[0]) await selectGuild(state.guilds[0].id);
   else if (!state.guilds.length) {
-    $('#server-subtitle').textContent = 'No servers where you have Administrator or Manage Server permission.';
+    $('#server-subtitle').textContent = state.guildsMessage || 'No servers found.';
   }
+}
+
+// Turns the guild list response into a sentence that says what went wrong.
+function guildsMessage(data) {
+  if (data && data.scopeGranted === false) {
+    return 'Discord did not share your server list. Sign out and sign in again, and allow access to your servers when Discord asks.';
+  }
+  if (data && data.total > 0 && data.manageable === 0) {
+    return `You are in ${data.total} server(s), but you do not have Administrator or Manage Server in any of them.`;
+  }
+  return 'No servers found where you have Administrator or Manage Server permission.';
 }
 
 $('#settings-form').addEventListener('submit', saveSettings);

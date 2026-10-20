@@ -162,7 +162,7 @@ async function requireGuildAccess(req, res, guildId) {
 
   const guilds = await getUserGuilds(session.accessToken);
   const guild = guilds.find((item) => item.id === guildId);
-  if (!guild || !canManage(guild.permissions)) {
+  if (!guild || !canManage(guild)) {
     json(res, 403, { error: 'guild_forbidden', message: 'You do not have permission to manage this Discord server.' });
     return null;
   }
@@ -309,8 +309,14 @@ async function handleApi(req, res, url) {
 
     try {
       const botMap = await getBotGuildMap();
+
+      // Discord only returns the permissions field when the guilds scope was
+      // granted. Without it the server list comes back with no permission
+      // information at all, which is reported so the dashboard can explain it.
+      const scopeGranted = guilds.length === 0 || guilds.some((guild) => guild.permissions !== undefined);
+
       const manageable = guilds
-        .filter((guild) => canManage(guild.permissions))
+        .filter((guild) => canManage(guild))
         .map((guild) => ({
           id: guild.id,
           name: guild.name,
@@ -319,7 +325,18 @@ async function handleApi(req, res, url) {
           permissions: guild.permissions,
           bots: getBotsInGuild(guild.id, botMap),
         }));
-      return json(res, 200, manageable);
+
+      console.log(
+        `[guilds] user ${session.user.id}: ${guilds.length} guild(s) from Discord, ` +
+          `${manageable.length} manageable, scope granted: ${scopeGranted}`,
+      );
+
+      return json(res, 200, {
+        servers: manageable,
+        total: guilds.length,
+        manageable: manageable.length,
+        scopeGranted,
+      });
     } catch (error) {
       return json(res, 502, { error: 'discord_guilds_failed', message: error.message });
     }

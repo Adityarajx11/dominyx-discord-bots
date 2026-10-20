@@ -56,7 +56,9 @@ const GUILD = {
   name: 'Aurex Test Server',
   icon: null,
   owner: true,
-  permissions: '8',
+  // Discord reports role derived permissions for a user, so an owner can come
+  // back without the Administrator bit. 1048576 is VIEW_CHANNEL only.
+  permissions: '1048576',
 };
 
 // Set to a Discord error code to make the token exchange fail.
@@ -215,8 +217,11 @@ test('full login -> guild list -> settings -> save flow', async () => {
 
   const guilds = await request({ url: '/api/guilds', headers: { cookie: cookiesFrom(callback) } });
   assert.equal(guilds.statusCode, 200);
-  assert.equal(guilds.json.length, 1);
-  assert.equal(guilds.json[0].id, 'guild-1');
+  assert.equal(guilds.json.servers.length, 1);
+  assert.equal(guilds.json.servers[0].id, 'guild-1');
+  assert.equal(guilds.json.total, 1);
+  assert.equal(guilds.json.manageable, 1);
+  assert.equal(guilds.json.scopeGranted, true);
 
   const settings = await request({
     url: '/api/guilds/guild-1/settings',
@@ -364,10 +369,32 @@ test('a server with no module installed still loads its settings', async () => {
 
   const guilds = await request({ url: '/api/guilds', headers: { cookie } });
   assert.equal(guilds.statusCode, 200);
-  assert.ok(Array.isArray(guilds.json));
-  for (const guild of guilds.json) {
+  assert.ok(Array.isArray(guilds.json.servers));
+  for (const guild of guilds.json.servers) {
     assert.ok('bots' in guild, 'each server reports which modules are installed');
   }
+});
+
+test('a server owner is always able to manage their server', async () => {
+  const login = await request({ url: '/api/auth/login' });
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
+  const callback = await request({
+    url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
+    headers: { cookie: cookiesFrom(login) },
+  });
+  const cookie = cookiesFrom(callback);
+
+  // Discord's permissions field for a user only reflects role derived
+  // permissions, so an owner can come back without the Administrator bit.
+  const guilds = await request({ url: '/api/guilds', headers: { cookie } });
+  assert.equal(guilds.statusCode, 200);
+  assert.equal(guilds.json.manageable, 1, 'the owner must be able to manage their server');
+
+  const settings = await request({
+    url: '/api/guilds/guild-1/settings',
+    headers: { cookie },
+  });
+  assert.equal(settings.statusCode, 200, 'the owner must be able to open the server settings');
 });
 
 test('the settings response always reports modules, channels and roles', async () => {
