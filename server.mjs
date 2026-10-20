@@ -1,3 +1,7 @@
+// Loads a local .env for development. On Vercel and Railway the platform
+// injects the environment directly, and no .env file exists.
+import 'dotenv/config';
+
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';

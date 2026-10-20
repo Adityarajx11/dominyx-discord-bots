@@ -2,13 +2,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { newDb } from 'pg-mem';
 
-process.env.DISCORD_CLIENT_ID = 'client-123';
-process.env.DISCORD_CLIENT_SECRET = 'secret-456';
-process.env.DOMINYX_SESSION_SECRET = 'a-very-long-session-secret-for-tests';
-process.env.DOMINYX_PUBLIC_URL = 'http://localhost:3000';
-process.env.BOT_TOKEN = 'general-bot-token';
-process.env.NODE_ENV = 'test';
-
 const db = newDb({ autoCreateForeignKeyIndices: true });
 const pg = db.adapters.createPg();
 const memoryPool = new pg.Pool();
@@ -17,6 +10,44 @@ const { usePool } = await import('../lib/db.js');
 usePool(memoryPool);
 
 const { handler } = await import('../server.mjs');
+
+// The suite must not depend on whatever is in a local .env, so every variable
+// it cares about is cleared and set explicitly here. This runs after the
+// import above, because importing the server also loads dotenv.
+const ENV_KEYS = [
+  'DISCORD_CLIENT_ID',
+  'DISCORD_CLIENT_SECRET',
+  'DOMINYX_SESSION_SECRET',
+  'DOMINYX_PUBLIC_URL',
+  'BOT_TOKEN',
+  'DATABASE_URL',
+  'BOT_ID_MUSIC',
+  'BOT_ID_LEVEL',
+  'BOT_ID_GREET',
+  'BOT_ID_TICKET',
+  'BOT_ID_PING',
+  'BOT_ID_GUARD',
+];
+
+const savedEnv = {};
+for (const key of ENV_KEYS) {
+  savedEnv[key] = process.env[key];
+  delete process.env[key];
+}
+
+process.env.DISCORD_CLIENT_ID = 'client-123';
+process.env.DISCORD_CLIENT_SECRET = 'secret-456';
+process.env.DOMINYX_SESSION_SECRET = 'a-very-long-session-secret-for-tests';
+process.env.DOMINYX_PUBLIC_URL = 'http://localhost:3000';
+process.env.BOT_TOKEN = 'general-bot-token';
+process.env.NODE_ENV = 'test';
+
+test.after(() => {
+  for (const key of ENV_KEYS) {
+    if (savedEnv[key] === undefined) delete process.env[key];
+    else process.env[key] = savedEnv[key];
+  }
+});
 
 // ---------------------------------------------------------------- discord mock
 
