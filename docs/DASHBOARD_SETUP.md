@@ -78,6 +78,32 @@ Every table has a `guild_id` primary key, an `enabled` boolean, and `created_at`
 
 The full field list, types, and validation ranges live in [`lib/schema.js`](../lib/schema.js). That file is the single source of truth shared by the dashboard and the bots.
 
+## Discord applications
+
+Aurex uses **seven** Discord applications:
+
+| Application | Purpose | Environment variables |
+| --- | --- | --- |
+| General Aurex app | OAuth login for the dashboard, and the general bot | `CLIENT_ID`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `BOT_TOKEN` |
+| Music | The music bot | `BOT_TOKEN_MUSIC`, `BOT_ID_MUSIC` |
+| Level | The leveling bot | `BOT_TOKEN_LEVEL`, `BOT_ID_LEVEL` |
+| Greet | The greeting bot | `BOT_TOKEN_GREET`, `BOT_ID_GREET` |
+| Ticket | The ticket bot | `BOT_TOKEN_TICKET`, `BOT_ID_TICKET` |
+| Ping | The live-alert bot | `BOT_TOKEN_PING`, `BOT_ID_PING` |
+| Security | The moderation bot | `BOT_TOKEN_GUARD`, `BOT_ID_GUARD` |
+
+The general application is the OAuth application, so its secret is what the dashboard uses to exchange the login code. Each `BOT_ID_*` must match the application that owns the matching `BOT_TOKEN_*`, otherwise the dashboard will show the wrong module in the server list.
+
+`BOT_TOKEN` is only a last-resort fallback for reading channels and roles in a server where none of the six modules is installed. It can be left unset if every server you manage runs at least one module.
+
+### Rotating the general application
+
+If the dashboard login stops working with `invalid_client`, the general application secret was reset or rotated. Open the application in the [Discord Developer Portal](https://discord.com/developers/applications), then **Settings → General → Reset Secret**, copy the new value, and set `DISCORD_CLIENT_SECRET`.
+
+If you still run a general bot, **Bot → Reset Token** gives a new `BOT_TOKEN` from the same application.
+
+Both values are server-only. Never commit them and never paste them into a public issue.
+
 ## Add to Discord links
 
 The six "Add to Discord" buttons on the landing page are built server-side from the `BOT_ID_*` application IDs and served from `/api/invites`. Application IDs are public values — they appear in every invite link — so serving them from the API is safe, and it keeps them out of the HTML.
