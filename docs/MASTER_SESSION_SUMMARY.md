@@ -87,11 +87,19 @@ The old project also documents gaps that should not be reproduced: missing runti
 
 ## Environment and security
 
-Never commit or paste live secrets into chat. The intended old-project-compatible server variables are Discord OAuth values, the shared Railway `DATABASE_URL`, one general bot token, six bot tokens, six bot application IDs, the public app URL, and a session secret.
+Never commit or paste live secrets into chat. The server-side variables are the Discord OAuth values, the shared Railway `DATABASE_URL`, one general bot token, six bot tokens, six bot application IDs, the public app URL, the redirect URL, and a session secret.
 
-The secure protected-input flow was opened for the OAuth, Postgres, session, and bot-token values. Values remain server-only. The screenshot showed variable names but not their values.
+The direct Discord/Postgres adapter is now implemented. The dashboard reads and writes the shared Postgres tables directly, using the six per-module bot tokens for guild, channel, and role reads.
 
-The current code still contains the small adapter boundary used during the dashboard foundation. The direct old-HQ-compatible Discord/Postgres adapter is the next integration step after the protected values and final hosting target are confirmed.
+## Hardening added with the direct adapter
+
+- Encrypted AES-256-GCM session cookie holding the Discord access and refresh tokens, with automatic refresh before expiry.
+- CSRF protection: a per-session token returned by `/api/auth/me` and required in the `x-dominyx-csrf` header on every write, combined with an `Origin` check against the deployment origin.
+- Permission re-checks on every request using the signed-in user's own Discord token rather than a cached flag.
+- Strict per-field validation with ranges, enums, and length limits; unknown fields are ignored rather than written.
+- Rate limiting on login and settings writes.
+- Audit trail in `dashboard_audit_log` recording the user, guild, module, and exact before/after values for every save.
+- Static file allowlist so `lib/`, `.env`, and every other path return 404.
 
 ## Project files
 
@@ -100,15 +108,23 @@ The current code still contains the small adapter boundary used during the dashb
 - `main.js` — public module interaction, OAuth placeholder map, smooth scroll, auth CTA state, video start behavior, and reduced-motion handling.
 - `dashboard.html` — authenticated dashboard shell.
 - `dashboard.css` — dashboard design system.
-- `dashboard.js` — dashboard auth state, guild selection, six bot definitions, forms, and settings save behavior.
-- `server.mjs` — Node server, OAuth routes, encrypted sessions, auth gates, and settings proxy routes.
+- `dashboard.js` — dashboard auth state, guild selection, six module definitions, forms, and settings save behavior.
+- `server.mjs` — Node server, OAuth routes, encrypted sessions, auth gates, and settings routes.
 - `api/index.mjs` — Vercel adapter for the server entry point.
-- `package.json` — Node 20+ scripts.
+- `lib/env.js` — centralised environment access.
+- `lib/schema.js` — the module settings contract shared by the dashboard and the bots.
+- `lib/db.js` — Postgres pool and automatic schema setup.
+- `lib/discord.js` — Discord API client for user and bot tokens.
+- `lib/settings.js` — validated module settings reads and writes.
+- `lib/session.js` — encrypted session cookie, CSRF tokens, and cookie parsing.
+- `lib/security.js` — origin checks, rate limiting, and audit logging.
+- `package.json` — Node 20+ scripts and the `pg` dependency.
 - `vercel.json` — Vercel routing configuration.
 - `.env.example` — non-secret environment template.
 - `manus-routes.json` — declared `/` and `/dashboard.html` routes.
 - `app.config.ts` — project logo metadata.
 - `TODO.md` — delivery criteria and acceptance clauses.
+- `test/` — backend test suite using an in-memory Postgres and a mocked Discord API.
 - `docs/DASHBOARD_SETUP.md` — dashboard setup and environment guide.
 - `docs/MASTER_SESSION_SUMMARY.md` — this complete session overview.
 
@@ -117,6 +133,8 @@ The current code still contains the small adapter boundary used during the dashb
 - JavaScript syntax checked with `node --check`.
 - Route manifest checked as JSON.
 - HTTP smoke tests run against the local Preview server.
+- Backend test suite: 24 tests covering the database contract, validation rules, the full login to save flow, and the CSRF and origin rejections.
+- Dashboard rendered in a browser against a mocked API for all six modules — 68 fields, correct field types, populated channel and role dropdowns, and no console errors.
 - Git whitespace checks run with `git diff --check`.
 - Desktop and mobile screenshots captured for the public site.
 - Dashboard browser-only authenticated mock preview captured without bypassing production auth.
@@ -138,8 +156,6 @@ The current code still contains the small adapter boundary used during the dashb
 ## Remaining work
 
 1. Enter the protected Discord OAuth, Postgres, bot-token, application-ID, public URL, redirect URL, and session-secret values through secure hosting configuration.
-2. Confirm the production host and exact Discord OAuth callback URL.
-3. Replace the temporary settings adapter boundary with the direct shared-Postgres/bot-token adapter or a secured Railway service adapter.
-4. Map every dashboard field to the exact live Postgres schema and validate writes against a test Discord server.
-5. Add runtime permission re-checks, rate limits, role hierarchy checks, CSRF/origin protection, and action audit logs before production use.
-6. Replace the six public invite placeholders in `main.js` with final OAuth invite URLs.
+2. Confirm the production host and exact Discord OAuth callback URL. Railway only allows custom domains on the Hobby plan or the 30-day free trial, so Vercel is the free option.
+3. Point the new bot processes at the same `DATABASE_URL` and read their configuration from the per-module tables described in `lib/schema.js`.
+4. Replace the six public invite placeholders in `main.js` with final OAuth invite URLs.

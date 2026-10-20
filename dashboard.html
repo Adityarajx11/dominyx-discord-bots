@@ -37,7 +37,7 @@
             <div class="dashboard-divider"></div>
             <div class="bot-switcher" id="bot-switcher"></div>
             <section class="settings-panel" id="settings-panel"><div class="settings-top"><div><span class="eyebrow" id="settings-kicker">MODULE / MUSIC</span><h2 id="settings-title">Select a module</h2></div><label class="toggle-label"><input id="bot-enabled" type="checkbox" /><span class="toggle-track"></span><span>Enabled</span></label></div><p class="settings-description" id="settings-description">Your selected module settings will appear here.</p><form id="settings-form" class="settings-form"></form><div class="settings-actions"><span id="save-status">Changes are local until you save.</span><button class="save-button" id="save-button" type="submit" form="settings-form">Save changes <i class="fa-solid fa-arrow-up-right"></i></button></div></section>
-            <div class="dashboard-footnote"><i class="fa-solid fa-lock"></i><span>Settings are sent server-side to your Railway bot API. Discord and Postgres credentials never reach the browser.</span></div>
+            <div class="dashboard-footnote"><i class="fa-solid fa-lock"></i><span>Settings are saved server-side to the shared Postgres database. Discord and database credentials never reach the browser.</span></div>
           </div>
         </section>
       </main>
