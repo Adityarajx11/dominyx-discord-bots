@@ -114,7 +114,6 @@ const moduleUi = {
 const state = { user: null, guilds: [], guildId: null, selectedBot: 'music', settings: {}, modules: {}, channels: [], roles: [], csrf: null };
 
 const $ = (selector) => document.querySelector(selector);
-const authGate = $('#auth-gate');
 const escapeHtml = (value) =>
   String(value ?? '').replace(
     /[&<>"']/g,
@@ -496,14 +495,28 @@ async function init() {
     state.modules = {};
   }
 
+  // The gate stays hidden until the session is known, so a signed-in user never
+  // sees the authentication screen flash before the dashboard appears.
+  const loading = $('#auth-loading');
+  const gate = $('#auth-gate');
+  const shell = $('#dashboard-shell');
+
   try {
     const session = await api('/api/auth/me');
-    if (!session.authenticated) return;
+
+    if (!session.authenticated) {
+      if (loading) loading.hidden = true;
+      if (gate) gate.hidden = false;
+      return;
+    }
 
     state.user = session.user;
     state.csrf = session.csrf;
-    authGate.hidden = true;
-    $('#dashboard-shell').hidden = false;
+
+    if (loading) loading.hidden = true;
+    if (gate) gate.hidden = true;
+    if (shell) shell.hidden = false;
+
     renderUser();
     renderBotSwitcher();
 
@@ -513,6 +526,9 @@ async function init() {
     if (state.guilds[0]) await selectGuild(state.guilds[0].id);
     else $('#server-subtitle').textContent = 'No manageable servers found for this Discord account.';
   } catch (err) {
+    if (loading) loading.hidden = true;
+    if (gate) gate.hidden = false;
+    if (shell) shell.hidden = true;
     showError(err.message, err.code);
   }
 }
