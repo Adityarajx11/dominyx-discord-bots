@@ -40,31 +40,6 @@ import { rateLimit, originAllowed, csrfValid, audit } from './lib/security.js';
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const MAX_BODY_BYTES = 256 * 1024;
 
-const MIME = {
-  '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.webp': 'image/webp',
-  '.ico': 'image/x-icon',
-};
-
-// Only these paths are reachable over HTTP. Everything else (lib/, .env, …) stays private.
-const PUBLIC_FILES = new Set([
-  '/index.html',
-  '/dashboard.html',
-  '/styles.css',
-  '/dashboard.css',
-  '/main.js',
-  '/dashboard.js',
-  '/favicon.ico',
-  '/robots.txt',
-  '/manifest.webmanifest',
-]);
-
 const json = (res, status, payload, headers = {}) => {
   res.writeHead(status, {
     'content-type': 'application/json; charset=utf-8',
@@ -429,21 +404,39 @@ async function handleApi(req, res, url) {
   return json(res, 404, { error: 'not_found' });
 }
 
+const PUBLIC_DIR = path.join(ROOT, 'public');
+
+const ASSET_TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+};
+
+// On Vercel the CDN serves public/ before the function is reached. This
+// handler exists for local development and for any host that routes every
+// request through the function.
 function serveStatic(req, res, url) {
   let requested = url.pathname === '/' ? '/index.html' : url.pathname === '/dashboard' ? '/dashboard.html' : url.pathname;
 
-  if (!PUBLIC_FILES.has(requested)) return json(res, 404, { error: 'not_found' });
+  // Only these paths are reachable. Everything else, including the .env file
+  // and the lib/ directory, stays private.
+  const allowed = new Set(['/index.html', '/dashboard.html', '/styles.css', '/dashboard.css', '/main.js', '/dashboard.js']);
+  if (!allowed.has(requested)) return json(res, 404, { error: 'not_found' });
 
-  const filePath = path.join(ROOT, requested.slice(1));
-  fs.stat(filePath, (error, stats) => {
-    if (error || !stats.isFile()) return json(res, 404, { error: 'not_found' });
-    res.writeHead(200, {
-      'content-type': MIME[path.extname(filePath)] || 'application/octet-stream',
-      'cache-control': path.extname(filePath) === '.html' ? 'no-cache' : 'public, max-age=300',
-      'x-content-type-options': 'nosniff',
-    });
-    fs.createReadStream(filePath).pipe(res);
+  let body;
+  try {
+    body = fs.readFileSync(path.join(PUBLIC_DIR, requested.slice(1)));
+  } catch {
+    return json(res, 404, { error: 'not_found' });
+  }
+
+  const extension = path.extname(requested);
+  res.writeHead(200, {
+    'content-type': ASSET_TYPES[extension] || 'application/octet-stream',
+    'cache-control': extension === '.html' ? 'no-cache' : 'public, max-age=300',
+    'x-content-type-options': 'nosniff',
   });
+  res.end(body);
 }
 
 export async function handler(req, res) {
@@ -463,6 +456,10 @@ export async function handler(req, res) {
     res.end();
   }
 }
+
+// Vercel runs a root-level server file as a custom server entry and requires
+// a default export. The same function is reused by the api/ adapter.
+export default handler;
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   http

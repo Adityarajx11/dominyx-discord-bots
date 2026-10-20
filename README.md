@@ -39,7 +39,7 @@ The dashboard talks to Discord and Postgres directly from the server. There is n
 
 ## Project map
 
-The runtime files stay at the root so Node, Vercel, and Webdev Preview can serve them without extra path configuration. Backend modules live in `lib/`, and are never exposed over HTTP.
+The backend runs from the root so Node, Vercel, and Webdev Preview can serve it without extra path configuration. Static assets live in `public/`, which Vercel serves from its CDN. Backend modules live in `lib/` and are never exposed over HTTP.
 
 - [`lib/env.js`](../lib/env.js) — centralised environment access.
 - [`lib/schema.js`](../lib/schema.js) — the module settings contract, shared by the dashboard and the bots.
@@ -51,6 +51,7 @@ The runtime files stay at the root so Node, Vercel, and Webdev Preview can serve
 - [`lib/invites.js`](../lib/invites.js) — "Add to Discord" links from the application IDs.
 - [`server.mjs`](../server.mjs) — HTTP server and Vercel handler.
 - [`api/index.mjs`](../api/index.mjs) — Vercel adapter for the server entry point.
+- [`public/`](../public) — the landing page, the dashboard shell, and their stylesheets and scripts.
 
 Product and setup documentation is grouped in [`docs/`](./docs):
 

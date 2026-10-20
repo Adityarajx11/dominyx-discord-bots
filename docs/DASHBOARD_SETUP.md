@@ -94,9 +94,27 @@ Railway's permanent free plan does not allow custom domains. Vercel's Hobby plan
 
 1. Import the repository into Vercel.
 2. Add every environment variable under **Settings → Environment Variables**.
-3. Deploy. `vercel.json` already routes `/api/*` to the serverless entry point.
+3. Deploy. `vercel.json` builds the static assets from `public/` and routes `/api/*` to the server.
+
+The server also runs as a plain Node process for local development:
+
+```bash
+npm install
+npm start
+```
+
+It listens on `PORT` (default `3000`), binds to `0.0.0.0`, and serves the same files from `public/`.
 
 On Vercel keep `PG_POOL_MAX=1`. The serverless runtime freezes the filesystem and reuses a single connection.
+
+### The OAuth callback must match the host
+
+`DISCORD_REDIRECT_URI` and `DOMINYX_PUBLIC_URL` have to point at the host the site is served from, and the redirect URI must be registered in the Discord Developer Portal:
+
+| Environment | `DOMINYX_PUBLIC_URL` | `DISCORD_REDIRECT_URI` |
+| --- | --- | --- |
+| Local | `http://localhost:3000` | `http://localhost:3000/api/auth/callback` |
+| Production | `https://your-domain.example` | `https://your-domain.example/api/auth/callback` |
 
 ### Railway
 
