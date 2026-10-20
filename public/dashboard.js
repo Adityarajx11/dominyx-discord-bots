@@ -416,6 +416,13 @@ function fieldMarkup(field, values) {
   return `<div class="field field-has-suffix"><label for="${id}">${label}</label><div class="field-control">${suffix}<input id="${id}" name="${field.key}" type="${type}" value="${escapeHtml(value ?? '')}" placeholder="${escapeHtml(field.placeholder || '')}"${bounds} /></div></div>`;
 }
 
+// The Enabled toggle sits outside the form, so it needs to announce that
+// there is something to save, the same way the other fields do.
+function markUnsaved() {
+  const status = $('#save-status');
+  if (status && !status.dataset.saved) status.textContent = 'Unsaved changes.';
+}
+
 function renderSettings() {
   const module = moduleUi[state.selectedBot];
   const moduleState = state.settings[state.selectedBot] || {};
@@ -425,6 +432,10 @@ function renderSettings() {
   $('#settings-description').textContent = module.description;
   $('#bot-enabled').checked = moduleState.enabled !== false;
   $('#settings-form').innerHTML = module.fields.map((field) => fieldMarkup(field, moduleState)).join('');
+
+  $('#settings-form').querySelectorAll('input, select, textarea').forEach((control) => {
+    control.addEventListener('change', markUnsaved);
+  });
 }
 
 // ------------------------------------------------------------------ actions
@@ -517,7 +528,10 @@ async function saveSettings(event) {
     state.settings[state.selectedBot] = result.settings || {};
     const changed = (result.changes || []).length;
     renderSettings();
-    $('#save-status').textContent = changed ? `Saved ${changed} change(s) just now.` : 'Saved — nothing changed.';
+    const status = $('#save-status');
+    status.dataset.saved = '1';
+    status.textContent = changed ? `Saved ${changed} change(s) just now.` : 'Saved — nothing changed.';
+    delete status.dataset.saved;
   } catch (error) {
     $('#save-status').textContent = showError(error.message, error.code);
   } finally {
@@ -605,4 +619,5 @@ function guildsMessage(data) {
 }
 
 $('#settings-form').addEventListener('submit', saveSettings);
+$('#bot-enabled').addEventListener('change', markUnsaved);
 init();
