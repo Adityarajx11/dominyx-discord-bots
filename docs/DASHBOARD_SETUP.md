@@ -166,6 +166,16 @@ The response reports whether the Discord application secret is still valid and w
 
 `credentialsValid: false` means the Discord application secret was rotated and `DISCORD_CLIENT_SECRET` needs the new value. `reachable: false` means `DATABASE_URL` no longer points at a live database.
 
+### Checking the live database
+
+`test/live-db-check.mjs` runs the dashboard's own database and settings code against whatever `DATABASE_URL` points at. It reports the table columns, reads every module, and writes and reads back a value:
+
+```bash
+DATABASE_URL=postgresql://... node test/live-db-check.mjs <guild-id>
+```
+
+It creates the tables and columns if they are missing, so it is also the quickest way to apply a schema change.
+
 ### The OAuth callback must match the host
 
 `DISCORD_REDIRECT_URI` and `AUREX_PUBLIC_URL` have to point at the host the site is served from, and the redirect URI must be registered in the Discord Developer Portal:
