@@ -156,6 +156,7 @@ const ERROR_MESSAGES = {
   guild_forbidden: 'You do not have permission to manage this Discord server.',
   guilds_scope_missing:
     'Discord did not share your server list. Sign out and sign in again, and allow access to your servers when Discord asks.',
+  session_expired: 'Your Discord session expired. Sign in again to continue.',
   database_not_configured: 'DATABASE_URL is not set on the server, so module settings cannot be loaded.',
   origin_rejected: 'The request origin was rejected. Reload the dashboard and try again.',
   csrf_failed: 'Security token mismatch. Reload the dashboard and try again.',
@@ -571,6 +572,12 @@ async function init() {
       state.guildsMessage = guildsMessage(data);
       return data;
     }).catch((err) => {
+      // The session is gone, so send the visitor back to the authentication page.
+      if (err.code === 'session_expired' || err.code === 'not_authenticated') {
+        reveal('gate');
+        showError(err.message, err.code);
+        return { servers: [], total: 0, manageable: 0, scopeGranted: true };
+      }
       showError(err.message, err.code);
       state.guildsMessage = err.message;
       return { servers: [], total: 0, manageable: 0, scopeGranted: true };

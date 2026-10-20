@@ -155,12 +155,30 @@ async function requireSession(req, res) {
   return session;
 }
 
+// A Discord access token can expire before the session does. When that happens
+// the session is renewed once and the request is retried, so an expired token
+// never turns into an empty server list.
+async function withFreshToken(req, res, session, call) {
+  try {
+    return await call(session.accessToken);
+  } catch (error) {
+    if (error.status !== 401 || !session.refreshToken) throw error;
+    console.log('[auth] access token expired, refreshing');
+    const tokens = await refreshAccessToken(session.refreshToken);
+    session.accessToken = tokens.access_token;
+    session.refreshToken = tokens.refresh_token || session.refreshToken;
+    session.expiresAt = Date.now() + (tokens.expires_in || 3600) * 1000;
+    appendCookie(res, `${SESSION_COOKIE}=${encodeURIComponent(encryptSession(session))}; ${cookieFlags(req)}`);
+    return await call(session.accessToken);
+  }
+}
+
 // Confirms the signed-in user can administer the requested guild.
 async function requireGuildAccess(req, res, guildId) {
   const session = await requireSession(req, res);
   if (!session) return null;
 
-  const guilds = await getUserGuilds(session.accessToken);
+  const guilds = await withFreshToken(req, res, session, (token) => getUserGuilds(token));
   const guild = guilds.find((item) => item.id === guildId);
   if (!guild || !canManage(guild)) {
     json(res, 403, { error: 'guild_forbidden', message: 'You do not have permission to manage this Discord server.' });
@@ -239,6 +257,10 @@ async function handleApi(req, res, url) {
       redirect_uri: redirectUriFor(req),
       response_type: 'code',
       scope: 'identify guilds',
+      // Discord only issues a refresh token when offline access is asked for.
+      // Without it the session can never be renewed and it silently expires.
+      access_type: 'offline',
+      prompt: 'consent',
       state,
     });
     return redirect(res, `https://discord.com/oauth2/authorize?${params}`);
@@ -295,13 +317,21 @@ async function handleApi(req, res, url) {
 
     let guilds;
     try {
-      guilds = await getUserGuilds(session.accessToken);
+      guilds = await withFreshToken(req, res, session, (token) => getUserGuilds(token));
     } catch (error) {
       if (error.code === 'guilds_scope_missing') {
         return json(res, 403, {
           error: 'guilds_scope_missing',
           message:
             'Discord did not share your server list. Sign out and sign in again, and allow access to your servers when Discord asks.',
+        });
+      }
+      if (error.status === 401) {
+        // The session is no longer usable.
+        clearCookie(res, req, SESSION_COOKIE);
+        return json(res, 401, {
+          error: 'session_expired',
+          message: 'Your Discord session expired. Sign in again to continue.',
         });
       }
       return json(res, 502, { error: 'discord_guilds_failed', message: error.message });

@@ -375,6 +375,13 @@ test('a server with no module installed still loads its settings', async () => {
   }
 });
 
+test('the login request asks Discord for offline access', async () => {
+  const res = await request({ url: '/api/auth/login' });
+  const location = res.headers.location || '';
+  assert.ok(location.includes('access_type=offline'), 'a refresh token is needed to renew the session');
+  assert.ok(location.includes('scope=identify+guilds'), 'the server list scope must be requested');
+});
+
 test('a server owner is always able to manage their server', async () => {
   const login = await request({ url: '/api/auth/login' });
   const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
