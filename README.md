@@ -23,6 +23,7 @@ Runs the backend test suite against an in-memory Postgres with a mocked Discord 
 - `/dashboard.html` — Discord login and bot-management dashboard
 - `/api/health` — reports which subsystems are configured
 - `/api/modules` — the field contract for the six modules
+- `/api/invites` — "Add to Discord" links built from the bot application IDs
 - `/api/auth/login` — Discord OAuth entry point
 - `/api/guilds` — servers the signed-in user can manage
 - `/api/guilds/:id/settings` — module settings, channels, and roles
@@ -47,6 +48,7 @@ The runtime files stay at the root so Node, Vercel, and Webdev Preview can serve
 - [`lib/settings.js`](../lib/settings.js) — validated reads and writes for module settings.
 - [`lib/session.js`](../lib/session.js) — encrypted session cookie and CSRF tokens.
 - [`lib/security.js`](../lib/security.js) — origin checks, rate limiting, and audit logging.
+- [`lib/invites.js`](../lib/invites.js) — "Add to Discord" links from the application IDs.
 - [`server.mjs`](../server.mjs) — HTTP server and Vercel handler.
 - [`api/index.mjs`](../api/index.mjs) — Vercel adapter for the server entry point.
 

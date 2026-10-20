@@ -118,6 +118,7 @@ The direct Discord/Postgres adapter is now implemented. The dashboard reads and 
 - `lib/settings.js` — validated module settings reads and writes.
 - `lib/session.js` — encrypted session cookie, CSRF tokens, and cookie parsing.
 - `lib/security.js` — origin checks, rate limiting, and audit logging.
+- `lib/invites.js` — "Add to Discord" links built from the bot application IDs.
 - `package.json` — Node 20+ scripts and the `pg` dependency.
 - `vercel.json` — Vercel routing configuration.
 - `.env.example` — non-secret environment template.
@@ -133,7 +134,7 @@ The direct Discord/Postgres adapter is now implemented. The dashboard reads and 
 - JavaScript syntax checked with `node --check`.
 - Route manifest checked as JSON.
 - HTTP smoke tests run against the local Preview server.
-- Backend test suite: 24 tests covering the database contract, validation rules, the full login to save flow, and the CSRF and origin rejections.
+- Backend test suite: 25 tests covering the database contract, validation rules, the full login to save flow, the invite links, and the CSRF and origin rejections.
 - Dashboard rendered in a browser against a mocked API for all six modules — 68 fields, correct field types, populated channel and role dropdowns, and no console errors.
 - Git whitespace checks run with `git diff --check`.
 - Desktop and mobile screenshots captured for the public site.
@@ -158,4 +159,4 @@ The direct Discord/Postgres adapter is now implemented. The dashboard reads and 
 1. Enter the protected Discord OAuth, Postgres, bot-token, application-ID, public URL, redirect URL, and session-secret values through secure hosting configuration.
 2. Confirm the production host and exact Discord OAuth callback URL. Railway only allows custom domains on the Hobby plan or the 30-day free trial, so Vercel is the free option.
 3. Point the new bot processes at the same `DATABASE_URL` and read their configuration from the per-module tables described in `lib/schema.js`.
-4. Replace the six public invite placeholders in `main.js` with final OAuth invite URLs.
+4. Set the six `BOT_ID_*` application IDs so the "Add to Discord" buttons point at the real bots. The links are generated server-side from `/api/invites`.

@@ -325,3 +325,43 @@ test('server modules expose their field metadata', async () => {
   assert.equal(res.json.guard.fields.raidAction.options.length, 3);
   assert.equal(res.json.music.fields.defaultVolume.min, 0);
 });
+
+test('invite links are built from the application ids', async () => {
+  process.env.BOT_ID_MUSIC = '111111111';
+  process.env.BOT_ID_GUARD = '222222222';
+
+  const res = await request({ url: '/api/invites' });
+  assert.equal(res.statusCode, 200);
+  assert.ok(res.json.music.startsWith('https://discord.com/oauth2/authorize?'));
+  assert.ok(res.json.music.includes('client_id=111111111'));
+  assert.ok(res.json.music.includes('scope=bot+applications.commands'));
+  assert.ok(res.json.guard.includes('client_id=222222222'));
+  assert.equal(res.json.greet, undefined, 'modules without an application id are skipped');
+});
+
+test('the security module is published under both "guard" and "security"', async () => {
+  process.env.BOT_ID_GUARD = '222222222';
+
+  const res = await request({ url: '/api/invites' });
+  assert.ok(res.json.guard, 'the database module key must be published');
+  assert.ok(res.json.security, 'the landing page addresses it as security');
+  assert.equal(res.json.guard, res.json.security);
+});
+
+test('invite permissions include the high bit flags Discord uses', async () => {
+  process.env.BOT_ID_GUARD = '222222222';
+
+  const res = await request({ url: '/api/invites' });
+  const permissions = Number(new URL(res.json.guard).searchParams.get('permissions'));
+
+  const MODERATE_MEMBERS = 2 ** 40;
+  const MANAGE_ROLES = 2 ** 28;
+  const KICK_MEMBERS = 2 ** 1;
+  const BAN_MEMBERS = 2 ** 2;
+
+  assert.ok(permissions >= MODERATE_MEMBERS, 'moderate members must survive the bit shift');
+  assert.equal((permissions & MODERATE_MEMBERS) >>> 0, MODERATE_MEMBERS >>> 0);
+  assert.ok((permissions & MANAGE_ROLES) === MANAGE_ROLES);
+  assert.ok((permissions & KICK_MEMBERS) === KICK_MEMBERS);
+  assert.ok((permissions & BAN_MEMBERS) === BAN_MEMBERS);
+});

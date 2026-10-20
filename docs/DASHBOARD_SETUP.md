@@ -8,6 +8,7 @@ The dashboard uses Discord OAuth2 for login and keeps the Discord access token i
 | --- | --- | --- |
 | `/api/health` | GET | Reports which subsystems are configured. Never returns secret values. |
 | `/api/modules` | GET | Returns the field contract (types, ranges, options) for the six modules. |
+| `/api/invites` | GET | Builds the "Add to Discord" links from the bot application IDs. |
 | `/api/auth/login` | GET | Starts the Discord OAuth2 flow with a `state` cookie. |
 | `/api/auth/callback` | GET | Exchanges the code, sets the encrypted session cookie. |
 | `/api/auth/me` | GET | Returns the signed-in user and the CSRF token. |
@@ -76,6 +77,14 @@ Each module owns one table so a bot process never writes to another bot's config
 Every table has a `guild_id` primary key, an `enabled` boolean, and `created_at` / `updated_at` timestamps. The dashboard creates the tables and columns automatically on first request, and adding a column later is also handled — so the bots only need to read the columns they care about.
 
 The full field list, types, and validation ranges live in [`lib/schema.js`](../lib/schema.js). That file is the single source of truth shared by the dashboard and the bots.
+
+## Add to Discord links
+
+The six "Add to Discord" buttons on the landing page are built server-side from the `BOT_ID_*` application IDs and served from `/api/invites`. Application IDs are public values — they appear in every invite link — so serving them from the API is safe, and it keeps them out of the HTML.
+
+Set `BOT_ID_MUSIC`, `BOT_ID_LEVEL`, `BOT_ID_GREET`, `BOT_ID_TICKET`, `BOT_ID_PING`, and `BOT_ID_GUARD`, and each button links straight to the right authorization prompt. A module without an application ID is skipped, and its button keeps its existing fallback behaviour.
+
+Each module requests only the permissions it needs. The permission sets live in [`lib/invites.js`](../lib/invites.js).
 
 ## Hosting
 

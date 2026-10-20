@@ -28,6 +28,7 @@ import {
   getGuildRoles,
 } from './lib/discord.js';
 import { MODULES, MODULE_KEYS } from './lib/schema.js';
+import { inviteLinks } from './lib/invites.js';
 import { readAllModules, readModule, writeModule, diffFields } from './lib/settings.js';
 import { ensureSchema, ping as pingDatabase, getPool } from './lib/db.js';
 import { rateLimit, originAllowed, csrfValid, audit } from './lib/security.js';
@@ -217,6 +218,10 @@ async function handleApi(req, res, url) {
 
   if (pathname === '/api/modules') {
     return json(res, 200, moduleMetadata());
+  }
+
+  if (pathname === '/api/invites') {
+    return json(res, 200, inviteLinks());
   }
 
   if (pathname === '/api/auth/login') {

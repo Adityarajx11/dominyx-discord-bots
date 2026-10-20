@@ -1,4 +1,5 @@
-// Replace these six placeholders with each bot's Discord OAuth2 invite URL.
+// Invite links are built server-side from the bot application IDs and loaded
+// from /api/invites. The placeholder map below is only a fallback.
 const botInviteLinks = {
   music: 'PASTE_MUSIC_OAUTH_URL_HERE',
   security: 'PASTE_SECURITY_OAUTH_URL_HERE',
@@ -7,6 +8,23 @@ const botInviteLinks = {
   ticket: 'PASTE_TICKET_OAUTH_URL_HERE',
   level: 'PASTE_LEVEL_OAUTH_URL_HERE'
 };
+
+function applyInviteLinks(links) {
+  document.querySelectorAll('[data-bot-invite]').forEach((link) => {
+    const key = link.dataset.botInvite;
+    const invite = links?.[key];
+    if (invite && invite.startsWith('http')) link.href = invite;
+  });
+}
+
+applyInviteLinks(botInviteLinks);
+
+fetch('/api/invites')
+  .then((response) => (response.ok ? response.json() : null))
+  .then((links) => {
+    if (links && Object.keys(links).length) applyInviteLinks(links);
+  })
+  .catch(() => {});
 
 const botData = {
   music: {
@@ -59,12 +77,6 @@ const botData = {
     metricLabels: ['PER MEMBER', 'IN THE SERVER', 'WITHOUT FRICTION']
   }
 };
-
-document.querySelectorAll('[data-bot-invite]').forEach((link) => {
-  const key = link.dataset.botInvite;
-  const invite = botInviteLinks[key];
-  if (invite && invite.startsWith('http')) link.href = invite;
-});
 
 const authCtas = document.querySelectorAll('[data-auth-cta]');
 async function syncAuthCtas() {
