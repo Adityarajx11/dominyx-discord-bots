@@ -287,37 +287,66 @@ function renderGuilds() {
   );
 }
 
-// Shown when the selected server has no Aurex module in it.
-function renderModuleBanner() {
-  const banner = $('#module-banner');
-  if (!banner) return;
+// A module that is not installed in the selected server cannot read its
+// settings, so the panel asks for the bot instead of showing an empty form.
+function moduleInstalled(module) {
+  if (!state.bots) return true;
+  return Boolean(state.bots[module]);
+}
 
-  if (state.bots && Object.keys(state.bots).length) {
-    banner.hidden = true;
+function renderModuleState() {
+  const module = moduleUi[state.selectedBot];
+  const badge = $('#module-state');
+  const missing = $('#module-missing');
+  const form = $('#settings-form');
+  const save = $('#save-button');
+
+  if (moduleInstalled(state.selectedBot)) {
+    if (badge) {
+      badge.textContent = 'Installed';
+      badge.className = 'module-state is-installed';
+    }
+    if (missing) missing.hidden = true;
+    if (form) form.hidden = false;
+    if (save) save.hidden = false;
     return;
   }
 
-  const links = $('#module-banner-links');
-  const names = Object.keys(state.invites || {});
-  links.innerHTML = names
-    .map((key) => {
-      const label = moduleUi[key]?.name || key;
-      const href = state.invites[key];
-      if (!href) return '';
-      return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)} <i class="fa-solid fa-arrow-up-right-from-square"></i></a>`;
-    })
-    .join('');
+  if (badge) {
+    badge.textContent = 'Not installed';
+    badge.className = 'module-state is-missing';
+  }
 
-  banner.hidden = false;
+  if (missing) {
+    $('#module-missing-title').textContent = `${module.name} is not in this server`;
+    $('#module-missing-body').textContent =
+      `Add the ${module.name} bot to this server to configure it. The bot reads these settings, so they cannot be applied until it is here.`;
+    const link = $('#module-missing-link');
+    const invite = state.invites[state.selectedBot] || state.invites[module.alias];
+    if (link) {
+      if (invite) {
+        link.href = invite;
+        link.hidden = false;
+        link.innerHTML = `Add ${escapeHtml(module.name)} to this server <i class="fa-solid fa-arrow-up-right-from-square"></i>`;
+      } else {
+        link.hidden = true;
+      }
+    }
+    missing.hidden = false;
+  }
+
+  if (form) form.hidden = true;
+  if (save) save.hidden = true;
 }
 
 function renderBotSwitcher() {
   $('#bot-switcher').innerHTML = Object.entries(moduleUi)
-    .map(
-      ([key, module]) => `<button class="bot-switch ${key === state.selectedBot ? 'is-selected' : ''}" type="button" data-bot="${key}">
-        <i class="fa-solid ${module.icon}"></i><span>${escapeHtml(module.name)}</span>
-      </button>`,
-    )
+    .map(([key, module]) => {
+      const installed = moduleInstalled(key);
+      return `<button class="bot-switch ${key === state.selectedBot ? 'is-selected' : ''} ${installed ? '' : 'is-not-installed'}" type="button" data-bot="${key}" title="${escapeHtml(module.name)}${installed ? '' : ' — not installed in this server'}">
+        <i class="fa-solid ${module.icon}"></i><span>${escapeHtml(module.name)}</span>${installed ? '' : '<i class="fa-solid fa-plus bot-switch-add"></i>'}
+      </button>`;
+    })
     .join('');
   $('#bot-switcher')
     .querySelectorAll('[data-bot]')
@@ -430,12 +459,13 @@ function renderSettings() {
   $('#settings-kicker').textContent = `MODULE / ${module.name.toUpperCase()}`;
   $('#settings-title').textContent = module.name;
   $('#settings-description').textContent = module.description;
-  $('#bot-enabled').checked = moduleState.enabled !== false;
   $('#settings-form').innerHTML = module.fields.map((field) => fieldMarkup(field, moduleState)).join('');
 
   $('#settings-form').querySelectorAll('input, select, textarea').forEach((control) => {
     control.addEventListener('change', markUnsaved);
   });
+
+  renderModuleState();
 }
 
 // ------------------------------------------------------------------ actions
@@ -461,8 +491,8 @@ async function selectGuild(guildId) {
       ? `Managing ${data.guild.name} — ${moduleCount} Aurex module(s) installed.`
       : 'Configure modules and save changes.';
     $('#server-status-text').textContent = moduleCount ? 'CONNECTED' : 'NO MODULE';
+    renderBotSwitcher();
     renderSettings();
-    renderModuleBanner();
     $('#save-status').textContent = 'Changes are local until you save.';
   } catch (error) {
     state.settings = {};
@@ -472,7 +502,6 @@ async function selectGuild(guildId) {
     $('#server-subtitle').textContent = showError(error.message, error.code);
     $('#server-status-text').textContent = 'OFFLINE';
     renderSettings();
-    renderModuleBanner();
   }
 }
 
@@ -514,7 +543,6 @@ async function saveSettings(event) {
     if (!meta) continue;
     values[field.key] = serializeValue(meta, form.get(field.key));
   }
-  values.enabled = $('#bot-enabled').checked;
 
   $('#save-status').textContent = 'Saving…';
   $('#save-button').disabled = true;
@@ -619,5 +647,4 @@ function guildsMessage(data) {
 }
 
 $('#settings-form').addEventListener('submit', saveSettings);
-$('#bot-enabled').addEventListener('change', markUnsaved);
 init();

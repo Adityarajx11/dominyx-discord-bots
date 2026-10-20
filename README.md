@@ -55,6 +55,7 @@ The backend runs from the root so Node, Vercel, and Webdev Preview can serve it 
 
 Product and setup documentation is grouped in [`docs/`](./docs):
 
+- [`docs/SETUP_GUIDE.md`](./docs/SETUP_GUIDE.md) — **full setup guide**, from creating the Discord applications to every command and a full music session.
 - [`docs/DASHBOARD_SETUP.md`](./docs/DASHBOARD_SETUP.md) — OAuth, Postgres, bot tokens, hosting, and hardening.
 - [`docs/MASTER_SESSION_SUMMARY.md`](./docs/MASTER_SESSION_SUMMARY.md) — complete session overview, feature inventory, and validation.
 
