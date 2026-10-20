@@ -159,6 +159,13 @@ const ERROR_MESSAGES = {
   origin_rejected: 'The request origin was rejected. Reload the dashboard and try again.',
   csrf_failed: 'Security token mismatch. Reload the dashboard and try again.',
   rate_limited: 'Too many requests. Wait a moment and try again.',
+  oauth_invalid_client:
+    'Discord rejected the sign-in because the application secret no longer matches. The Discord application secret was rotated and needs to be updated on the server.',
+  oauth_redirect_mismatch:
+    'Discord rejected the sign-in because this address is not registered as a redirect. Add it to the Discord application under OAuth2 → Redirects.',
+  oauth_code_rejected: 'That sign-in link was already used. Please start the sign-in again.',
+  oauth_code_expired: 'That sign-in link expired. Please start the sign-in again.',
+  oauth_failed: 'Discord sign-in failed. Please try again, and tell the owner if it keeps happening.',
 };
 
 function showError(message, code) {

@@ -59,6 +59,9 @@ const GUILD = {
   permissions: '8',
 };
 
+// Set to a Discord error code to make the token exchange fail.
+let mockTokenError = null;
+
 const CHANNELS = [
   { id: 'chan-text', name: 'general', type: 0 },
   { id: 'chan-voice', name: 'Music', type: 2 },
@@ -80,6 +83,7 @@ globalThis.fetch = async (input, options = {}) => {
   });
 
   if (url.includes('/oauth2/token')) {
+    if (mockTokenError) return json({ error: mockTokenError }, 401);
     return json({
       access_token: 'user-access-token',
       refresh_token: 'user-refresh-token',
@@ -355,6 +359,43 @@ test('server modules expose their field metadata', async () => {
   assert.equal(res.json.guard.fields.modlogChannelId.type, 'text');
   assert.equal(res.json.guard.fields.raidAction.options.length, 3);
   assert.equal(res.json.music.fields.defaultVolume.min, 0);
+});
+
+test('a rotated Discord secret produces a readable error code', async () => {
+  const login = await request({ url: '/api/auth/login' });
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
+
+  mockTokenError = 'invalid_client';
+  try {
+    const res = await request({
+      url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
+      headers: { cookie: cookiesFrom(login) },
+    });
+    assert.equal(res.statusCode, 302);
+    assert.ok(
+      res.headers.location.includes('error=oauth_invalid_client'),
+      'expected a friendly error code, got ' + res.headers.location,
+    );
+    assert.ok(!res.headers.location.includes('invalid_client%20'), 'raw Discord text must not leak');
+  } finally {
+    mockTokenError = null;
+  }
+});
+
+test('a redirect that Discord does not recognise is reported separately', async () => {
+  const login = await request({ url: '/api/auth/login' });
+  const state = decodeURIComponent(cookieValue(login, 'aurex_oauth_state'));
+
+  mockTokenError = 'redirect_uri mismatch';
+  try {
+    const res = await request({
+      url: `/api/auth/callback?code=auth-code&state=${encodeURIComponent(state)}`,
+      headers: { cookie: cookiesFrom(login) },
+    });
+    assert.ok(res.headers.location.includes('error=oauth_redirect_mismatch'));
+  } finally {
+    mockTokenError = null;
+  }
 });
 
 test('invite links are built from the application ids', async () => {

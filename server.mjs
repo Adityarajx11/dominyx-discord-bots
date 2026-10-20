@@ -24,6 +24,7 @@ import {
   getUser,
   getUserGuilds,
   canManage,
+  checkClientCredentials,
   getBotGuildMap,
   getBotsInGuild,
   getGuildBotToken,
@@ -53,6 +54,17 @@ const redirect = (res, location, headers = {}) => {
   res.writeHead(302, { location, ...headers });
   res.end();
 };
+
+// Turns a raw Discord OAuth failure into a stable code the dashboard can
+// explain, instead of leaking "invalid_client" into the address bar.
+function oauthErrorCode(error) {
+  const message = String(error?.message || '').toLowerCase();
+  if (message.includes('invalid_client')) return 'oauth_invalid_client';
+  if (message.includes('redirect_uri')) return 'oauth_redirect_mismatch';
+  if (message.includes('invalid_grant')) return 'oauth_code_rejected';
+  if (message.includes('expired')) return 'oauth_code_expired';
+  return 'oauth_failed';
+}
 
 const originFor = (req) =>
   env.publicUrl || `${(req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim()}://${req.headers['x-forwarded-host'] || req.headers.host}`;
@@ -185,7 +197,12 @@ async function handleApi(req, res, url) {
     return json(res, 200, {
       ok: true,
       dashboard: true,
-      oauth: { configured: oauthReady() },
+      oauth: {
+        configured: oauthReady(),
+        // Whether Discord still accepts the client id and secret. Null when
+        // they are not configured, false when the application was rotated.
+        credentialsValid: await checkClientCredentials(),
+      },
       database: { configured: database, reachable: database ? await pingDatabase() : false },
       bots: {
         configured: botTokens().map((entry) => entry.key),
@@ -251,7 +268,7 @@ async function handleApi(req, res, url) {
       return redirect(res, '/dashboard.html');
     } catch (error) {
       console.error('[auth] callback failed:', error.message);
-      return redirect(res, `/dashboard.html?error=${encodeURIComponent(error.message)}`);
+      return redirect(res, `/dashboard.html?error=${encodeURIComponent(oauthErrorCode(error))}`);
     }
   }
 
