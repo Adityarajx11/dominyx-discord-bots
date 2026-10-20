@@ -58,6 +58,12 @@ const redirect = (res, location, headers = {}) => {
 // Turns a raw Discord OAuth failure into a stable code the dashboard can
 // explain, instead of leaking "invalid_client" into the address bar.
 function oauthErrorCode(error) {
+  const code = String(error?.code || '').toLowerCase();
+  if (code === 'invalid_client') return 'oauth_invalid_client';
+  if (code === 'redirect_uri_mismatch' || code === 'redirect_uri_invalid') return 'oauth_redirect_mismatch';
+  if (code === 'invalid_grant') return 'oauth_code_rejected';
+  if (code === 'expired_code') return 'oauth_code_expired';
+
   const message = String(error?.message || '').toLowerCase();
   if (message.includes('invalid_client')) return 'oauth_invalid_client';
   if (message.includes('redirect_uri')) return 'oauth_redirect_mismatch';
