@@ -56,6 +56,7 @@ const PUBLIC_FILES = new Set([
   '/dashboard.css',
   '/main.js',
   '/dashboard.js',
+  '/manus-routes.json',
   '/favicon.ico',
   '/robots.txt',
   '/manifest.webmanifest',
