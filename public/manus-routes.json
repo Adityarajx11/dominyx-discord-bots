@@ -1,0 +1,6 @@
+{
+  "routes": [
+    { "path": "/", "title": "Aurex Discord Bots" },
+    { "path": "/dashboard.html", "title": "Aurex Control Dashboard" }
+  ]
+}

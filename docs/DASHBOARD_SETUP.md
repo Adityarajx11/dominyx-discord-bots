@@ -1,4 +1,4 @@
-# Dominyx Dashboard setup
+# Aurex Dashboard setup
 
 The dashboard uses Discord OAuth2 for login and keeps the Discord access token in an encrypted, HttpOnly server cookie. It limits users to servers where Discord reports Administrator or Manage Server permission. Bot tokens and database credentials remain server-only and are never sent to browser JavaScript.
 
@@ -13,7 +13,7 @@ The dashboard uses Discord OAuth2 for login and keeps the Discord access token i
 | `/api/auth/callback` | GET | Exchanges the code, sets the encrypted session cookie. |
 | `/api/auth/me` | GET | Returns the signed-in user and the CSRF token. |
 | `/api/auth/logout` | GET | Clears the session cookie. |
-| `/api/guilds` | GET | Lists servers the user can manage, plus which Dominyx modules are installed. |
+| `/api/guilds` | GET | Lists servers the user can manage, plus which Aurex modules are installed. |
 | `/api/guilds/:id/settings` | GET | Loads module settings, the guild, its channels, and its roles. |
 | `/api/guilds/:id/settings` | PUT | Validates and saves one module's settings, then writes an audit entry. |
 
@@ -27,8 +27,8 @@ Set these in your host's encrypted secret manager. Never commit a `.env` file, a
 DISCORD_CLIENT_ID        Discord application (client) ID
 DISCORD_CLIENT_SECRET    Discord application client secret
 DISCORD_REDIRECT_URI     https://your-domain.example/api/auth/callback
-DOMINYX_PUBLIC_URL       https://your-domain.example
-DOMINYX_SESSION_SECRET   32+ random characters
+AUREX_PUBLIC_URL       https://your-domain.example
+AUREX_SESSION_SECRET   32+ random characters
 DATABASE_URL             Postgres connection string shared with the bots
 BOT_TOKEN                General bot token for guild/channel/role reads
 BOT_TOKEN_MUSIC          Per-module bot tokens
@@ -78,6 +78,32 @@ Every table has a `guild_id` primary key, an `enabled` boolean, and `created_at`
 
 The full field list, types, and validation ranges live in [`lib/schema.js`](../lib/schema.js). That file is the single source of truth shared by the dashboard and the bots.
 
+## Discord applications
+
+Aurex uses **seven** Discord applications:
+
+| Application | Purpose | Environment variables |
+| --- | --- | --- |
+| General Aurex app | OAuth login for the dashboard, and the general bot | `CLIENT_ID`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `BOT_TOKEN` |
+| Music | The music bot | `BOT_TOKEN_MUSIC`, `BOT_ID_MUSIC` |
+| Level | The leveling bot | `BOT_TOKEN_LEVEL`, `BOT_ID_LEVEL` |
+| Greet | The greeting bot | `BOT_TOKEN_GREET`, `BOT_ID_GREET` |
+| Ticket | The ticket bot | `BOT_TOKEN_TICKET`, `BOT_ID_TICKET` |
+| Ping | The live-alert bot | `BOT_TOKEN_PING`, `BOT_ID_PING` |
+| Security | The moderation bot | `BOT_TOKEN_GUARD`, `BOT_ID_GUARD` |
+
+The general application is the OAuth application, so its secret is what the dashboard uses to exchange the login code. Each `BOT_ID_*` must match the application that owns the matching `BOT_TOKEN_*`, otherwise the dashboard will show the wrong module in the server list.
+
+`BOT_TOKEN` is only a last-resort fallback for reading channels and roles in a server where none of the six modules is installed. It can be left unset if every server you manage runs at least one module.
+
+### Rotating the general application
+
+If the dashboard login stops working with `invalid_client`, the general application secret was reset or rotated. Open the application in the [Discord Developer Portal](https://discord.com/developers/applications), then **Settings → General → Reset Secret**, copy the new value, and set `DISCORD_CLIENT_SECRET`.
+
+If you still run a general bot, **Bot → Reset Token** gives a new `BOT_TOKEN` from the same application.
+
+Both values are server-only. Never commit them and never paste them into a public issue.
+
 ## Add to Discord links
 
 The six "Add to Discord" buttons on the landing page are built server-side from the `BOT_ID_*` application IDs and served from `/api/invites`. Application IDs are public values — they appear in every invite link — so serving them from the API is safe, and it keeps them out of the HTML.
@@ -94,9 +120,70 @@ Railway's permanent free plan does not allow custom domains. Vercel's Hobby plan
 
 1. Import the repository into Vercel.
 2. Add every environment variable under **Settings → Environment Variables**.
-3. Deploy. `vercel.json` already routes `/api/*` to the serverless entry point.
+3. Deploy. `vercel.json` builds the static assets from `public/` and routes `/api/*` to the server.
+
+The server also runs as a plain Node process for local development:
+
+```bash
+npm install
+npm start
+```
+
+It listens on `PORT` (default `3000`), binds to `0.0.0.0`, and serves the same files from `public/`.
 
 On Vercel keep `PG_POOL_MAX=1`. The serverless runtime freezes the filesystem and reuses a single connection.
+
+### Deploying
+
+```bash
+git push origin main          # Vercel deploys automatically on push
+```
+
+The production domain is `aurex-control.vercel.app`. It is a real domain on the project, so Vercel moves it to each new deployment on its own — no alias to repoint by hand. After a manual deploy, use the helper script to see the result:
+
+```powershell
+./scripts/deploy.ps1
+```
+
+It deploys and prints the health response.
+
+If you ever attach a custom domain, add it as a **domain on the project** rather than a bare alias. A custom domain becomes the project's production domain and pushes the `*.vercel.app` name into a plain alias, which is what caused the site to return `DEPLOYMENT_NOT_FOUND` once before.
+
+### Checking the deployment
+
+```bash
+curl https://aurex-control.vercel.app/api/health
+```
+
+The response reports whether the Discord application secret is still valid and whether the database is reachable:
+
+```json
+{
+  "oauth": { "configured": true, "credentialsValid": true },
+  "database": { "configured": true, "reachable": true }
+}
+```
+
+`credentialsValid: false` means the Discord application secret was rotated and `DISCORD_CLIENT_SECRET` needs the new value. `reachable: false` means `DATABASE_URL` no longer points at a live database.
+
+### Checking the live database
+
+`test/live-db-check.mjs` runs the dashboard's own database and settings code against whatever `DATABASE_URL` points at. It reports the table columns, reads every module, and writes and reads back a value:
+
+```bash
+DATABASE_URL=postgresql://... node test/live-db-check.mjs <guild-id>
+```
+
+It creates the tables and columns if they are missing, so it is also the quickest way to apply a schema change.
+
+### The OAuth callback must match the host
+
+`DISCORD_REDIRECT_URI` and `AUREX_PUBLIC_URL` have to point at the host the site is served from, and the redirect URI must be registered in the Discord Developer Portal:
+
+| Environment | `AUREX_PUBLIC_URL` | `DISCORD_REDIRECT_URI` |
+| --- | --- | --- |
+| Local | `http://localhost:3000` | `http://localhost:3000/api/auth/callback` |
+| Production | `https://your-domain.example` | `https://your-domain.example/api/auth/callback` |
 
 ### Railway
 
@@ -120,9 +207,9 @@ The server listens on `PORT` (default `3000`) and binds to `0.0.0.0`.
 ## Security model
 
 - **Secrets stay server-side.** Discord client secrets, bot tokens, and `DATABASE_URL` are never sent to the browser. The public site and the dashboard fetch only field metadata.
-- **Encrypted session.** The session cookie holds the Discord access token encrypted with AES-256-GCM using `DOMINYX_SESSION_SECRET`, with the key derived via SHA-256. The cookie is `HttpOnly`, `SameSite=None` in production, and `Secure` in production.
+- **Encrypted session.** The session cookie holds the Discord access token encrypted with AES-256-GCM using `AUREX_SESSION_SECRET`, with the key derived via SHA-256. The cookie is `HttpOnly`, `SameSite=None` in production, and `Secure` in production.
 - **Token refresh.** Discord access tokens expire. The session stores the refresh token and expiry, and the server refreshes automatically without logging the user out.
-- **CSRF protection.** Every write requires an `x-dominyx-csrf` header matching the CSRF token embedded in the encrypted session, and the `Origin` header must match the deployment origin.
+- **CSRF protection.** Every write requires an `x-aurex-csrf` header matching the CSRF token embedded in the encrypted session, and the `Origin` header must match the deployment origin.
 - **Permission re-checks.** Guild access is verified against Discord on every request using the signed-in user's own token — not a cached flag.
 - **Strict validation.** Every value is checked against the field contract before it reaches the database. Unknown fields are ignored rather than written, and out-of-range values are rejected with a per-field error.
 - **Audit trail.** Each successful save writes a row to `dashboard_audit_log` with the user, guild, module, and the exact before/after values.

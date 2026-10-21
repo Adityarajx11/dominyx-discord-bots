@@ -79,6 +79,10 @@ const botData = {
 };
 
 const authCtas = document.querySelectorAll('[data-auth-cta]');
+
+// Signed-out visitors are sent to the Aurex authentication page, which has the
+// button that starts the Discord flow. Once signed in, the same buttons open
+// the dashboard directly.
 async function syncAuthCtas() {
   try {
     const response = await fetch('/api/auth/me', { credentials: 'include' });

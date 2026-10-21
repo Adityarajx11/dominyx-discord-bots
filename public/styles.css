@@ -367,19 +367,19 @@ button { color: inherit; font: inherit; }
 .module-console .bot-readout { background: radial-gradient(circle at 78% 34%, rgba(255,255,255,.13), transparent 31%), linear-gradient(145deg, rgba(22,22,27,.6), rgba(6,6,10,.48)); }
 .readout-tags span { background: rgba(8,8,12,.22); }
 
-/* Custom Dominyx signal field — replaces the supplied template background */
+/* Custom Aurex signal field — replaces the supplied template background */
 .bg { background: #000000; overflow: hidden; }
 .bg::before, .bg::after { content: ''; position: absolute; inset: -28%; pointer-events: none; }
-.bg::before { background: radial-gradient(circle at 72% 18%, rgba(255,255,255,.19) 0, rgba(255,255,255,.07) 15%, transparent 32%), radial-gradient(circle at 12% 80%, rgba(255,255,255,.16) 0, transparent 30%), linear-gradient(118deg, transparent 0%, rgba(255,255,255,.015) 43%, rgba(255,255,255,.07) 58%, transparent 76%); filter: blur(18px); animation: dominyxFieldDrift 18s ease-in-out infinite alternate; }
-.bg::after { background: conic-gradient(from 12deg at 71% 36%, transparent 0 13%, rgba(255,255,255,.18) 15%, transparent 20% 57%, rgba(255,255,255,.1) 59%, transparent 66%), radial-gradient(ellipse at 72% 37%, transparent 0 17%, rgba(255,255,255,.12) 17.2%, transparent 17.8% 24%, rgba(255,255,255,.08) 24.2%, transparent 24.8% 34%, rgba(255,255,255,.055) 34.2%, transparent 35%); mask-image: radial-gradient(ellipse at 70% 37%, black 0%, transparent 66%); opacity: .75; transform-origin: 71% 37%; animation: dominyxOrbit 28s linear infinite; }
+.bg::before { background: radial-gradient(circle at 72% 18%, rgba(255,255,255,.19) 0, rgba(255,255,255,.07) 15%, transparent 32%), radial-gradient(circle at 12% 80%, rgba(255,255,255,.16) 0, transparent 30%), linear-gradient(118deg, transparent 0%, rgba(255,255,255,.015) 43%, rgba(255,255,255,.07) 58%, transparent 76%); filter: blur(18px); animation: aurexFieldDrift 18s ease-in-out infinite alternate; }
+.bg::after { background: conic-gradient(from 12deg at 71% 36%, transparent 0 13%, rgba(255,255,255,.18) 15%, transparent 20% 57%, rgba(255,255,255,.1) 59%, transparent 66%), radial-gradient(ellipse at 72% 37%, transparent 0 17%, rgba(255,255,255,.12) 17.2%, transparent 17.8% 24%, rgba(255,255,255,.08) 24.2%, transparent 24.8% 34%, rgba(255,255,255,.055) 34.2%, transparent 35%); mask-image: radial-gradient(ellipse at 70% 37%, black 0%, transparent 66%); opacity: .75; transform-origin: 71% 37%; animation: aurexOrbit 28s linear infinite; }
 .bg-video { display: none; }
 .bg-veil { background: radial-gradient(circle at 50% 42%, rgba(0,0,0,.05) 0%, rgba(0,0,0,.17) 58%, rgba(0,0,0,.52) 100%), linear-gradient(180deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,.04) 38%, rgba(0,0,0,.68) 100%); }
 .bg-grid { opacity: .11; background-image: linear-gradient(rgba(255,255,255,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 110px 110px; mask-image: radial-gradient(ellipse at 72% 38%, black 0%, transparent 64%); }
-@keyframes dominyxFieldDrift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(4%, 3%, 0) scale(1.08); } }
-@keyframes dominyxOrbit { from { transform: rotate(0deg) scale(1); } to { transform: rotate(360deg) scale(1.06); } }
+@keyframes aurexFieldDrift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(4%, 3%, 0) scale(1.08); } }
+@keyframes aurexOrbit { from { transform: rotate(0deg) scale(1); } to { transform: rotate(360deg) scale(1.06); } }
 @media (prefers-reduced-motion: reduce) { .bg::before, .bg::after { animation: none; } }
 
-/* Restored template motion, recolored for Dominyx */
+/* Restored template motion, recolored for Aurex */
 .bg-video { display: block; opacity: .82; filter: grayscale(.18) brightness(.78) contrast(1.08); mix-blend-mode: screen; }
 .bg::before, .bg::after { display: none; }
 .bg-veil { background: radial-gradient(circle at 50% 42%, rgba(0,0,0,.14) 0%, rgba(0,0,0,.43) 62%, rgba(0,0,0,.78) 100%), linear-gradient(180deg, rgba(0,0,0,.3) 0%, rgba(0,0,0,.14) 38%, rgba(0,0,0,.62) 100%); }

@@ -1,6 +1,6 @@
-# Dominyx Discord Bots
+# Aurex Discord Bots
 
-Dominyx is a six-bot Discord platform for Music, Security, Greet, Ping, Ticket, and Level. The repository contains the public landing page and the Discord-authenticated dashboard that manages all six modules from one console.
+Aurex is a six-bot Discord platform for Music, Security, Greet, Ping, Ticket, and Level. The repository contains the public landing page and the Discord-authenticated dashboard that manages all six modules from one console.
 
 ## Quick start
 
@@ -19,7 +19,7 @@ Runs the backend test suite against an in-memory Postgres with a mocked Discord 
 
 ## Main routes
 
-- `/` — public Dominyx landing page
+- `/` — public Aurex landing page
 - `/dashboard.html` — Discord login and bot-management dashboard
 - `/api/health` — reports which subsystems are configured
 - `/api/modules` — the field contract for the six modules
@@ -39,7 +39,7 @@ The dashboard talks to Discord and Postgres directly from the server. There is n
 
 ## Project map
 
-The runtime files stay at the root so Node, Vercel, and Webdev Preview can serve them without extra path configuration. Backend modules live in `lib/`, and are never exposed over HTTP.
+The backend runs from the root so Node, Vercel, and Webdev Preview can serve it without extra path configuration. Static assets live in `public/`, which Vercel serves from its CDN. Backend modules live in `lib/` and are never exposed over HTTP.
 
 - [`lib/env.js`](../lib/env.js) — centralised environment access.
 - [`lib/schema.js`](../lib/schema.js) — the module settings contract, shared by the dashboard and the bots.
@@ -51,9 +51,11 @@ The runtime files stay at the root so Node, Vercel, and Webdev Preview can serve
 - [`lib/invites.js`](../lib/invites.js) — "Add to Discord" links from the application IDs.
 - [`server.mjs`](../server.mjs) — HTTP server and Vercel handler.
 - [`api/index.mjs`](../api/index.mjs) — Vercel adapter for the server entry point.
+- [`public/`](../public) — the landing page, the dashboard shell, and their stylesheets and scripts.
 
 Product and setup documentation is grouped in [`docs/`](./docs):
 
+- [`docs/SETUP_GUIDE.md`](./docs/SETUP_GUIDE.md) — **full setup guide**, from creating the Discord applications to every command and a full music session.
 - [`docs/DASHBOARD_SETUP.md`](./docs/DASHBOARD_SETUP.md) — OAuth, Postgres, bot tokens, hosting, and hardening.
 - [`docs/MASTER_SESSION_SUMMARY.md`](./docs/MASTER_SESSION_SUMMARY.md) — complete session overview, feature inventory, and validation.
 

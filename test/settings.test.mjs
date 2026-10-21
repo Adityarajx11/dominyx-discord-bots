@@ -32,11 +32,26 @@ test('schema statements cover every module table and the audit log', () => {
   assert.ok(statements.includes('dashboard_audit_log'));
 });
 
-test('every module exposes an enabled toggle', () => {
+test('no module exposes an on/off toggle', () => {
   for (const key of MODULE_KEYS) {
-    assert.equal(MODULES[key].fields.enabled.type, 'boolean', key);
-    assert.equal(MODULES[key].fields.enabled.column, 'enabled', key);
+    assert.equal(MODULES[key].fields.enabled, undefined, key + ' must not have an enabled field');
   }
+});
+
+// The bots read the same tables. This pins the contract on the dashboard side
+// so it cannot drift away from packages/core/lib/settings.js in the bot repo.
+test('the dashboard and the bots agree on the table names', () => {
+  assert.deepEqual(
+    Object.fromEntries(Object.values(MODULES).map((module) => [module.key, module.table])),
+    {
+      music: 'music_settings',
+      level: 'level_config',
+      greet: 'greet_settings',
+      ticket: 'ticket_config',
+      ping: 'ping_settings',
+      guard: 'guard_settings',
+    },
+  );
 });
 
 test('reads return defaults before anything is written', async () => {
@@ -45,7 +60,6 @@ test('reads return defaults before anything is written', async () => {
     assert.equal(music.defaultVolume, 100);
     assert.equal(music.stay247, false);
     assert.equal(music.prefix, '!');
-    assert.equal(music.enabled, true);
     assert.equal(music.djRoleId, null);
   });
 });

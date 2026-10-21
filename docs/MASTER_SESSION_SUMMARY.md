@@ -1,18 +1,18 @@
-# Dominyx master session summary
+# Aurex master session summary
 
-**Project:** Dominyx Discord Bots
+**Project:** Aurex Discord Bots
 
-**Repository:** https://github.com/adixlucifer0011/dominyx-discord-bots
+**Repository:** https://github.com/adixlucifer0011/aurex-discord-bots
 
 **Current checkpoint:** the latest clean `main` commit in GitHub; this summary is kept in sync with the packaged tree
 
-**Working directory:** `/home/ubuntu/dominyx`
+**Working directory:** `/home/ubuntu/aurex`
 
 **Date:** 2026-10-19
 
 ## Product direction
 
-Dominyx is a Discord bot network and control surface for six focused bots: Music, Security, Greet, Ping, Ticket, and Level. The public site is a premium neutral black, white, and gray landing page with the restored moving motion background, recolored for Dominyx, dot-matrix display typography, Inter interface typography, a compact pill navigation, responsive mobile navigation, and a scrollable product story.
+Aurex is a Discord bot network and control surface for six focused bots: Music, Security, Greet, Ping, Ticket, and Level. The public site is a premium neutral black, white, and gray landing page with the restored moving motion background, recolored for Aurex, dot-matrix display typography, Inter interface typography, a compact pill navigation, responsive mobile navigation, and a scrollable product story.
 
 The dashboard is a separate authenticated control surface. It is intentionally more operational than the marketing site, but it uses the same black, white, gray, glass, orbital, and dot-matrix visual language.
 
@@ -20,14 +20,14 @@ The dashboard is a separate authenticated control surface. It is intentionally m
 
 - Full-screen hero with the original moving motion background restored and recolored into a neutral black, white, and gray treatment, with a dark veil and red grid texture for readability.
 - Visible recolored motion background with layered black veil and red grid texture for legibility.
-- Dominyx circular wordmark and centered desktop navigation.
+- Aurex circular wordmark and centered desktop navigation.
 - Responsive mobile hamburger navigation with overlay sheet.
 - Discord-focused hero copy and login CTA.
 - Dedicated module slide with six selectable bot rows and a detail panel.
 - Dynamic module copy, tags, metrics, and Greet quote formatting.
 - Full bot-suite cards for Music, Security, Greet, Ping, Ticket, and Level.
 - Per-bot Add to Discord placeholder links controlled from one map in `main.js`.
-- Why Dominyx principles section.
+- Why Aurex principles section.
 - Connection CTA and footer.
 - Smooth anchor navigation.
 - Reduced-motion handling, including pausing the video and avoiding animated counters where appropriate.
@@ -43,7 +43,7 @@ The dashboard is a separate authenticated control surface. It is intentionally m
 - Server connection status and logged-in user state.
 - Settings form renderer with safe HTML escaping for untrusted server/settings labels.
 - Server-side save proxy boundary for Railway or direct bot/Postgres integration.
-- Mobile-responsive dashboard styling using the Dominyx visual system.
+- Mobile-responsive dashboard styling using the Aurex visual system.
 - Friendly setup messaging when protected OAuth configuration is missing.
 
 ## Exact bot-management scope
@@ -76,8 +76,8 @@ The dashboard model covers mod-log channel, spam/link/caps/mention/emoji/bad-wor
 
 The supplied repository and live site were inspected as references:
 
-- https://github.com/Adityarajx11/Dominyx-Network
-- https://dominyx.vercel.app
+- https://github.com/Adityarajx11/Aurex-Network
+- https://aurex.vercel.app
 
 Only the relevant command-defense and dashboard-setting concepts were used. The old branding, page copy, unrelated UI, and entire old repository were not copied.
 
@@ -94,7 +94,7 @@ The direct Discord/Postgres adapter is now implemented. The dashboard reads and 
 ## Hardening added with the direct adapter
 
 - Encrypted AES-256-GCM session cookie holding the Discord access and refresh tokens, with automatic refresh before expiry.
-- CSRF protection: a per-session token returned by `/api/auth/me` and required in the `x-dominyx-csrf` header on every write, combined with an `Origin` check against the deployment origin.
+- CSRF protection: a per-session token returned by `/api/auth/me` and required in the `x-aurex-csrf` header on every write, combined with an `Origin` check against the deployment origin.
 - Permission re-checks on every request using the signed-in user's own Discord token rather than a cached flag.
 - Strict per-field validation with ranges, enums, and length limits; unknown fields are ignored rather than written.
 - Rate limiting on login and settings writes.
@@ -103,7 +103,7 @@ The direct Discord/Postgres adapter is now implemented. The dashboard reads and 
 
 ## Project files
 
-- `index.html` — public Dominyx landing page.
+- `index.html` — public Aurex landing page.
 - `styles.css` — public design system, video treatment, responsive layouts, modules console, suite cards, and animations.
 - `main.js` — public module interaction, OAuth placeholder map, smooth scroll, auth CTA state, video start behavior, and reduced-motion handling.
 - `dashboard.html` — authenticated dashboard shell.
@@ -143,7 +143,7 @@ The direct Discord/Postgres adapter is now implemented. The dashboard reads and 
 
 ## Commit history highlights
 
-- `943d825` — expanded the Dominyx full bot-suite site.
+- `943d825` — expanded the Aurex full bot-suite site.
 - `98d4152` — moved the module console into a dedicated slide.
 - `abbeb60` — added Greet quote formatting.
 - `4d86c32` — changed the accent palette to electric lavender.

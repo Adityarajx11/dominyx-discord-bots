@@ -1,3 +1,7 @@
+// Loads a local .env for development. On Vercel and Railway the platform
+// injects the environment directly, and no .env file exists.
+import 'dotenv/config';
+
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,8 +24,10 @@ import {
   getUser,
   getUserGuilds,
   canManage,
+  checkClientCredentials,
   getBotGuildMap,
   getBotsInGuild,
+  getInstalledModules,
   getGuildBotToken,
   getGuild,
   getGuildChannels,
@@ -36,32 +42,6 @@ import { rateLimit, originAllowed, csrfValid, audit } from './lib/security.js';
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const MAX_BODY_BYTES = 256 * 1024;
 
-const MIME = {
-  '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.webp': 'image/webp',
-  '.ico': 'image/x-icon',
-};
-
-// Only these paths are reachable over HTTP. Everything else (lib/, .env, …) stays private.
-const PUBLIC_FILES = new Set([
-  '/index.html',
-  '/dashboard.html',
-  '/styles.css',
-  '/dashboard.css',
-  '/main.js',
-  '/dashboard.js',
-  '/manus-routes.json',
-  '/favicon.ico',
-  '/robots.txt',
-  '/manifest.webmanifest',
-]);
-
 const json = (res, status, payload, headers = {}) => {
   res.writeHead(status, {
     'content-type': 'application/json; charset=utf-8',
@@ -75,6 +55,23 @@ const redirect = (res, location, headers = {}) => {
   res.writeHead(302, { location, ...headers });
   res.end();
 };
+
+// Turns a raw Discord OAuth failure into a stable code the dashboard can
+// explain, instead of leaking "invalid_client" into the address bar.
+function oauthErrorCode(error) {
+  const code = String(error?.code || '').toLowerCase();
+  if (code === 'invalid_client') return 'oauth_invalid_client';
+  if (code === 'redirect_uri_mismatch' || code === 'redirect_uri_invalid') return 'oauth_redirect_mismatch';
+  if (code === 'invalid_grant') return 'oauth_code_rejected';
+  if (code === 'expired_code') return 'oauth_code_expired';
+
+  const message = String(error?.message || '').toLowerCase();
+  if (message.includes('invalid_client')) return 'oauth_invalid_client';
+  if (message.includes('redirect_uri')) return 'oauth_redirect_mismatch';
+  if (message.includes('invalid_grant')) return 'oauth_code_rejected';
+  if (message.includes('expired')) return 'oauth_code_expired';
+  return 'oauth_failed';
+}
 
 const originFor = (req) =>
   env.publicUrl || `${(req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim()}://${req.headers['x-forwarded-host'] || req.headers.host}`;
@@ -159,14 +156,32 @@ async function requireSession(req, res) {
   return session;
 }
 
+// A Discord access token can expire before the session does. When that happens
+// the session is renewed once and the request is retried, so an expired token
+// never turns into an empty server list.
+async function withFreshToken(req, res, session, call) {
+  try {
+    return await call(session.accessToken);
+  } catch (error) {
+    if (error.status !== 401 || !session.refreshToken) throw error;
+    console.log('[auth] access token expired, refreshing');
+    const tokens = await refreshAccessToken(session.refreshToken);
+    session.accessToken = tokens.access_token;
+    session.refreshToken = tokens.refresh_token || session.refreshToken;
+    session.expiresAt = Date.now() + (tokens.expires_in || 3600) * 1000;
+    appendCookie(res, `${SESSION_COOKIE}=${encodeURIComponent(encryptSession(session))}; ${cookieFlags(req)}`);
+    return await call(session.accessToken);
+  }
+}
+
 // Confirms the signed-in user can administer the requested guild.
 async function requireGuildAccess(req, res, guildId) {
   const session = await requireSession(req, res);
   if (!session) return null;
 
-  const guilds = await getUserGuilds(session.accessToken);
+  const guilds = await withFreshToken(req, res, session, (token) => getUserGuilds(token));
   const guild = guilds.find((item) => item.id === guildId);
-  if (!guild || !canManage(guild.permissions)) {
+  if (!guild || !canManage(guild)) {
     json(res, 403, { error: 'guild_forbidden', message: 'You do not have permission to manage this Discord server.' });
     return null;
   }
@@ -204,14 +219,23 @@ async function handleApi(req, res, url) {
 
   if (pathname === '/api/health') {
     const database = databaseReady();
+    const botMap = await getBotGuildMap({ force: true });
+
     return json(res, 200, {
       ok: true,
       dashboard: true,
-      oauth: { configured: oauthReady() },
+      oauth: {
+        configured: oauthReady(),
+        // Whether Discord still accepts the client id and secret. Null when
+        // they are not configured, false when the application was rotated.
+        credentialsValid: await checkClientCredentials(),
+      },
       database: { configured: database, reachable: database ? await pingDatabase() : false },
       bots: {
         configured: botTokens().map((entry) => entry.key),
         applicationIds: MODULE_KEYS.filter((key) => botIdFor(key)),
+        // How many servers each bot can see. A count only, no names or ids.
+        guildCounts: Object.fromEntries(Object.entries(botMap).map(([key, guilds]) => [key, guilds.size])),
       },
       modules: MODULE_KEYS,
     });
@@ -238,6 +262,10 @@ async function handleApi(req, res, url) {
       redirect_uri: redirectUriFor(req),
       response_type: 'code',
       scope: 'identify guilds',
+      // Discord only issues a refresh token when offline access is asked for.
+      // Without it the session can never be renewed and it silently expires.
+      access_type: 'offline',
+      prompt: 'consent',
       state,
     });
     return redirect(res, `https://discord.com/oauth2/authorize?${params}`);
@@ -273,7 +301,7 @@ async function handleApi(req, res, url) {
       return redirect(res, '/dashboard.html');
     } catch (error) {
       console.error('[auth] callback failed:', error.message);
-      return redirect(res, `/dashboard.html?error=${encodeURIComponent(error.message)}`);
+      return redirect(res, `/dashboard.html?error=${encodeURIComponent(oauthErrorCode(error))}`);
     }
   }
 
@@ -292,19 +320,58 @@ async function handleApi(req, res, url) {
     const session = await requireSession(req, res);
     if (!session) return;
 
+    let guilds;
     try {
-      const [guilds, botMap] = await Promise.all([getUserGuilds(session.accessToken), getBotGuildMap()]);
+      guilds = await withFreshToken(req, res, session, (token) => getUserGuilds(token));
+    } catch (error) {
+      if (error.code === 'guilds_scope_missing') {
+        return json(res, 403, {
+          error: 'guilds_scope_missing',
+          message:
+            'Discord did not share your server list. Sign out and sign in again, and allow access to your servers when Discord asks.',
+        });
+      }
+      if (error.status === 401) {
+        // The session is no longer usable.
+        clearCookie(res, req, SESSION_COOKIE);
+        return json(res, 401, {
+          error: 'session_expired',
+          message: 'Your Discord session expired. Sign in again to continue.',
+        });
+      }
+      return json(res, 502, { error: 'discord_guilds_failed', message: error.message });
+    }
+
+    try {
+      const botMap = await getBotGuildMap();
+
+      // Discord only returns the permissions field when the guilds scope was
+      // granted. Without it the server list comes back with no permission
+      // information at all, which is reported so the dashboard can explain it.
+      const scopeGranted = guilds.length === 0 || guilds.some((guild) => guild.permissions !== undefined);
+
       const manageable = guilds
-        .filter((guild) => canManage(guild.permissions))
+        .filter((guild) => canManage(guild))
         .map((guild) => ({
           id: guild.id,
           name: guild.name,
           icon: guild.icon,
           owner: guild.owner,
           permissions: guild.permissions,
-          bots: getBotsInGuild(guild.id, botMap),
+          bots: getInstalledModules(guild.id, botMap),
         }));
-      return json(res, 200, manageable);
+
+      console.log(
+        `[guilds] user ${session.user.id}: ${guilds.length} guild(s) from Discord, ` +
+          `${manageable.length} manageable, scope granted: ${scopeGranted}`,
+      );
+
+      return json(res, 200, {
+        servers: manageable,
+        total: guilds.length,
+        manageable: manageable.length,
+        scopeGranted,
+      });
     } catch (error) {
       return json(res, 502, { error: 'discord_guilds_failed', message: error.message });
     }
@@ -347,7 +414,7 @@ async function handleApi(req, res, url) {
 
       return json(res, 200, {
         guild: guild ? { id: guild.id, name: guild.name, icon: guild.icon } : { id: guildId },
-        bots: getBotsInGuild(guildId, botMap),
+        bots: getInstalledModules(guildId, botMap),
         channels: channels.map((channel) => ({ id: channel.id, name: channel.name, type: channel.type })),
         roles: roles
           .filter((role) => role.id !== guildId)
@@ -426,21 +493,39 @@ async function handleApi(req, res, url) {
   return json(res, 404, { error: 'not_found' });
 }
 
+const PUBLIC_DIR = path.join(ROOT, 'public');
+
+const ASSET_TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+};
+
+// On Vercel the CDN serves public/ before the function is reached. This
+// handler exists for local development and for any host that routes every
+// request through the function.
 function serveStatic(req, res, url) {
   let requested = url.pathname === '/' ? '/index.html' : url.pathname === '/dashboard' ? '/dashboard.html' : url.pathname;
 
-  if (!PUBLIC_FILES.has(requested)) return json(res, 404, { error: 'not_found' });
+  // Only these paths are reachable. Everything else, including the .env file
+  // and the lib/ directory, stays private.
+  const allowed = new Set(['/index.html', '/dashboard.html', '/styles.css', '/dashboard.css', '/main.js', '/dashboard.js', '/manus-routes.json']);
+  if (!allowed.has(requested)) return json(res, 404, { error: 'not_found' });
 
-  const filePath = path.join(ROOT, requested.slice(1));
-  fs.stat(filePath, (error, stats) => {
-    if (error || !stats.isFile()) return json(res, 404, { error: 'not_found' });
-    res.writeHead(200, {
-      'content-type': MIME[path.extname(filePath)] || 'application/octet-stream',
-      'cache-control': path.extname(filePath) === '.html' ? 'no-cache' : 'public, max-age=300',
-      'x-content-type-options': 'nosniff',
-    });
-    fs.createReadStream(filePath).pipe(res);
+  let body;
+  try {
+    body = fs.readFileSync(path.join(PUBLIC_DIR, requested.slice(1)));
+  } catch {
+    return json(res, 404, { error: 'not_found' });
+  }
+
+  const extension = path.extname(requested);
+  res.writeHead(200, {
+    'content-type': ASSET_TYPES[extension] || 'application/octet-stream',
+    'cache-control': extension === '.html' ? 'no-cache' : 'public, max-age=300',
+    'x-content-type-options': 'nosniff',
   });
+  res.end(body);
 }
 
 export async function handler(req, res) {
@@ -461,8 +546,12 @@ export async function handler(req, res) {
   }
 }
 
+// Vercel runs a root-level server file as a custom server entry and requires
+// a default export. The same function is reused by the api/ adapter.
+export default handler;
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   http
     .createServer((req, res) => handler(req, res))
-    .listen(env.port, '0.0.0.0', () => console.log(`Dominyx dashboard listening on ${env.port}`));
+    .listen(env.port, '0.0.0.0', () => console.log(`Aurex dashboard listening on ${env.port}`));
 }

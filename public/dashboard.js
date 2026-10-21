@@ -111,10 +111,9 @@ const moduleUi = {
   },
 };
 
-const state = { user: null, guilds: [], guildId: null, selectedBot: 'music', settings: {}, modules: {}, channels: [], roles: [], csrf: null };
+const state = { user: null, guilds: [], guildId: null, selectedBot: 'music', settings: {}, modules: {}, channels: [], roles: [], csrf: null, invites: {}, bots: null };
 
 const $ = (selector) => document.querySelector(selector);
-const authGate = $('#auth-gate');
 const escapeHtml = (value) =>
   String(value ?? '').replace(
     /[&<>"']/g,
@@ -155,19 +154,93 @@ const ERROR_MESSAGES = {
   invalid_oauth_state: 'The login session expired. Please try signing in again.',
   not_authenticated: 'Your session expired. Please sign in again.',
   guild_forbidden: 'You do not have permission to manage this Discord server.',
+  guilds_scope_missing:
+    'Discord did not share your server list. Sign out and sign in again, and allow access to your servers when Discord asks.',
+  session_expired: 'Your Discord session expired. Sign in again to continue.',
   database_not_configured: 'DATABASE_URL is not set on the server, so module settings cannot be loaded.',
   origin_rejected: 'The request origin was rejected. Reload the dashboard and try again.',
   csrf_failed: 'Security token mismatch. Reload the dashboard and try again.',
   rate_limited: 'Too many requests. Wait a moment and try again.',
+  oauth_invalid_client:
+    'Discord rejected the sign-in because the application secret no longer matches. The Discord application secret was rotated and needs to be updated on the server.',
+  oauth_redirect_mismatch:
+    'Discord rejected the sign-in because this address is not registered as a redirect. Add it to the Discord application under OAuth2 → Redirects.',
+  oauth_code_rejected: 'That sign-in link was already used. Please start the sign-in again.',
+  oauth_code_expired: 'That sign-in link expired. Please start the sign-in again.',
+  oauth_failed: 'Discord sign-in failed. Please try again, and tell the owner if it keeps happening.',
+};
+
+// Each error gets a short explanation and, where the fix is on the server,
+// the exact thing that has to change.
+const ERROR_DETAILS = {
+  oauth_invalid_client: {
+    title: 'Discord rejected the sign-in',
+    body:
+      'Your Discord login worked, but the server could not prove it owns the Discord application, so the sign-in was refused.',
+    foot:
+      'The application secret was rotated on Discord. Reset it in the Discord Developer Portal, then update <code>DISCORD_CLIENT_SECRET</code> on the server.',
+  },
+  oauth_redirect_mismatch: {
+    title: 'This address is not a registered redirect',
+    body:
+      'Discord refused the sign-in because the address it sent the user back to is not listed for the application.',
+    foot: 'Add <code>' + window.location.origin + '/api/auth/callback</code> under Discord Developer Portal → OAuth2 → Redirects.',
+  },
+  oauth_code_rejected: {
+    title: 'That sign-in link was already used',
+    body: 'Each Discord authorisation code works only once. The link was opened twice, so the second attempt was rejected.',
+    foot: 'Use the Login with Discord button above to start a fresh sign-in.',
+  },
+  oauth_code_expired: {
+    title: 'That sign-in link expired',
+    body: 'Discord authorisation codes are short lived. This one expired before it was used.',
+    foot: 'Use the Login with Discord button above to start a fresh sign-in.',
+  },
+  oauth_failed: {
+    title: 'Discord sign-in failed',
+    body: 'Something went wrong while completing the sign-in. It usually clears with a second attempt.',
+    foot: 'Use the Login with Discord button above to try again.',
+  },
+  access_denied: {
+    title: 'Sign-in was cancelled',
+    body: 'The Discord authorisation was declined, so no session was created.',
+    foot: 'Use the Login with Discord button above whenever you are ready.',
+  },
+  invalid_oauth_state: {
+    title: 'That sign-in attempt expired',
+    body: 'The sign-in was started in a different browser or tab, so the security token did not match.',
+    foot: 'Use the Login with Discord button above to start a fresh sign-in.',
+  },
+  oauth_not_configured: {
+    title: 'Sign-in is not configured yet',
+    body: 'The server is missing the Discord application values, so it cannot start a sign-in.',
+    foot: 'Set <code>DISCORD_CLIENT_ID</code>, <code>DISCORD_CLIENT_SECRET</code> and <code>AUREX_SESSION_SECRET</code> on the server.',
+  },
 };
 
 function showError(message, code) {
-  const friendly = ERROR_MESSAGES[code] || ERROR_MESSAGES[message] || message;
+  const key = code || message;
+  const friendly = ERROR_MESSAGES[key] || ERROR_MESSAGES[message] || message;
+
   const note = $('#auth-note');
   if (note) {
     note.textContent = friendly;
     note.classList.add('is-error');
   }
+
+  const alert = $('#auth-alert');
+  if (alert) {
+    const details = ERROR_DETAILS[key];
+    if (details) {
+      $('#auth-alert-title').textContent = details.title;
+      $('#auth-alert-body').textContent = details.body;
+      $('#auth-alert-foot').innerHTML = details.foot;
+      alert.hidden = false;
+    } else {
+      alert.hidden = true;
+    }
+  }
+
   return friendly;
 }
 
@@ -197,7 +270,7 @@ function botBadges(bots) {
 function renderGuilds() {
   const list = $('#server-list');
   if (!state.guilds.length) {
-    list.innerHTML = '<p class="empty-note">No manageable servers found.</p>';
+    list.innerHTML = `<p class="empty-note">${escapeHtml(state.guildsMessage || 'No servers found where you have Administrator or Manage Server permission.')}</p>`;
     return;
   }
   list.innerHTML = state.guilds
@@ -214,13 +287,66 @@ function renderGuilds() {
   );
 }
 
+// A module that is not installed in the selected server cannot read its
+// settings, so the panel asks for the bot instead of showing an empty form.
+function moduleInstalled(module) {
+  if (!state.bots) return true;
+  return Boolean(state.bots[module]);
+}
+
+function renderModuleState() {
+  const module = moduleUi[state.selectedBot];
+  const badge = $('#module-state');
+  const missing = $('#module-missing');
+  const form = $('#settings-form');
+  const save = $('#save-button');
+
+  if (moduleInstalled(state.selectedBot)) {
+    if (badge) {
+      badge.textContent = 'Installed';
+      badge.className = 'module-state is-installed';
+    }
+    if (missing) missing.hidden = true;
+    if (form) form.hidden = false;
+    if (save) save.hidden = false;
+    return;
+  }
+
+  if (badge) {
+    badge.textContent = 'Not installed';
+    badge.className = 'module-state is-missing';
+  }
+
+  if (missing) {
+    $('#module-missing-title').textContent = `${module.name} is not in this server`;
+    $('#module-missing-body').textContent =
+      `Add the ${module.name} bot to this server to configure it. The bot reads these settings, so they cannot be applied until it is here.`;
+    const link = $('#module-missing-link');
+    const invite = state.invites[state.selectedBot] || state.invites[module.alias];
+    if (link) {
+      if (invite) {
+        link.href = invite;
+        link.hidden = false;
+        link.innerHTML = `Add ${escapeHtml(module.name)} to this server <i class="fa-solid fa-arrow-up-right-from-square"></i>`;
+      } else {
+        link.hidden = true;
+      }
+    }
+    missing.hidden = false;
+  }
+
+  if (form) form.hidden = true;
+  if (save) save.hidden = true;
+}
+
 function renderBotSwitcher() {
   $('#bot-switcher').innerHTML = Object.entries(moduleUi)
-    .map(
-      ([key, module]) => `<button class="bot-switch ${key === state.selectedBot ? 'is-selected' : ''}" type="button" data-bot="${key}">
-        <i class="fa-solid ${module.icon}"></i><span>${escapeHtml(module.name)}</span>
-      </button>`,
-    )
+    .map(([key, module]) => {
+      const installed = moduleInstalled(key);
+      return `<button class="bot-switch ${key === state.selectedBot ? 'is-selected' : ''} ${installed ? '' : 'is-not-installed'}" type="button" data-bot="${key}" title="${escapeHtml(module.name)}${installed ? '' : ' — not installed in this server'}">
+        <i class="fa-solid ${module.icon}"></i><span>${escapeHtml(module.name)}</span>${installed ? '' : '<i class="fa-solid fa-plus bot-switch-add"></i>'}
+      </button>`;
+    })
     .join('');
   $('#bot-switcher')
     .querySelectorAll('[data-bot]')
@@ -257,6 +383,13 @@ function channelOptions(types) {
 
 function selectMarkup(name, options, value, placeholder) {
   const current = value === null || value === undefined ? '' : String(value);
+
+  if (!options.length) {
+    // No channels or roles could be read, which means no module is in the
+    // server to read them with.
+    return `<div class="field"><label for="setting-${escapeHtml(name)}">${escapeHtml(placeholder)}</label><select id="setting-${escapeHtml(name)}" name="${escapeHtml(name)}" disabled><option value="">Unavailable — no module installed</option></select></div>`;
+  }
+
   const body = options
     .map((option) => `<option value="${escapeHtml(option.value)}" ${option.value === current ? 'selected' : ''}>${escapeHtml(option.label)}</option>`)
     .join('');
@@ -312,6 +445,13 @@ function fieldMarkup(field, values) {
   return `<div class="field field-has-suffix"><label for="${id}">${label}</label><div class="field-control">${suffix}<input id="${id}" name="${field.key}" type="${type}" value="${escapeHtml(value ?? '')}" placeholder="${escapeHtml(field.placeholder || '')}"${bounds} /></div></div>`;
 }
 
+// The Enabled toggle sits outside the form, so it needs to announce that
+// there is something to save, the same way the other fields do.
+function markUnsaved() {
+  const status = $('#save-status');
+  if (status && !status.dataset.saved) status.textContent = 'Unsaved changes.';
+}
+
 function renderSettings() {
   const module = moduleUi[state.selectedBot];
   const moduleState = state.settings[state.selectedBot] || {};
@@ -319,8 +459,13 @@ function renderSettings() {
   $('#settings-kicker').textContent = `MODULE / ${module.name.toUpperCase()}`;
   $('#settings-title').textContent = module.name;
   $('#settings-description').textContent = module.description;
-  $('#bot-enabled').checked = moduleState.enabled !== false;
   $('#settings-form').innerHTML = module.fields.map((field) => fieldMarkup(field, moduleState)).join('');
+
+  $('#settings-form').querySelectorAll('input, select, textarea').forEach((control) => {
+    control.addEventListener('change', markUnsaved);
+  });
+
+  renderModuleState();
 }
 
 // ------------------------------------------------------------------ actions
@@ -339,16 +484,21 @@ async function selectGuild(guildId) {
     state.settings = data.settings || {};
     state.channels = data.channels || [];
     state.roles = data.roles || [];
+    state.bots = data.bots || null;
+
+    const moduleCount = Object.keys(data.bots || {}).length;
     $('#server-subtitle').textContent = data.guild?.name
-      ? `Managing ${data.guild.name} — ${Object.keys(data.bots || {}).length} Dominyx module(s) active.`
+      ? `Managing ${data.guild.name} — ${moduleCount} Aurex module(s) installed.`
       : 'Configure modules and save changes.';
-    $('#server-status-text').textContent = 'CONNECTED';
+    $('#server-status-text').textContent = moduleCount ? 'CONNECTED' : 'NO MODULE';
+    renderBotSwitcher();
     renderSettings();
     $('#save-status').textContent = 'Changes are local until you save.';
   } catch (error) {
     state.settings = {};
     state.channels = [];
     state.roles = [];
+    state.bots = null;
     $('#server-subtitle').textContent = showError(error.message, error.code);
     $('#server-status-text').textContent = 'OFFLINE';
     renderSettings();
@@ -393,7 +543,6 @@ async function saveSettings(event) {
     if (!meta) continue;
     values[field.key] = serializeValue(meta, form.get(field.key));
   }
-  values.enabled = $('#bot-enabled').checked;
 
   $('#save-status').textContent = 'Saving…';
   $('#save-button').disabled = true;
@@ -401,13 +550,16 @@ async function saveSettings(event) {
   try {
     const result = await api(`/api/guilds/${encodeURIComponent(state.guildId)}/settings`, {
       method: 'PUT',
-      headers: state.csrf ? { 'x-dominyx-csrf': state.csrf } : {},
+      headers: state.csrf ? { 'x-aurex-csrf': state.csrf } : {},
       body: JSON.stringify({ module: state.selectedBot, values }),
     });
     state.settings[state.selectedBot] = result.settings || {};
     const changed = (result.changes || []).length;
     renderSettings();
-    $('#save-status').textContent = changed ? `Saved ${changed} change(s) just now.` : 'Saved — nothing changed.';
+    const status = $('#save-status');
+    status.dataset.saved = '1';
+    status.textContent = changed ? `Saved ${changed} change(s) just now.` : 'Saved — nothing changed.';
+    delete status.dataset.saved;
   } catch (error) {
     $('#save-status').textContent = showError(error.message, error.code);
   } finally {
@@ -419,31 +571,79 @@ async function init() {
   const error = new URLSearchParams(location.search).get('error');
   if (error) showError(error);
 
+  const loading = $('#auth-loading');
+  const gate = $('#auth-gate');
+  const shell = $('#dashboard-shell');
+
+  const reveal = (what) => {
+    if (loading) loading.hidden = true;
+    if (gate) gate.hidden = what !== 'gate';
+    if (shell) shell.hidden = what !== 'shell';
+  };
+
+  // One round trip decides between the authentication page and the dashboard,
+  // so the page appears as soon as possible.
+  let session;
   try {
-    state.modules = await api('/api/modules');
-  } catch {
-    state.modules = {};
-  }
-
-  try {
-    const session = await api('/api/auth/me');
-    if (!session.authenticated) return;
-
-    state.user = session.user;
-    state.csrf = session.csrf;
-    authGate.hidden = true;
-    $('#dashboard-shell').hidden = false;
-    renderUser();
-    renderBotSwitcher();
-
-    state.guilds = await api('/api/guilds');
-    renderGuilds();
-
-    if (state.guilds[0]) await selectGuild(state.guilds[0].id);
-    else $('#server-subtitle').textContent = 'No manageable servers found for this Discord account.';
+    session = await api('/api/auth/me');
   } catch (err) {
+    reveal('gate');
     showError(err.message, err.code);
+    return;
   }
+
+  if (!session.authenticated) {
+    reveal('gate');
+    return;
+  }
+
+  state.user = session.user;
+  state.csrf = session.csrf;
+  reveal('shell');
+
+  renderUser();
+  renderBotSwitcher();
+
+  // The field contract and the invite links are only needed for the dashboard,
+  // so they load alongside the guild list instead of holding the page up.
+  const guilds = await Promise.all([
+    api('/api/modules').then((data) => { state.modules = data; }).catch(() => {}),
+    api('/api/invites').then((data) => { state.invites = data || {}; }).catch(() => {}),
+    api('/api/guilds').then((data) => {
+      if (Array.isArray(data)) return { servers: data, total: data.length, manageable: data.length, scopeGranted: true };
+      state.guildsMessage = guildsMessage(data);
+      return data;
+    }).catch((err) => {
+      // The session is gone, so send the visitor back to the authentication page.
+      if (err.code === 'session_expired' || err.code === 'not_authenticated') {
+        reveal('gate');
+        showError(err.message, err.code);
+        return { servers: [], total: 0, manageable: 0, scopeGranted: true };
+      }
+      showError(err.message, err.code);
+      state.guildsMessage = err.message;
+      return { servers: [], total: 0, manageable: 0, scopeGranted: true };
+    }),
+  ]).then((results) => results[2]);
+
+  state.guilds = guilds.servers || [];
+  renderGuilds();
+
+  if (state.guilds[0]) await selectGuild(state.guilds[0].id);
+  else if (!state.guilds.length) {
+    $('#server-subtitle').textContent = state.guildsMessage || 'No servers found.';
+  }
+}
+
+// Turns the guild list response into a sentence that says what went wrong.
+function guildsMessage(data) {
+  if (data && data.scopeGranted === false) {
+    return 'Discord did not share your server list. Sign out and sign in again, and allow access to your servers when Discord asks.';
+  }
+  if (data && data.total > 0 && data.manageable === 0) {
+    return `You are in ${data.total} server(s), but you do not have Administrator or Manage Server in any of them.`;
+  }
+  return 'No servers found where you have Administrator or Manage Server permission.';
 }
 
 $('#settings-form').addEventListener('submit', saveSettings);
