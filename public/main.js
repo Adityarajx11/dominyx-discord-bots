@@ -121,7 +121,20 @@ window.addEventListener('scroll', requestScrollMotion, { passive: true });
 updateScrollMotion();
 
 if (bgVideo) {
-  bgVideo.play().catch(() => {});
+  bgVideo.muted = true;
+  bgVideo.defaultMuted = true;
+  bgVideo.autoplay = true;
+  bgVideo.loop = true;
+  bgVideo.playsInline = true;
+  bgVideo.setAttribute('muted', '');
+  bgVideo.setAttribute('autoplay', '');
+  bgVideo.setAttribute('playsinline', '');
+  bgVideo.setAttribute('webkit-playsinline', '');
+  bgVideo.removeAttribute('controls');
+  const startBackground = () => bgVideo.play().catch(() => {});
+  bgVideo.addEventListener('loadeddata', startBackground, { once: true });
+  bgVideo.addEventListener('canplay', startBackground, { once: true });
+  startBackground();
 }
 
 function setMenu(open) {
@@ -266,6 +279,7 @@ const demoSteps = [...document.querySelectorAll('[data-demo-step]')];
 const demoCaption = document.querySelector('[data-demo-caption]');
 const demoDots = document.querySelector('[data-demo-dots]');
 const demoToggle = document.querySelector('[data-demo-toggle]');
+const demoCursor = document.querySelector('[data-demo-cursor]');
 const demoCaptions = [
   'Click Add to server to invite a module.',
   'Discord opens the authorization step for your selected server.',
@@ -280,6 +294,11 @@ const renderDemo = () => {
   demoSteps.forEach((node, index) => node.classList.toggle('demo-step-active', index === demoIndex || reduceMotion));
   if (demoCaption) demoCaption.textContent = reduceMotion ? demoCaptions.join(' ') : demoCaptions[demoIndex];
   demoDots?.querySelectorAll('i').forEach((node, index) => node.classList.toggle('is-active', index === demoIndex));
+  if (demoCursor) {
+    const positions = [{ left: '78%', top: '52%' }, { left: '78%', top: '59%' }, { left: '54%', top: '53%' }, { left: '67%', top: '53%' }];
+    demoCursor.style.left = positions[demoIndex][0];
+    demoCursor.style.top = positions[demoIndex][1];
+  }
 };
 const nextDemo = (direction = 1) => { demoIndex = (demoIndex + direction + demoSteps.length) % demoSteps.length; renderDemo(); };
 const startDemo = () => { if (!demoPaused && !reduceMotion && !demoTimer) demoTimer = window.setInterval(() => nextDemo(), 4000); };
