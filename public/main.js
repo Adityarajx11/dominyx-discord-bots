@@ -262,26 +262,26 @@ if (statsStrip && 'IntersectionObserver' in window) {
 } else animateStats();
 
 const demo = document.querySelector('[data-demo]');
-const demoMessages = [...document.querySelectorAll('[data-demo-message]')];
+const demoSteps = [...document.querySelectorAll('[data-demo-step]')];
 const demoCaption = document.querySelector('[data-demo-caption]');
 const demoDots = document.querySelector('[data-demo-dots]');
 const demoToggle = document.querySelector('[data-demo-toggle]');
 const demoCaptions = [
-  'Cursor clicks the message box and types /play lofi beats.',
-  'Cursor opens #tickets and starts /ticketpanel.',
-  'Cursor opens #mod-log and uses /warn.',
-  'Cursor moves to the Add module action.'
+  'Click Add to server to invite a module.',
+  'Discord opens the authorization step for your selected server.',
+  'Aurex returns to the dashboard with module settings ready.',
+  'Choose a module and control its real server settings.'
 ];
 let demoIndex = 0;
 let demoTimer;
 let demoPaused = Boolean(reduceMotion);
-if (demoDots) demoDots.innerHTML = demoMessages.map((_, index) => `<i class="${index === 0 ? 'is-active' : ''}" aria-hidden="true"></i>`).join('');
+if (demoDots) demoDots.innerHTML = demoSteps.map((_, index) => `<i class="${index === 0 ? 'is-active' : ''}" aria-hidden="true"></i>`).join('');
 const renderDemo = () => {
-  demoMessages.forEach((node, index) => node.classList.toggle('is-active', index === demoIndex || reduceMotion));
+  demoSteps.forEach((node, index) => node.classList.toggle('demo-step-active', index === demoIndex || reduceMotion));
   if (demoCaption) demoCaption.textContent = reduceMotion ? demoCaptions.join(' ') : demoCaptions[demoIndex];
   demoDots?.querySelectorAll('i').forEach((node, index) => node.classList.toggle('is-active', index === demoIndex));
 };
-const nextDemo = (direction = 1) => { demoIndex = (demoIndex + direction + demoMessages.length) % demoMessages.length; renderDemo(); };
+const nextDemo = (direction = 1) => { demoIndex = (demoIndex + direction + demoSteps.length) % demoSteps.length; renderDemo(); };
 const startDemo = () => { if (!demoPaused && !reduceMotion && !demoTimer) demoTimer = window.setInterval(() => nextDemo(), 4000); };
 const stopDemo = () => { if (demoTimer) { window.clearInterval(demoTimer); demoTimer = null; } };
 demo?.addEventListener('mouseenter', stopDemo);

@@ -78,7 +78,6 @@
             <span class="hero-rotator-line">Admin-only ticket setup for category, staff role, logs, and panel rules.</span>
             <span class="hero-rotator-line">Welcome messages, auto-roles, cards, goodbye messages, and DM welcomes.</span>
           </div>
-          <p class="hero-copy anim" style="--d: 0.38s">Aurex gives your server a sharper operating system — music, security, welcomes, tickets, pings, and progression in one clean command layer.</p>
 
           <div class="hero-actions anim" style="--d: 0.47s" id="connect">
             <a class="primary-button" href="#modules">Explore the modules <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
@@ -88,10 +87,6 @@
         </section>
       </main>
 
-      <section class="stats-strip" aria-label="Aurex facts">
-        <div class="stats-strip-item"><strong data-stat-target="6">6</strong><span>bots</span></div>
-        <div class="stats-strip-item"><strong data-stat-target="31">31</strong><span>documented slash commands</span></div>
-      </section>
 
       <section class="modules-slide" id="modules" aria-labelledby="modules-title">
         <div class="module-slide-heading"><span class="section-kicker">AUREX MODULES</span><h2 id="modules-title">Choose your<br /><span>community layer.</span></h2><p>Six focused bots. One shared operating rhythm. Select a module to see how Aurex keeps your server moving.</p></div>
@@ -117,23 +112,27 @@
       </section>
 
       <section class="demo-section" id="see-it-work" aria-labelledby="demo-title">
-        <div class="section-heading"><span class="section-kicker">ANIMATED DEMO</span><h2 id="demo-title">See it <span>work.</span></h2><p>Real Aurex command names, shown in a compact server flow.</p></div>
-        <div class="discord-demo" data-demo>
-          <aside class="demo-sidebar"><strong>AUREX</strong><span>#music</span><span>#tickets</span><span>#mod-log</span></aside>
-          <div class="demo-chat"><div class="demo-chat-head">Animated demo</div><div class="demo-messages"><div class="demo-message" data-demo-message="0"><b>/play lofi beats</b><small>Music command</small></div><div class="demo-message" data-demo-message="1"><b>/ticketpanel</b><small>Ticket panel</small></div><div class="demo-message" data-demo-message="2"><b>/warn</b><small>Moderation command</small></div><div class="demo-message" data-demo-message="3"><b>Add module</b><small>Invite action</small></div></div><div class="demo-input">Type a command…</div></div>
+        <div class="section-heading"><span class="section-kicker">AUREX CONTROL / LIVE WALKTHROUGH</span><h2 id="demo-title">See how it <span>works.</span></h2><p>From adding a module to controlling it from your server dashboard.</p></div>
+        <div class="dashboard-demo" data-demo>
+          <div class="dashboard-demo-top"><span class="demo-brand">AUREX <small>/ CONTROL</small></span><span class="demo-status"><i></i> SYSTEM ONLINE</span></div>
+          <div class="dashboard-demo-body">
+            <aside class="demo-server-rail"><strong>Your servers</strong><span class="is-selected">Aurex Community</span><span>Support Hub</span></aside>
+            <div class="demo-control-panel">
+              <div class="demo-panel-head"><span class="demo-eyebrow">AUREX CONTROL / SERVER</span><strong>Choose a module</strong></div>
+              <div class="demo-step demo-step-active" data-demo-step="0"><div class="demo-discord-card"><span class="demo-discord-mark">D</span><div><strong>Add Music to Discord</strong><small>Invite the module to your server</small></div><button type="button" class="demo-add-button">Add to server</button></div></div>
+              <div class="demo-step" data-demo-step="1"><div class="demo-discord-card demo-discord-authorize"><span class="demo-discord-mark">D</span><div><strong>Authorize Aurex</strong><small>Select a server and continue in Discord</small></div><button type="button" class="demo-authorize-button">Authorize</button></div></div>
+              <div class="demo-step" data-demo-step="2"><div class="demo-module-tabs"><span class="is-selected">Music</span><span>Security</span><span>Greet</span><span>Tickets</span></div><div class="demo-settings-card"><span class="demo-eyebrow">MODULE / MUSIC</span><strong>Music settings</strong><p>Set the DJ role, queue size, volume, and voice-channel behavior.</p></div></div>
+              <div class="demo-step" data-demo-step="3"><div class="demo-module-tabs"><span>Music</span><span class="is-selected">Security</span><span>Greet</span><span>Tickets</span></div><div class="demo-settings-card"><span class="demo-eyebrow">MODULE / SECURITY</span><strong>Security settings</strong><p>Configure spam, link, caps, mention, emoji, bad-word, raid, and anti-nuke controls.</p></div></div>
+            </div>
+          </div>
         </div>
-        <p class="demo-caption" data-demo-caption>Cursor clicks the message box and types /play lofi beats.</p>
+        <p class="demo-caption" data-demo-caption>Click Add to server to invite a module.</p>
         <div class="demo-controls"><button type="button" data-demo-prev aria-label="Previous demo step">←</button><div class="demo-dots" data-demo-dots></div><button type="button" data-demo-next aria-label="Next demo step">→</button><button type="button" data-demo-toggle>Pause</button></div>
-      </section>
-
-      <section class="how-section" aria-labelledby="how-title">
-        <div class="section-heading"><span class="section-kicker">HOW IT WORKS</span><h2 id="how-title">From clone to <span>control.</span></h2></div>
-        <div class="how-steps"><article><span>1</span><strong>Install dependencies</strong><p><code>npm install</code></p></article><article><span>2</span><strong>Configure environment</strong><p>Copy <code>.env.example</code> to <code>.env</code>.</p></article><article><span>3</span><strong>Start Aurex</strong><p><code>npm start</code></p></article><article><span>4</span><strong>Run the tests</strong><p><code>npm test</code></p></article></div>
       </section>
 
       <section class="compare-section" aria-labelledby="compare-title">
         <div class="section-heading"><span class="section-kicker">AUREX VS A TYPICAL ALL-IN-ONE BOT</span><h2 id="compare-title">Focused by <span>design.</span></h2></div>
-        <div class="compare-grid"><div class="compare-card compare-aurex"><h3>Aurex</h3><p><i>✓</i>Add only the modules you need</p><p><i>✓</i>One bot, one job</p><p><i>✓</i>Separate settings per module</p></div><div class="compare-card"><h3>Typical all-in-one bot</h3><p><i>×</i>Everything is bundled together</p><p><i>×</i>One bot handles unrelated jobs</p><p><i>×</i>Settings are spread across one large surface</p></div></div>
+        <div class="compare-table"><div class="compare-table-head"><span>WHAT CHANGES</span><strong>AUREX</strong><strong>TYPICAL ALL-IN-ONE BOT</strong></div><div class="compare-row"><span>Add only the modules you need</span><b>✓</b><b>×</b></div><div class="compare-row"><span>One bot, one job</span><b>✓</b><b>×</b></div><div class="compare-row"><span>Separate settings per module</span><b>✓</b><b>×</b></div></div>
       </section>
 
       <footer class="stats-footer" aria-label="Aurex platform metrics">
