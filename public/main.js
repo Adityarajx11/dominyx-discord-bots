@@ -125,12 +125,25 @@ if (bgVideo) {
   bgVideo.removeAttribute('controls');
   bgVideo.setAttribute('aria-hidden', 'true');
   const startBackgroundVideo = () => {
+    bgVideo.autoplay = true;
+    bgVideo.loop = true;
+    bgVideo.muted = true;
+    bgVideo.defaultMuted = true;
+    bgVideo.playsInline = true;
     bgVideo.play().catch(() => {
-      // Autoplay is muted, but some embedded browsers still require a retry.
+      // Some browsers defer autoplay until the first user gesture.
     });
   };
   bgVideo.addEventListener('canplay', startBackgroundVideo);
+  bgVideo.addEventListener('loadedmetadata', startBackgroundVideo);
   startBackgroundVideo();
+  window.addEventListener('pageshow', startBackgroundVideo, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) startBackgroundVideo();
+  });
+  ['pointerdown', 'touchstart', 'keydown'].forEach((eventName) => {
+    window.addEventListener(eventName, startBackgroundVideo, { once: true, passive: true });
+  });
 }
 
 function setMenu(open) {
