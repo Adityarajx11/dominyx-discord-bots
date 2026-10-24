@@ -622,3 +622,59 @@ button { color: inherit; font: inherit; }
   .showcase-heading h2 { max-width: 16ch; }
   .connect-section h2 { max-width: 20ch; }
 }
+
+/* Mono labels and sans text only. Pixel headline rules remain unchanged above. */
+.section-kicker,
+.bot-index,
+.bot-card-meta > span,
+.module-console-header,
+.module-console-footer,
+.readout-label,
+.launcher-status,
+.stat-label {
+  font-family: "Space Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.hero-copy,
+.module-slide-heading > p,
+.section-heading > p,
+.why-copy > p,
+.connect-section > p,
+.showcase-card figcaption {
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 46ch;
+}
+.principle strong {
+  font-family: var(--sans);
+  font-size: 26px;
+  font-weight: 600;
+  color: #fff;
+}
+.principle p {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.7);
+}
+.primary-button,
+.text-button,
+.outline-button,
+.header-cta,
+.mobile-connect,
+.readout-cta,
+.bot-invite,
+.demo-controls button,
+.demo-add-button,
+.demo-authorize-button {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+}
