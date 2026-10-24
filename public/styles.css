@@ -736,3 +736,12 @@ button { color: inherit; font: inherit; }
 .hero-rotator { font-size: var(--size-body); }
 .why-copy > p,
 .connect-section > p { margin-bottom: 0; }
+
+/* Keep the decorative background video from exposing native playback UI. */
+.bg-video { pointer-events: none; }
+video::-webkit-media-controls,
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
