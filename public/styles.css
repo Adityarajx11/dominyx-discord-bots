@@ -485,3 +485,10 @@ button { color: inherit; font: inherit; }
   .hero-rotator { font-size: 10px; }
   .hero-actions { flex-wrap: wrap; }
 }
+
+/* Keep the display headline inside every viewport, including iPad widths. */
+.hero-title { max-width: 100%; padding-inline: 3vw; font-size: clamp(38px, 7.2vw, 96px); letter-spacing: -.045em; }
+.headline-line { white-space: normal; overflow-wrap: break-word; }
+.headline-line-accent { font-size: .8em; }
+@media (max-width: 720px) { .hero-title { padding-inline: 1vw; font-size: clamp(31px, 9.8vw, 68px); letter-spacing: -.05em; } .headline-line-accent { font-size: .82em; } }
+@media (max-width: 420px) { .hero-title { font-size: clamp(27px, 8.8vw, 46px); letter-spacing: -.035em; } }
