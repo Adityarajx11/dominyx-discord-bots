@@ -105,6 +105,7 @@ const mobileMenu = document.querySelector('#mobile-menu');
 const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link, .mobile-connect');
 const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 const bgVideo = document.querySelector('.bg-video');
+const bgCanvas = document.querySelector('.bg-canvas');
 
 let scrollFrame = 0;
 function updateScrollMotion() {
@@ -124,6 +125,31 @@ if (bgVideo) {
   bgVideo.controls = false;
   bgVideo.removeAttribute('controls');
   bgVideo.setAttribute('aria-hidden', 'true');
+  const canvasContext = bgCanvas?.getContext('2d');
+  const resizeBackgroundCanvas = () => {
+    if (!bgCanvas || !canvasContext) return;
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(1, Math.round(bgCanvas.clientWidth * ratio));
+    const height = Math.max(1, Math.round(bgCanvas.clientHeight * ratio));
+    if (bgCanvas.width !== width || bgCanvas.height !== height) {
+      bgCanvas.width = width;
+      bgCanvas.height = height;
+    }
+  };
+  const renderBackgroundFrame = () => {
+    resizeBackgroundCanvas();
+    if (canvasContext && bgCanvas && bgVideo.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && bgVideo.videoWidth) {
+      const scale = Math.max(bgCanvas.width / bgVideo.videoWidth, bgCanvas.height / bgVideo.videoHeight);
+      const width = bgVideo.videoWidth * scale;
+      const height = bgVideo.videoHeight * scale;
+      canvasContext.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      canvasContext.drawImage(bgVideo, (bgCanvas.width - width) / 2, (bgCanvas.height - height) / 2, width, height);
+    }
+    requestAnimationFrame(renderBackgroundFrame);
+  };
+  window.addEventListener('resize', resizeBackgroundCanvas, { passive: true });
+  resizeBackgroundCanvas();
+  renderBackgroundFrame();
   const startBackgroundVideo = () => {
     bgVideo.autoplay = true;
     bgVideo.loop = true;
