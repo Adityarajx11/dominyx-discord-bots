@@ -492,3 +492,26 @@ button { color: inherit; font: inherit; }
 .headline-line-accent { font-size: .8em; }
 @media (max-width: 720px) { .hero-title { padding-inline: 1vw; font-size: clamp(31px, 9.8vw, 68px); letter-spacing: -.05em; } .headline-line-accent { font-size: .82em; } }
 @media (max-width: 420px) { .hero-title { font-size: clamp(27px, 8.8vw, 46px); letter-spacing: -.035em; } }
+
+/* Curved cylinder roll: the old line lifts over the top while the next rises from below. */
+.hero-rotator { overflow: hidden; transform-style: preserve-3d; }
+.hero-rotator-line { transform: translateY(24px) rotateX(-72deg) scale(.96); transform-origin: 50% 0%; backface-visibility: hidden; }
+.hero-rotator-line.is-active { transform: translateY(0) rotateX(0deg) scale(1); }
+.hero-rotator-line.is-leaving { opacity: 0; transform: translateY(-24px) rotateX(72deg) scale(.96); transform-origin: 50% 100%; }
+
+/* Give each bot its own glass/prism accent instead of one repeated vertical color. */
+.bot-card { position: relative; isolation: isolate; overflow: hidden; }
+.bot-card::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: .28; background: linear-gradient(112deg, transparent 6%, var(--bot-accent) 27%, transparent 48%, var(--bot-accent-soft) 66%, transparent 84%); background-size: 180% 100%; animation: botGlassDrift 11s ease-in-out infinite alternate; pointer-events: none; }
+.bot-card::after { content: ''; position: absolute; top: 0; bottom: 0; left: 22%; width: 1px; z-index: -1; background: linear-gradient(180deg, transparent, var(--bot-accent), transparent); opacity: .5; pointer-events: none; }
+.bot-card:nth-child(1) { --bot-accent: #8f8cff; --bot-accent-soft: #4d77ff; }.bot-card:nth-child(2) { --bot-accent: #6fa8ff; --bot-accent-soft: #5ee7ff; }.bot-card:nth-child(3) { --bot-accent: #f0b36a; --bot-accent-soft: #ff7c9a; }.bot-card:nth-child(4) { --bot-accent: #5ed8ff; --bot-accent-soft: #5d85ff; }.bot-card:nth-child(5) { --bot-accent: #e889b8; --bot-accent-soft: #a56dff; }.bot-card:nth-child(6) { --bot-accent: #65e2b6; --bot-accent-soft: #4aa3ff; }
+.bot-card-icon { border-color: color-mix(in srgb, var(--bot-accent) 62%, white); color: var(--bot-accent); box-shadow: 0 0 22px color-mix(in srgb, var(--bot-accent) 25%, transparent); }
+.bot-card:hover { border-color: var(--bot-accent); }
+@keyframes botGlassDrift { from { background-position: 0 0; transform: translateX(-2%); } to { background-position: 100% 0; transform: translateX(2%); } }
+
+/* Lower control strip: make the existing six-bot/one-console facts feel like one designed surface. */
+.stats-footer { position: relative; padding: 10px; border: 1px solid rgba(255,255,255,.18); border-radius: 16px; background: linear-gradient(120deg, rgba(255,255,255,.08), rgba(8,8,12,.42)); box-shadow: inset 0 1px rgba(255,255,255,.1), 0 22px 70px rgba(0,0,0,.18); backdrop-filter: blur(14px); }
+.stat-item { position: relative; min-height: 78px; padding: 12px 15px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); border-radius: 11px; background: rgba(0,0,0,.2); }
+.stat-item::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 18% 50%, rgba(255,255,255,.14), transparent 48%); opacity: .8; pointer-events: none; }.stat-item:nth-child(2)::before { background: radial-gradient(circle at 18% 50%, rgba(110,160,255,.22), transparent 48%); }.stat-item:nth-child(3)::before { background: radial-gradient(circle at 18% 50%, rgba(231,136,184,.22), transparent 48%); }.stat-item:nth-child(4)::before { background: radial-gradient(circle at 18% 50%, rgba(101,226,182,.2), transparent 48%); }
+.demo-step-count { justify-self: end; color: #888; font-family: "Space Mono", monospace; font-size: 8px; letter-spacing: .1em; }
+@media (max-width: 720px) { .stats-footer { padding: 7px; }.stat-item { min-height: 70px; padding: 10px; }.hero-rotator-line { transform: translateY(18px) rotateX(-58deg) scale(.97); }.hero-rotator-line.is-leaving { transform: translateY(-18px) rotateX(58deg) scale(.97); } }
+@media (prefers-reduced-motion: reduce) { .hero-rotator-line { transition: none; }.bot-card::before { animation: none; } }

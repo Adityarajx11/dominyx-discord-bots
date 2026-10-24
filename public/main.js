@@ -239,9 +239,13 @@ let rotatorIndex = 0;
 let rotatorTimer;
 const rotateHeroLine = () => {
   if (!rotatorLines.length) return;
-  rotatorLines[rotatorIndex].classList.remove('is-active');
+  const outgoing = rotatorLines[rotatorIndex];
+  outgoing.classList.remove('is-active');
+  outgoing.classList.add('is-leaving');
   rotatorIndex = (rotatorIndex + 1) % rotatorLines.length;
-  rotatorLines[rotatorIndex].classList.add('is-active');
+  const incoming = rotatorLines[rotatorIndex];
+  incoming.classList.add('is-active');
+  window.setTimeout(() => outgoing.classList.remove('is-leaving'), 650);
 };
 const startHeroRotator = () => { if (!rotatorTimer && rotatorLines.length > 1) rotatorTimer = window.setInterval(rotateHeroLine, 3000); };
 const stopHeroRotator = () => { if (rotatorTimer) { window.clearInterval(rotatorTimer); rotatorTimer = null; } };
@@ -282,6 +286,7 @@ const demoCaption = document.querySelector('[data-demo-caption]');
 const demoDots = document.querySelector('[data-demo-dots]');
 const demoToggle = document.querySelector('[data-demo-toggle]');
 const demoCursor = document.querySelector('[data-demo-cursor]');
+const demoStepCount = document.querySelector('[data-demo-step-count]');
 const demoCaptions = [
   'Click Add to server to invite a module.',
   'Discord opens the authorization step for your selected server.',
@@ -296,6 +301,7 @@ const renderDemo = () => {
   demoSteps.forEach((node, index) => node.classList.toggle('demo-step-active', index === demoIndex || reduceMotion));
   if (demoCaption) demoCaption.textContent = reduceMotion ? demoCaptions.join(' ') : demoCaptions[demoIndex];
   demoDots?.querySelectorAll('i').forEach((node, index) => node.classList.toggle('is-active', index === demoIndex));
+  if (demoStepCount) demoStepCount.textContent = `STEP ${demoIndex + 1} / ${demoSteps.length}`;
   if (demoCursor) {
     const positions = [{ left: '78%', top: '52%' }, { left: '78%', top: '59%' }, { left: '54%', top: '53%' }, { left: '67%', top: '53%' }];
     demoCursor.style.left = positions[demoIndex][0];
