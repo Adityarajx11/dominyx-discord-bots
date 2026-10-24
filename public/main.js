@@ -100,6 +100,14 @@ async function syncAuthCtas() {
 }
 syncAuthCtas();
 
+const aurexConfig = window.AUREX_CONFIG || {};
+const serverCountNode = document.querySelector('[data-server-count]');
+if (serverCountNode && aurexConfig.SERVER_COUNT != null) serverCountNode.textContent = aurexConfig.SERVER_COUNT;
+document.querySelectorAll('[data-why-line]').forEach((node) => {
+  const line = aurexConfig.WHY_TEXT?.[Number(node.dataset.whyLine)] || '';
+  node.textContent = line;
+});
+
 const menuToggle = document.querySelector('.menu-toggle');
 const mobileMenu = document.querySelector('#mobile-menu');
 const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link, .mobile-connect');
