@@ -163,9 +163,15 @@ if (bgVideo) {
   bgVideo.setAttribute('disablepictureinpicture', '');
   bgVideo.setAttribute('controlslist', 'nodownload noplaybackrate');
   bgVideo.removeAttribute('controls');
-  const startBackground = () => bgVideo.play().catch(() => {});
-  bgVideo.addEventListener('loadeddata', startBackground, { once: true });
-  bgVideo.addEventListener('canplay', startBackground, { once: true });
+  const startBackground = () => {
+    if (bgVideo.paused) bgVideo.play().catch(() => {});
+  };
+  ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'].forEach((eventName) => {
+    bgVideo.addEventListener(eventName, startBackground);
+  });
+  document.addEventListener('visibilitychange', startBackground);
+  window.addEventListener('pageshow', startBackground);
+  window.setTimeout(startBackground, 250);
   startBackground();
 }
 

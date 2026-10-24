@@ -699,15 +699,19 @@ video::-webkit-media-controls-overlay-play-button {
 }
 
 /* iOS-safe background: the video is a hidden source, never a visible player. */
+.bg {
+  background: #050505 url('/assets/bg-poster.jpg') center / cover no-repeat;
+}
 .bg-video {
   position: absolute !important;
-  left: -9999px !important;
-  top: 0 !important;
-  width: 1px !important;
-  height: 1px !important;
+  left: -2px !important;
+  top: -2px !important;
+  width: 2px !important;
+  height: 2px !important;
   opacity: 0 !important;
   pointer-events: none !important;
-  visibility: hidden !important;
+  visibility: visible !important;
+  clip-path: inset(100%) !important;
 }
 .bg-canvas {
   position: absolute;
@@ -722,29 +726,9 @@ video::-webkit-media-controls-overlay-play-button {
   mix-blend-mode: normal;
 }
 .bg::before,
-.bg::after {
-  display: block !important;
-  z-index: 0;
-  pointer-events: none;
-}
-.bg::before {
-  background: radial-gradient(circle at 72% 18%, rgba(255,255,255,.19) 0, rgba(255,255,255,.07) 15%, transparent 32%), radial-gradient(circle at 12% 80%, rgba(255,255,255,.16) 0, transparent 30%), linear-gradient(118deg, transparent 0%, rgba(255,255,255,.015) 43%, rgba(255,255,255,.07) 58%, transparent 76%);
-  filter: blur(18px);
-  animation: aurexFieldDrift 18s ease-in-out infinite alternate;
-}
-.bg::after {
-  background: conic-gradient(from 12deg at 71% 36%, transparent 0 13%, rgba(255,255,255,.18) 15%, transparent 20% 57%, rgba(255,255,255,.1) 59%, transparent 66%), radial-gradient(ellipse at 72% 37%, transparent 0 17%, rgba(255,255,255,.12) 17.2%, transparent 17.8% 24%, rgba(255,255,255,.08) 24.2%, transparent 24.8% 34%, rgba(255,255,255,.055) 34.2%, transparent 35%);
-  mask-image: radial-gradient(ellipse at 70% 37%, black 0%, transparent 66%);
-  opacity: .75;
-  transform-origin: 71% 37%;
-  animation: aurexOrbit 28s linear infinite;
-}
+.bg::after { display: none !important; }
 .bg-veil { z-index: 2; }
 .bg-grid { z-index: 3; }
-@media (prefers-reduced-motion: reduce) {
-  .bg::before,
-  .bg::after { animation: none; }
-}
 
 /* Final three-font contract: pixel only for H1/H2; Geist handles UI and copy. */
 .brand-mark span,
