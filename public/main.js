@@ -238,17 +238,19 @@ const rotatorLines = [...document.querySelectorAll('.hero-rotator-line')];
 let rotatorIndex = 0;
 let rotatorTimer;
 const rotateHeroLine = () => {
-  if (!rotatorLines.length || reduceMotion) return;
+  if (!rotatorLines.length) return;
   rotatorLines[rotatorIndex].classList.remove('is-active');
   rotatorIndex = (rotatorIndex + 1) % rotatorLines.length;
   rotatorLines[rotatorIndex].classList.add('is-active');
 };
-const startHeroRotator = () => { if (!reduceMotion && !rotatorTimer) rotatorTimer = window.setInterval(rotateHeroLine, 3000); };
+const startHeroRotator = () => { if (!rotatorTimer && rotatorLines.length > 1) rotatorTimer = window.setInterval(rotateHeroLine, 3000); };
 const stopHeroRotator = () => { if (rotatorTimer) { window.clearInterval(rotatorTimer); rotatorTimer = null; } };
 const heroRotator = document.querySelector('.hero-rotator');
 heroRotator?.addEventListener('mouseenter', stopHeroRotator);
 heroRotator?.addEventListener('mouseleave', startHeroRotator);
-heroRotator?.addEventListener('touchstart', stopHeroRotator, { passive: true });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopHeroRotator(); else startHeroRotator();
+});
 startHeroRotator();
 
 const statNodes = [...document.querySelectorAll('[data-stat-target]')];
