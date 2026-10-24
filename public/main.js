@@ -220,3 +220,75 @@ if ('IntersectionObserver' in window) {
 } else {
   countNodes.forEach((node) => { node.textContent = Number(node.dataset.count).toFixed(Number(node.dataset.decimals || 0)); });
 }
+
+const rotatorLines = [...document.querySelectorAll('.hero-rotator-line')];
+let rotatorIndex = 0;
+let rotatorTimer;
+const rotateHeroLine = () => {
+  if (!rotatorLines.length || reduceMotion) return;
+  rotatorLines[rotatorIndex].classList.remove('is-active');
+  rotatorIndex = (rotatorIndex + 1) % rotatorLines.length;
+  rotatorLines[rotatorIndex].classList.add('is-active');
+};
+const startHeroRotator = () => { if (!reduceMotion && !rotatorTimer) rotatorTimer = window.setInterval(rotateHeroLine, 3000); };
+const stopHeroRotator = () => { if (rotatorTimer) { window.clearInterval(rotatorTimer); rotatorTimer = null; } };
+const heroRotator = document.querySelector('.hero-rotator');
+heroRotator?.addEventListener('mouseenter', stopHeroRotator);
+heroRotator?.addEventListener('mouseleave', startHeroRotator);
+heroRotator?.addEventListener('touchstart', stopHeroRotator, { passive: true });
+startHeroRotator();
+
+const statNodes = [...document.querySelectorAll('[data-stat-target]')];
+const animateStats = () => {
+  statNodes.forEach((node, index) => {
+    const target = Number(node.dataset.statTarget || node.textContent || 0);
+    if (reduceMotion) { node.textContent = String(target); return; }
+    const start = performance.now();
+    const duration = 1400;
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      node.textContent = String(Math.round(target * (1 - Math.pow(1 - progress, 3))));
+      if (progress < 1) window.requestAnimationFrame(tick);
+    };
+    window.setTimeout(() => window.requestAnimationFrame(tick), index * 90);
+  });
+};
+const statsStrip = document.querySelector('.stats-strip');
+if (statsStrip && 'IntersectionObserver' in window) {
+  const statsObserver = new IntersectionObserver((entries, observer) => {
+    if (entries.some((entry) => entry.isIntersecting)) { animateStats(); observer.disconnect(); }
+  }, { threshold: 0.25 });
+  statsObserver.observe(statsStrip);
+} else animateStats();
+
+const demo = document.querySelector('[data-demo]');
+const demoMessages = [...document.querySelectorAll('[data-demo-message]')];
+const demoCaption = document.querySelector('[data-demo-caption]');
+const demoDots = document.querySelector('[data-demo-dots]');
+const demoToggle = document.querySelector('[data-demo-toggle]');
+const demoCaptions = [
+  'Cursor clicks the message box and types /play lofi beats.',
+  'Cursor opens #tickets and starts /ticketpanel.',
+  'Cursor opens #mod-log and uses /warn.',
+  'Cursor moves to the Add module action.'
+];
+let demoIndex = 0;
+let demoTimer;
+let demoPaused = Boolean(reduceMotion);
+if (demoDots) demoDots.innerHTML = demoMessages.map((_, index) => `<i class="${index === 0 ? 'is-active' : ''}" aria-hidden="true"></i>`).join('');
+const renderDemo = () => {
+  demoMessages.forEach((node, index) => node.classList.toggle('is-active', index === demoIndex || reduceMotion));
+  if (demoCaption) demoCaption.textContent = reduceMotion ? demoCaptions.join(' ') : demoCaptions[demoIndex];
+  demoDots?.querySelectorAll('i').forEach((node, index) => node.classList.toggle('is-active', index === demoIndex));
+};
+const nextDemo = (direction = 1) => { demoIndex = (demoIndex + direction + demoMessages.length) % demoMessages.length; renderDemo(); };
+const startDemo = () => { if (!demoPaused && !reduceMotion && !demoTimer) demoTimer = window.setInterval(() => nextDemo(), 4000); };
+const stopDemo = () => { if (demoTimer) { window.clearInterval(demoTimer); demoTimer = null; } };
+demo?.addEventListener('mouseenter', stopDemo);
+demo?.addEventListener('mouseleave', startDemo);
+demo?.addEventListener('touchstart', stopDemo, { passive: true });
+document.querySelector('[data-demo-prev]')?.addEventListener('click', () => nextDemo(-1));
+document.querySelector('[data-demo-next]')?.addEventListener('click', () => nextDemo());
+demoToggle?.addEventListener('click', () => { demoPaused = !demoPaused; demoToggle.textContent = demoPaused ? 'Replay' : 'Pause'; if (demoPaused) stopDemo(); else startDemo(); });
+renderDemo();
+startDemo();
