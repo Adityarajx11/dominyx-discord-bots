@@ -575,61 +575,6 @@ button { color: inherit; font: inherit; }
 .bot-card:hover { transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.2); }
 .bot-card:hover::before { opacity: 0.6; }
 
-/* Mono labels and sans text only. Pixel headline rules remain unchanged above. */
-.section-kicker,
-.bot-index,
-.bot-card-meta > span,
-.module-console-header,
-.module-console-footer,
-.readout-label,
-.launcher-status,
-.stat-label {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
-}
-.hero-copy,
-.module-slide-heading > p,
-.section-heading > p,
-.why-copy > p,
-.connect-section > p,
-.showcase-card figcaption {
-  font-family: var(--font-sans);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.78);
-  max-width: 46ch;
-}
-.principle strong {
-  font-family: var(--font-sans);
-  font-size: 26px;
-  font-weight: 600;
-  color: #fff;
-}
-.principle p {
-  font-family: var(--font-sans);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.7);
-}
-.primary-button,
-.text-button,
-.outline-button,
-.header-cta,
-.mobile-connect,
-.readout-cta,
-.bot-invite,
-.demo-controls button,
-.demo-add-button,
-.demo-authorize-button {
-  font-family: var(--font-sans);
-  font-size: 16px;
-  font-weight: 600;
-}
 
 /* Keep the decorative background video from exposing native playback UI. */
 .bg-video { pointer-events: none; }
@@ -646,14 +591,13 @@ video::-webkit-media-controls-overlay-play-button {
 }
 .bg-video {
   position: absolute !important;
-  left: -2px !important;
-  top: -2px !important;
-  width: 2px !important;
-  height: 2px !important;
+  left: -10px !important;
+  top: -10px !important;
+  width: 4px !important;
+  height: 4px !important;
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: visible !important;
-  clip-path: inset(100%) !important;
 }
 .bg-canvas {
   position: absolute;
@@ -671,6 +615,26 @@ video::-webkit-media-controls-overlay-play-button {
 .bg::after { display: none !important; }
 .bg-veil { z-index: 2; }
 .bg-grid { z-index: 3; }
+html:not(.ios-canvas-bg) .bg-video {
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: .82 !important;
+  visibility: visible !important;
+  clip-path: none !important;
+  filter: grayscale(.18) brightness(.78) contrast(1.08);
+  mix-blend-mode: screen;
+  object-fit: cover;
+  z-index: 0;
+}
+html:not(.ios-canvas-bg) .bg-canvas { display: none; }
+html.ios-canvas-bg .bg { animation: bgPosterDrift 18s ease-in-out infinite alternate; }
+@keyframes bgPosterDrift {
+  from { background-position: 50% 50%; }
+  to { background-position: 53% 47%; }
+}
 
 /* Final three-font contract: pixel only for H1/H2; Geist handles UI and copy. */
 .brand-mark span,
@@ -706,15 +670,6 @@ button,
 .readout-command,
 .readout-tags span,
 .module-live-line { font-family: var(--font-mono); }
-.section-kicker,
-.bot-index,
-.bot-card-meta > span,
-.module-console-header,
-.module-console-footer,
-.readout-label,
-.launcher-status,
-.stat-label { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; }
-
 /* Pixel headline system: the Aurex display voice stays distinct from UI copy. */
 .hero-title,
 .section-heading h2,
@@ -724,4 +679,38 @@ button,
 .connect-section h2,
 .showcase-heading h2 {
   font-family: var(--font-pixel);
+}
+
+/* Keep the hero as its own viewport before the Discord screenshot showcase. */
+.main-content {
+  position: relative;
+  min-height: max(620px, calc(100svh - 120px));
+  align-items: center;
+}
+.hero {
+  position: relative;
+  z-index: 2;
+  min-height: max(560px, calc(100svh - 170px));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.showcase-section { margin-top: 0; }
+.hero .anim { position: relative; z-index: 3; }
+.hero-rotator { min-height: 48px; }
+.hero-rotator-line { width: 100%; }
+.section-kicker { font-size: 9px; letter-spacing: .15em; }
+.bot-index { font-size: 7px; letter-spacing: .08em; }
+.bot-card-meta > span { font-size: 9px; letter-spacing: .02em; }
+.module-console-header,
+.module-console-footer { font-size: 9px; letter-spacing: .16em; }
+.readout-label { font-size: 8px; letter-spacing: .12em; }
+.launcher-status { font-size: 8px; letter-spacing: .02em; }
+.stat-label { font-size: 9px; letter-spacing: .02em; }
+.module-console .bot-tab-copy strong { font-size: 11px; }
+.module-console .bot-tab-copy small { font-size: 7px; }
+@media (max-width: 720px) {
+  .main-content { min-height: max(560px, calc(100svh - 92px)); }
+  .hero { min-height: max(500px, calc(100svh - 128px)); }
+  .hero-rotator { min-height: 64px; }
 }

@@ -115,6 +115,8 @@ const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').mat
 const bgVideo = document.querySelector('.bg-video');
 const bgCanvas = document.querySelector('.bg-canvas');
 const bgContext = bgCanvas?.getContext('2d');
+const isAppleTouch = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+document.documentElement.classList.toggle('ios-canvas-bg', isAppleTouch);
 
 let scrollFrame = 0;
 function updateScrollMotion() {
@@ -129,7 +131,13 @@ function requestScrollMotion() {
 }
 window.addEventListener('scroll', requestScrollMotion, { passive: true });
 updateScrollMotion();
-
+window.setTimeout(() => {
+  document.querySelectorAll('.hero .anim').forEach((element) => {
+    element.style.opacity = '1';
+    element.style.transform = 'none';
+    element.style.filter = 'none';
+  });
+}, 1600);
 function resizeBackgroundCanvas() {
   if (!bgCanvas || !bgContext) return;
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
