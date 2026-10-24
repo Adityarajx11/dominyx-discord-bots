@@ -158,6 +158,7 @@ function drawBackgroundFrame() {
 }
 
 if (bgVideo) {
+  if (isAppleTouch && bgCanvas) bgCanvas.style.opacity = '0';
   bgVideo.muted = true;
   bgVideo.defaultMuted = true;
   bgVideo.autoplay = true;
@@ -171,6 +172,12 @@ if (bgVideo) {
   bgVideo.setAttribute('disablepictureinpicture', '');
   bgVideo.setAttribute('controlslist', 'nodownload noplaybackrate');
   bgVideo.removeAttribute('controls');
+  bgVideo.addEventListener('playing', () => {
+    if (isAppleTouch && bgCanvas) bgCanvas.style.opacity = '1';
+  });
+  bgVideo.addEventListener('pause', () => {
+    if (isAppleTouch && bgCanvas) bgCanvas.style.opacity = '0';
+  });
   const startBackground = () => {
     if (bgVideo.paused) bgVideo.play().catch(() => {});
   };
