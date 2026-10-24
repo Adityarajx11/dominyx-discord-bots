@@ -113,6 +113,8 @@ const mobileMenu = document.querySelector('#mobile-menu');
 const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link, .mobile-connect');
 const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 const bgVideo = document.querySelector('.bg-video');
+const bgCanvas = document.querySelector('.bg-canvas');
+const bgContext = bgCanvas?.getContext('2d');
 
 let scrollFrame = 0;
 function updateScrollMotion() {
@@ -128,6 +130,25 @@ function requestScrollMotion() {
 window.addEventListener('scroll', requestScrollMotion, { passive: true });
 updateScrollMotion();
 
+function resizeBackgroundCanvas() {
+  if (!bgCanvas || !bgContext) return;
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  bgCanvas.width = Math.max(1, Math.round(bgCanvas.clientWidth * ratio));
+  bgCanvas.height = Math.max(1, Math.round(bgCanvas.clientHeight * ratio));
+}
+
+function drawBackgroundFrame() {
+  if (bgCanvas && bgContext && bgVideo && bgVideo.readyState >= 2 && !bgVideo.paused) {
+    const sourceWidth = bgVideo.videoWidth || 1;
+    const sourceHeight = bgVideo.videoHeight || 1;
+    const scale = Math.max(bgCanvas.width / sourceWidth, bgCanvas.height / sourceHeight);
+    const drawWidth = sourceWidth * scale;
+    const drawHeight = sourceHeight * scale;
+    bgContext.drawImage(bgVideo, (bgCanvas.width - drawWidth) / 2, (bgCanvas.height - drawHeight) / 2, drawWidth, drawHeight);
+  }
+  window.requestAnimationFrame(drawBackgroundFrame);
+}
+
 if (bgVideo) {
   bgVideo.muted = true;
   bgVideo.defaultMuted = true;
@@ -138,12 +159,19 @@ if (bgVideo) {
   bgVideo.setAttribute('autoplay', '');
   bgVideo.setAttribute('playsinline', '');
   bgVideo.setAttribute('webkit-playsinline', '');
+  bgVideo.setAttribute('preload', 'auto');
+  bgVideo.setAttribute('disablepictureinpicture', '');
+  bgVideo.setAttribute('controlslist', 'nodownload noplaybackrate');
   bgVideo.removeAttribute('controls');
   const startBackground = () => bgVideo.play().catch(() => {});
   bgVideo.addEventListener('loadeddata', startBackground, { once: true });
   bgVideo.addEventListener('canplay', startBackground, { once: true });
   startBackground();
 }
+
+resizeBackgroundCanvas();
+window.addEventListener('resize', resizeBackgroundCanvas, { passive: true });
+window.requestAnimationFrame(drawBackgroundFrame);
 
 function setMenu(open) {
   if (!menuToggle || !mobileMenu) return;
