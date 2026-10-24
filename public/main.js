@@ -121,6 +121,9 @@ window.addEventListener('scroll', requestScrollMotion, { passive: true });
 updateScrollMotion();
 
 if (bgVideo) {
+  bgVideo.controls = false;
+  bgVideo.removeAttribute('controls');
+  bgVideo.setAttribute('aria-hidden', 'true');
   const startBackgroundVideo = () => {
     bgVideo.play().catch(() => {
       // Autoplay is muted, but some embedded browsers still require a retry.
