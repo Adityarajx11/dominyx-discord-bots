@@ -515,3 +515,17 @@ button { color: inherit; font: inherit; }
 .demo-step-count { justify-self: end; color: #888; font-family: "Space Mono", monospace; font-size: 8px; letter-spacing: .1em; }
 @media (max-width: 720px) { .stats-footer { padding: 7px; }.stat-item { min-height: 70px; padding: 10px; }.hero-rotator-line { transform: translateY(18px) rotateX(-58deg) scale(.97); }.hero-rotator-line.is-leaving { transform: translateY(-18px) rotateX(58deg) scale(.97); } }
 @media (prefers-reduced-motion: reduce) { .hero-rotator-line { transition: none; }.bot-card::before { animation: none; } }
+
+/* Final hero tuning: two lines at desktop/tablet, readable texture, and no empty black shelf. */
+.hero-title { font-size: clamp(38px, 7.2vw, 96px); }
+.hero-title .headline-line { white-space: nowrap; }
+.hero-title .headline-line-accent { font-size: clamp(28px, 5.2vw, 72px); letter-spacing: -.045em; }
+.bg-grid { opacity: .08 !important; }
+.main-content { min-height: 0; }
+.hero { padding-bottom: 0; }
+.modules-slide { padding-top: 80px; }
+@media (max-width: 720px) {
+  .hero-title { font-size: clamp(31px, 9.8vw, 68px); }
+  .hero-title .headline-line-accent { font-size: clamp(25px, 7.4vw, 55px); }
+  .modules-slide { padding-top: 80px; }
+}
