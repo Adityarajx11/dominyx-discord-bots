@@ -631,64 +631,6 @@ button { color: inherit; font: inherit; }
   font-weight: 600;
 }
 
-/* Shared landing-page type rhythm. */
-:root {
-  --size-h1: clamp(40px, 5.5vw, 76px);
-  --size-h2: clamp(30px, 3.8vw, 54px);
-  --size-body: 18px;
-  --size-label: 13px;
-  --space-label: 20px;
-  --space-heading: 28px;
-  --space-button: 36px;
-}
-
-/* Hero */
-.hero-kicker + .hero-title { margin-top: var(--space-label); }
-.hero-title { font-size: var(--size-h1); }
-.hero-title + .hero-rotator { margin-top: var(--space-heading); }
-.hero-rotator + .hero-actions { margin-top: var(--space-button); }
-
-/* Shared left-aligned section headings: suite, Why Aurex, and showcase. */
-.section-heading h2,
-.module-slide-heading h2,
-.why-copy h2,
-.showcase-heading h2,
-.connect-section h2 { font-size: var(--size-h2); }
-.section-heading .section-kicker + h2,
-.module-slide-heading .section-kicker + h2,
-.why-copy .section-kicker + h2,
-.showcase-heading .section-kicker + h2,
-.connect-section .section-kicker + h2 { margin-top: var(--space-label); }
-.section-heading h2 + p,
-.module-slide-heading h2 + p,
-.why-copy h2 + p,
-.connect-section h2 + p { margin-top: var(--space-heading); }
-.why-copy p + .outline-button,
-.connect-section p + .primary-button { margin-top: var(--space-button); }
-
-/* Shared body and label sizes in the named sections. */
-.hero-copy,
-.module-slide-heading > p,
-.section-heading > p,
-.why-copy > p,
-.connect-section > p,
-.showcase-card figcaption { font-size: var(--size-body); }
-.section-kicker,
-.bot-index,
-.bot-card-meta > span,
-.module-console-header,
-.module-console-footer,
-.readout-label,
-.launcher-status,
-.stat-label { font-size: var(--size-label); }
-
-/* Footer keeps the same label scale and spacing cadence. */
-.site-footer { gap: var(--space-heading); font-size: var(--size-label); }
-
-.hero-rotator { font-size: var(--size-body); }
-.why-copy > p,
-.connect-section > p { margin-bottom: 0; }
-
 /* Keep the decorative background video from exposing native playback UI. */
 .bg-video { pointer-events: none; }
 video::-webkit-media-controls,
@@ -782,52 +724,4 @@ button,
 .connect-section h2,
 .showcase-heading h2 {
   font-family: var(--font-pixel);
-}
-/* Serif headline layout: every section reads label → headline → copy. */
-.section-heading,
-.module-slide-heading,
-.showcase-heading {
-  display: block;
-  width: 100%;
-  gap: 0;
-}
-.section-heading .section-kicker,
-.module-slide-heading .section-kicker,
-.showcase-heading .section-kicker,
-.why-copy .section-kicker,
-.connect-section .section-kicker {
-  display: block;
-  width: 100%;
-}
-.section-heading h2,
-.module-slide-heading h2,
-.showcase-heading h2,
-.why-copy h2,
-.connect-section h2 {
-  display: block;
-  width: 100%;
-  margin-top: var(--space-label);
-  margin-bottom: 0;
-}
-.section-heading > p,
-.module-slide-heading > p,
-.why-copy > p,
-.connect-section > p {
-  grid-column: auto;
-  max-width: 46ch;
-  margin-top: var(--space-heading);
-  margin-bottom: 0;
-}
-.why-copy p + .outline-button,
-.connect-section p + .primary-button {
-  margin-top: var(--space-button);
-}
-.connect-section .section-kicker,
-.connect-section h2,
-.connect-section > p,
-.connect-section > .primary-button { text-align: center; }
-@media (max-width: 720px) {
-  .section-heading,
-  .module-slide-heading,
-  .showcase-heading { grid-template-columns: none; }
 }
