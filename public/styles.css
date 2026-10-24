@@ -785,3 +785,52 @@ button,
 @media (min-width: 820px) {
   .hero-title { width: min(100%, 900px); max-width: 900px; text-align: center; }
 }
+
+/* Serif headline layout: every section reads label → headline → copy. */
+.section-heading,
+.module-slide-heading,
+.showcase-heading {
+  display: block;
+  width: 100%;
+  gap: 0;
+}
+.section-heading .section-kicker,
+.module-slide-heading .section-kicker,
+.showcase-heading .section-kicker,
+.why-copy .section-kicker,
+.connect-section .section-kicker {
+  display: block;
+  width: 100%;
+}
+.section-heading h2,
+.module-slide-heading h2,
+.showcase-heading h2,
+.why-copy h2,
+.connect-section h2 {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-label);
+  margin-bottom: 0;
+}
+.section-heading > p,
+.module-slide-heading > p,
+.why-copy > p,
+.connect-section > p {
+  grid-column: auto;
+  max-width: 46ch;
+  margin-top: var(--space-heading);
+  margin-bottom: 0;
+}
+.why-copy p + .outline-button,
+.connect-section p + .primary-button {
+  margin-top: var(--space-button);
+}
+.connect-section .section-kicker,
+.connect-section h2,
+.connect-section > p,
+.connect-section > .primary-button { text-align: center; }
+@media (max-width: 720px) {
+  .section-heading,
+  .module-slide-heading,
+  .showcase-heading { grid-template-columns: none; }
+}
