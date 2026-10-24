@@ -628,12 +628,28 @@ html:not(.ios-canvas-bg) .bg-video {
   mix-blend-mode: screen;
   object-fit: cover;
   z-index: 0;
+  animation: bgVideoDrift 18s ease-in-out infinite alternate;
 }
 html:not(.ios-canvas-bg) .bg-canvas { display: none; }
-html.ios-canvas-bg .bg { animation: bgPosterDrift 18s ease-in-out infinite alternate; }
+html.ios-canvas-bg .bg {
+  background-size: 112% 112%;
+  animation: bgPosterDrift 14s ease-in-out infinite alternate;
+}
+html.ios-canvas-bg .bg-canvas {
+  animation: bgCanvasDrift 16s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+@keyframes bgVideoDrift {
+  from { transform: scale(1.02) translate3d(-.5%, -.3%, 0); }
+  to { transform: scale(1.08) translate3d(.8%, .6%, 0); }
+}
 @keyframes bgPosterDrift {
-  from { background-position: 50% 50%; }
-  to { background-position: 53% 47%; }
+  from { background-position: 46% 52%; }
+  to { background-position: 56% 46%; }
+}
+@keyframes bgCanvasDrift {
+  from { transform: scale(1.02) translate3d(-.7%, -.4%, 0); }
+  to { transform: scale(1.08) translate3d(.9%, .7%, 0); }
 }
 
 /* Final three-font contract: pixel only for H1/H2; Geist handles UI and copy. */
@@ -696,8 +712,25 @@ button,
   justify-content: center;
 }
 .showcase-section { margin-top: 0; }
-.hero-kicker { max-width: 100%; font-size: 10px; line-height: 1.2; }
-.trust-copy { font-size: 10px; line-height: 1.2; }
+.hero-kicker {
+  width: fit-content;
+  max-width: calc(100vw - 32px);
+  min-height: 32px;
+  gap: 8px;
+  padding: 3px 10px 3px 3px;
+  font-size: 9px;
+  line-height: 1.15;
+}
+.trust-copy { font-size: 9px; line-height: 1.15; }
+.hero-title,
+.section-heading h2,
+.module-slide-heading h2,
+.showcase-heading h2,
+.why-copy h2,
+.connect-section h2 {
+  letter-spacing: -0.035em;
+  word-spacing: -0.08em;
+}
 .section-heading,
 .module-slide-heading,
 .showcase-heading,
