@@ -542,42 +542,268 @@ if (statsStrip && 'IntersectionObserver' in window) {
   statsObserver.observe(statsStrip);
 } else animateStats();
 
-const demo = document.querySelector('[data-demo]');
-const demoSteps = [...document.querySelectorAll('[data-demo-step]')];
-const demoCaption = document.querySelector('[data-demo-caption]');
-const demoDots = document.querySelector('[data-demo-dots]');
-const demoToggle = document.querySelector('[data-demo-toggle]');
-const demoCursor = document.querySelector('[data-demo-cursor]');
-const demoStepCount = document.querySelector('[data-demo-step-count]');
-const demoCaptions = [
-  'Click Add to server to invite a module.',
-  'Discord opens the authorization step for your selected server.',
-  'Aurex returns to the dashboard with module settings ready.',
-  'Choose a module and control its real server settings.'
-];
-let demoIndex = 0;
-let demoTimer;
-let demoPaused = Boolean(reduceMotion);
-if (demoDots) demoDots.innerHTML = demoSteps.map((_, index) => `<i class="${index === 0 ? 'is-active' : ''}" aria-hidden="true"></i>`).join('');
-const renderDemo = () => {
-  demoSteps.forEach((node, index) => node.classList.toggle('demo-step-active', index === demoIndex || reduceMotion));
-  if (demoCaption) demoCaption.textContent = reduceMotion ? demoCaptions.join(' ') : demoCaptions[demoIndex];
-  demoDots?.querySelectorAll('i').forEach((node, index) => node.classList.toggle('is-active', index === demoIndex));
-  if (demoStepCount) demoStepCount.textContent = `STEP ${demoIndex + 1} / ${demoSteps.length}`;
-  if (demoCursor) {
-    const positions = [{ left: '78%', top: '52%' }, { left: '78%', top: '59%' }, { left: '54%', top: '53%' }, { left: '67%', top: '53%' }];
-    demoCursor.style.left = positions[demoIndex][0];
-    demoCursor.style.top = positions[demoIndex][1];
+const productDemo = document.querySelector('[data-product-demo]');
+if (productDemo) {
+  const demoWindow = productDemo.querySelector('[data-demo-window]');
+  const views = [...productDemo.querySelectorAll('[data-demo-view]')];
+  const viewByName = Object.fromEntries(views.map((view) => [view.dataset.demoView, view]));
+  const stepLabels = [...productDemo.querySelectorAll('[data-demo-step-label]')];
+  const progressBar = productDemo.querySelector('.product-demo-progress');
+  const progressFill = productDemo.querySelector('[data-demo-progress-fill]');
+  const cursor = productDemo.querySelector('[data-demo-cursor]');
+  const addButton = productDemo.querySelector('[data-demo-add]');
+  const musicChip = productDemo.querySelector('[data-demo-music-chip]');
+  const permissionChecks = [...productDemo.querySelectorAll('[data-demo-permission-check]')];
+  const authorizedStatus = productDemo.querySelector('[data-demo-authorized]');
+  const roleButton = productDemo.querySelector('[data-demo-role-button]');
+  const roleValue = productDemo.querySelector('[data-demo-role-value]');
+  const roleMenu = productDemo.querySelector('[data-demo-role-menu]');
+  const roleOption = productDemo.querySelector('[data-demo-role-option]');
+  const volumeSlider = productDemo.querySelector('[data-demo-slider]');
+  const volumeFill = productDemo.querySelector('[data-demo-volume-fill]');
+  const volumeThumb = productDemo.querySelector('[data-demo-volume-thumb]');
+  const volumeValue = productDemo.querySelector('[data-demo-volume-value]');
+  const autoLeave = productDemo.querySelector('[data-demo-auto-leave]');
+  const typedCommand = productDemo.querySelector('[data-demo-typed]');
+  const inputPlaceholder = productDemo.querySelector('[data-demo-placeholder]');
+  const userMessage = productDemo.querySelector('[data-demo-user-message]');
+  const userCommand = productDemo.querySelector('[data-demo-user-command]');
+  const botReply = productDemo.querySelector('[data-demo-reply]');
+  const trackFill = productDemo.querySelector('[data-demo-track-fill]');
+  const equalizer = productDemo.querySelector('[data-demo-equalizer]');
+  const replayButton = productDemo.querySelector('[data-demo-replay]');
+  const reducedMotionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+
+  const setActiveStep = (index) => {
+    stepLabels.forEach((label, stepIndex) => {
+      const active = stepIndex === index;
+      label.classList.toggle('is-current', active);
+      if (active) label.setAttribute('aria-current', 'step');
+      else label.removeAttribute('aria-current');
+    });
+  };
+  const setViewAccessibility = (name) => {
+    views.forEach((view) => view.setAttribute('aria-hidden', String(view.dataset.demoView !== name)));
+  };
+  const showFinalDemo = () => {
+    views.forEach((view) => {
+      const visible = view.dataset.demoView === 'configure';
+      view.style.opacity = visible ? '1' : '0';
+      view.style.visibility = visible ? 'visible' : 'hidden';
+      view.style.transform = 'none';
+    });
+    setViewAccessibility('configure');
+    setActiveStep(3);
+    progressFill.style.transform = 'scaleX(1)';
+    progressBar.setAttribute('aria-valuenow', '100');
+    addButton.textContent = 'Added ✓';
+    addButton.classList.add('is-added');
+    musicChip.style.opacity = '1';
+    musicChip.style.visibility = 'visible';
+    permissionChecks.forEach((check) => { check.classList.add('is-checked'); check.style.opacity = '1'; check.style.visibility = 'visible'; });
+    authorizedStatus.style.opacity = '1';
+    authorizedStatus.style.visibility = 'visible';
+    roleValue.textContent = '@DJ';
+    roleMenu.style.opacity = '0';
+    roleMenu.style.visibility = 'hidden';
+    volumeFill.style.transform = 'scaleX(.7)';
+    volumeThumb.style.left = '70%';
+    volumeValue.textContent = '70%';
+    autoLeave.classList.add('is-on');
+    autoLeave.setAttribute('aria-checked', 'true');
+    typedCommand.textContent = '';
+    inputPlaceholder.style.display = '';
+    userCommand.textContent = '/play midnight mix';
+    userMessage.style.opacity = '1';
+    userMessage.style.visibility = 'visible';
+    userMessage.style.transform = 'none';
+    userMessage.setAttribute('aria-hidden', 'false');
+    botReply.style.opacity = '1';
+    botReply.style.visibility = 'visible';
+    botReply.style.transform = 'none';
+    botReply.setAttribute('aria-hidden', 'false');
+    trackFill.style.transform = 'scaleX(.62)';
+    equalizer.classList.add('is-playing');
+    cursor.style.display = 'none';
+  };
+
+  if (reducedMotionQuery?.matches || !window.gsap) {
+    showFinalDemo();
+  } else {
+    const gsapApi = window.gsap;
+    const cycleDuration = 18;
+    const stepDuration = cycleDuration / 4;
+    const command = '/play midnight mix';
+    const getPoint = (element, xRatio = .5, yRatio = .5) => {
+      const target = typeof element === 'string' ? demoWindow.querySelector(element) : element;
+      const targetRect = target.getBoundingClientRect();
+      const windowRect = demoWindow.getBoundingClientRect();
+      return { x: targetRect.left - windowRect.left + targetRect.width * xRatio, y: targetRect.top - windowRect.top + targetRect.height * yRatio };
+    };
+    const moveCursor = (timeline, target, at, duration = .58, xRatio = .5, yRatio = .5) => {
+      const point = getPoint(target, xRatio, yRatio);
+      timeline.to(cursor, { x: point.x, y: point.y, duration, ease: 'power2.inOut' }, at);
+    };
+    const clickCursor = (timeline, at) => {
+      timeline.to(cursor, { scale: .82, duration: .11, ease: 'power1.in' }, at);
+      timeline.to(cursor, { scale: 1, duration: .16, ease: 'back.out(2)' }, at + .11);
+    };
+    const productDemoSteps = [
+      {
+        label: 'Add', view: 'add',
+        animate(timeline, at) {
+          moveCursor(timeline, addButton, at + .32, .62, .68, .55);
+          clickCursor(timeline, at + 1.03);
+          timeline.call(() => { addButton.textContent = 'Added ✓'; addButton.classList.add('is-added'); }, [], at + 1.28);
+          timeline.to(musicChip, { autoAlpha: 1, y: 0, duration: .32, ease: 'power2.out' }, at + 1.28);
+        }
+      },
+      {
+        label: 'Authorize', view: 'authorize',
+        animate(timeline, at) {
+          moveCursor(timeline, productDemo.querySelector('[data-demo-authorize]'), at + .48, .58, .62, .54);
+          clickCursor(timeline, at + 1.12);
+          permissionChecks.forEach((check, index) => {
+            timeline.to(check, { autoAlpha: 1, scale: 1, duration: .2, ease: 'back.out(2)' }, at + 1.5 + index * .38);
+          });
+          timeline.to(authorizedStatus, { autoAlpha: 1, duration: .28, ease: 'power1.out' }, at + 2.85);
+        }
+      },
+      {
+        label: 'Configure', view: 'configure',
+        animate(timeline, at) {
+          moveCursor(timeline, roleButton, at + .42, .48, .76, .55);
+          clickCursor(timeline, at + .93);
+          timeline.to(roleMenu, { autoAlpha: 1, y: 0, duration: .2, ease: 'power1.out' }, at + .94);
+          moveCursor(timeline, roleOption, at + 1.18, .34, .42, .5);
+          clickCursor(timeline, at + 1.58);
+          timeline.call(() => { roleValue.textContent = '@DJ'; }, [], at + 1.7);
+          timeline.to(roleMenu, { autoAlpha: 0, y: -3, duration: .18 }, at + 1.72);
+          moveCursor(timeline, volumeSlider, at + 2.02, .48, .7, .5);
+          timeline.to(volumeFill, { scaleX: .7, duration: .52, ease: 'power2.out' }, at + 2.28);
+          timeline.to(volumeThumb, { left: '70%', duration: .52, ease: 'power2.out' }, at + 2.28);
+          timeline.call(() => { volumeValue.textContent = '70%'; }, [], at + 2.82);
+          moveCursor(timeline, autoLeave, at + 3.06, .42, .55, .5);
+          clickCursor(timeline, at + 3.52);
+          timeline.call(() => { autoLeave.classList.add('is-on'); autoLeave.setAttribute('aria-checked', 'true'); }, [], at + 3.78);
+        }
+      },
+      {
+        label: 'Use', view: 'configure',
+        animate(timeline, at) {
+          const chatInput = productDemo.querySelector('.product-demo-message-box');
+          moveCursor(timeline, chatInput, at + .14, .48, .57, .5);
+          clickCursor(timeline, at + .62);
+          const typing = { count: 0 };
+          timeline.to(typing, {
+            count: command.length, duration: 1.08, ease: 'none', roundProps: 'count',
+            onStart: () => { inputPlaceholder.style.display = 'none'; },
+            onUpdate: () => { typedCommand.textContent = command.slice(0, Math.round(typing.count)); }
+          }, at + .76);
+          timeline.call(() => {
+            userCommand.textContent = command;
+            userMessage.setAttribute('aria-hidden', 'false');
+            typedCommand.textContent = '';
+            inputPlaceholder.style.display = '';
+          }, [], at + 1.92);
+          timeline.to(userMessage, { autoAlpha: 1, y: 0, duration: .22, ease: 'power1.out' }, at + 1.92);
+          timeline.call(() => { botReply.setAttribute('aria-hidden', 'false'); equalizer.classList.add('is-playing'); }, [], at + 2.16);
+          timeline.to(botReply, { autoAlpha: 1, y: 0, duration: .3, ease: 'power2.out' }, at + 2.16);
+          timeline.to(trackFill, { scaleX: .62, duration: 2.35, ease: 'none' }, at + 2.28);
+        }
+      }
+    ];
+
+    let timeline = null;
+    let isInView = false;
+    let isHovered = false;
+    let isTouching = false;
+    let hasFocus = false;
+    let resizeFrame = 0;
+    const resetDemo = () => {
+      addButton.textContent = 'Add Music to server';
+      addButton.classList.remove('is-added');
+      roleValue.textContent = 'Select a role';
+      volumeValue.textContent = '0%';
+      autoLeave.classList.remove('is-on');
+      autoLeave.setAttribute('aria-checked', 'false');
+      typedCommand.textContent = '';
+      inputPlaceholder.style.display = '';
+      userCommand.textContent = '';
+      userMessage.setAttribute('aria-hidden', 'true');
+      botReply.setAttribute('aria-hidden', 'true');
+      equalizer.classList.remove('is-playing');
+      progressBar.setAttribute('aria-valuenow', '0');
+      setActiveStep(0);
+      setViewAccessibility('add');
+    };
+    const syncPlayback = () => {
+      if (!timeline) return;
+      if (isInView && !isHovered && !isTouching && !hasFocus && !document.hidden) timeline.play();
+      else timeline.pause();
+    };
+    const buildTimeline = () => {
+      if (timeline) timeline.kill();
+      timeline = gsapApi.timeline({ paused: true, repeat: -1, repeatDelay: 0 });
+      timeline.call(resetDemo, [], 0);
+      timeline.set(views, { autoAlpha: 0, y: 8 }, 0);
+      timeline.set(viewByName.add, { autoAlpha: 1, y: 0 }, 0);
+      timeline.set(musicChip, { autoAlpha: 0, y: 3 }, 0);
+      timeline.set(permissionChecks, { autoAlpha: 0, scale: .65 }, 0);
+      timeline.set(authorizedStatus, { autoAlpha: 0 }, 0);
+      timeline.set(roleMenu, { autoAlpha: 0, y: -3 }, 0);
+      timeline.set(volumeFill, { scaleX: 0, transformOrigin: 'left center' }, 0);
+      timeline.set(volumeThumb, { left: '0%' }, 0);
+      timeline.set([userMessage, botReply], { autoAlpha: 0, y: 8 }, 0);
+      timeline.set(trackFill, { scaleX: 0, transformOrigin: 'left center' }, 0);
+      timeline.set(cursor, { x: 45, y: 62, scale: 1, autoAlpha: 1 }, 0);
+      timeline.fromTo(progressFill, { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: cycleDuration, ease: 'none' }, 0);
+      let previousView = 'add';
+      productDemoSteps.forEach((step, index) => {
+        const at = index * stepDuration;
+        timeline.call(() => setActiveStep(index), [], at);
+        if (step.view !== previousView) {
+          timeline.to(viewByName[previousView], { autoAlpha: 0, y: -5, duration: .22, ease: 'power1.in' }, at);
+          timeline.to(viewByName[step.view], { autoAlpha: 1, y: 0, duration: .3, ease: 'power2.out' }, at + .12);
+          timeline.call(() => setViewAccessibility(step.view), [], at + .12);
+        }
+        previousView = step.view;
+        step.animate(timeline, at);
+      });
+      timeline.eventCallback('onUpdate', () => progressBar.setAttribute('aria-valuenow', String(Math.round(timeline.progress() * 100))));
+    };
+    buildTimeline();
+    const demoObserver = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+      isInView = entries.some((entry) => entry.isIntersecting);
+      syncPlayback();
+    }, { threshold: .16 }) : null;
+    if (demoObserver) demoObserver.observe(demoWindow);
+    else isInView = true;
+    if (window.matchMedia('(hover: hover)').matches) {
+      demoWindow.addEventListener('pointerenter', (event) => { if (event.pointerType === 'mouse') { isHovered = true; syncPlayback(); } });
+      demoWindow.addEventListener('pointerleave', (event) => { if (event.pointerType === 'mouse') { isHovered = false; syncPlayback(); } });
+    }
+    [demoWindow, replayButton].forEach((node) => {
+      node.addEventListener('touchstart', () => { isTouching = true; syncPlayback(); }, { passive: true });
+      node.addEventListener('touchend', () => { isTouching = false; syncPlayback(); }, { passive: true });
+      node.addEventListener('touchcancel', () => { isTouching = false; syncPlayback(); }, { passive: true });
+    });
+    demoWindow.addEventListener('focusin', () => { hasFocus = true; syncPlayback(); });
+    demoWindow.addEventListener('focusout', (event) => {
+      if (!demoWindow.contains(event.relatedTarget)) { hasFocus = false; syncPlayback(); }
+    });
+    replayButton.addEventListener('click', () => {
+      if (!timeline) return;
+      timeline.pause(0);
+      resetDemo();
+      timeline.play(0);
+      syncPlayback();
+    });
+    document.addEventListener('visibilitychange', syncPlayback);
+    window.addEventListener('resize', () => {
+      if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+      resizeFrame = window.requestAnimationFrame(() => { resizeFrame = 0; buildTimeline(); syncPlayback(); });
+    }, { passive: true });
+    syncPlayback();
   }
-};
-const nextDemo = (direction = 1) => { demoIndex = (demoIndex + direction + demoSteps.length) % demoSteps.length; renderDemo(); };
-const startDemo = () => { if (!demoPaused && !reduceMotion && !demoTimer) demoTimer = window.setInterval(() => nextDemo(), 4000); };
-const stopDemo = () => { if (demoTimer) { window.clearInterval(demoTimer); demoTimer = null; } };
-demo?.addEventListener('mouseenter', stopDemo);
-demo?.addEventListener('mouseleave', startDemo);
-demo?.addEventListener('touchstart', stopDemo, { passive: true });
-document.querySelector('[data-demo-prev]')?.addEventListener('click', () => nextDemo(-1));
-document.querySelector('[data-demo-next]')?.addEventListener('click', () => nextDemo());
-demoToggle?.addEventListener('click', () => { demoPaused = !demoPaused; demoToggle.textContent = demoPaused ? 'Replay' : 'Pause'; if (demoPaused) stopDemo(); else startDemo(); });
-renderDemo();
-startDemo();
+}

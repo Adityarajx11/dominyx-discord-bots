@@ -209,22 +209,91 @@
 
 
       <section class="demo-section" id="see-it-work" aria-labelledby="demo-title">
-        <div class="section-heading"><span class="section-kicker">AUREX CONTROL / LIVE WALKTHROUGH</span><h2 id="demo-title">See how it <span class="script-accent">works.</span></h2><p>From adding a bot to controlling it from your server dashboard.</p></div>
-        <div class="dashboard-demo" data-demo><span class="demo-cursor" data-demo-cursor aria-hidden="true"></span>
-          <div class="dashboard-demo-top"><span class="demo-brand">AUREX <small>/ CONTROL</small></span><span class="demo-status"><i></i> SYSTEM ONLINE</span></div>
-          <div class="dashboard-demo-body">
-            <aside class="demo-server-rail"><strong>Your servers</strong><span class="is-selected">Aurex Community</span><span>Support Hub</span></aside>
-            <div class="demo-control-panel">
-              <div class="demo-panel-head"><span class="demo-eyebrow">AUREX CONTROL / SERVER</span><strong>Choose a bot</strong><span class="demo-step-count" data-demo-step-count>STEP 1 / 4</span></div>
-              <div class="demo-step demo-step-active" data-demo-step="0"><div class="demo-discord-card"><span class="demo-discord-mark"><img src="/assets/aurex-logo.jpg" alt="" /></span><div><strong>Add the Music bot to Discord</strong><small>Invite the bot to your server</small></div><button type="button" class="demo-add-button">Add to server</button></div></div>
-              <div class="demo-step" data-demo-step="1"><div class="demo-discord-card demo-discord-authorize"><span class="demo-discord-mark"><img src="/assets/aurex-logo.jpg" alt="" /></span><div><strong>Authorize Aurex</strong><small>Select a server and continue in Discord</small></div><button type="button" class="demo-authorize-button">Authorize</button></div></div>
-              <div class="demo-step" data-demo-step="2"><div class="demo-module-tabs"><span class="is-selected">Music</span><span>Security</span><span>Greet</span><span>Tickets</span></div><div class="demo-settings-card"><span class="demo-eyebrow">BOT / MUSIC</span><strong>Music settings</strong><p>Set the DJ role, queue size, volume, and voice-channel behavior.</p></div></div>
-              <div class="demo-step" data-demo-step="3"><div class="demo-module-tabs"><span>Music</span><span class="is-selected">Security</span><span>Greet</span><span>Tickets</span></div><div class="demo-settings-card"><span class="demo-eyebrow">BOT / SECURITY</span><strong>Security settings</strong><p>Configure spam, link, caps, mention, emoji, bad-word, raid, and anti-nuke controls.</p></div></div>
+        <div class="section-heading product-demo-heading"><span class="section-kicker">THE CONTROL PANEL</span><h2 id="demo-title">From invite to <em class="script-accent">in tune</em> in four steps.</h2><p>Watch Aurex go from one click to a running bot.</p></div>
+        <div class="product-demo" data-product-demo>
+          <div class="product-demo-stepper" aria-label="Demo progress">
+            <div class="product-demo-step-labels" role="list">
+              <span class="is-current" data-demo-step-label="0" role="listitem" aria-current="step"><b>01</b> Add</span>
+              <span data-demo-step-label="1" role="listitem"><b>02</b> Authorize</span>
+              <span data-demo-step-label="2" role="listitem"><b>03</b> Configure</span>
+              <span data-demo-step-label="3" role="listitem"><b>04</b> Use</span>
             </div>
+            <div class="product-demo-progress" role="progressbar" aria-label="Walkthrough progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-demo-progress-fill></span></div>
           </div>
+
+          <div class="product-demo-window" data-demo-window aria-label="Aurex Control product demo">
+            <div class="product-demo-chrome" aria-hidden="true">
+              <span class="product-demo-window-dots"><i></i><i></i><i></i></span>
+              <span class="product-demo-address">aurex.app <b>/</b> control</span>
+              <span class="product-demo-secure"><i></i> secure</span>
+            </div>
+            <div class="product-demo-layout">
+              <aside class="product-demo-servers" aria-label="Your servers">
+                <span class="product-demo-servers-label">YOUR SERVERS</span>
+                <div class="product-demo-server is-selected">
+                  <span class="product-demo-server-icon">A</span>
+                  <span class="product-demo-server-name">Aurex Community<span class="product-demo-music-chip" data-demo-music-chip>Music</span></span>
+                </div>
+                <div class="product-demo-server">
+                  <span class="product-demo-server-icon is-violet">S</span>
+                  <span class="product-demo-server-name">Support Hub</span>
+                </div>
+              </aside>
+
+              <div class="product-demo-workspace">
+                <main class="product-demo-dashboard" aria-label="Aurex dashboard">
+                  <div class="product-demo-dashboard-head"><div><span class="product-demo-kicker">AUREX CONTROL / MUSIC</span><h3>Music settings</h3></div><span class="product-demo-online"><i></i> Online</span></div>
+                  <div class="product-demo-stage">
+                    <section class="product-demo-view" data-demo-view="add" aria-label="Add Music">
+                      <div class="product-demo-invite-card">
+                        <span class="product-demo-music-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+                        <div class="product-demo-invite-copy"><span class="product-demo-kicker">BOT / MUSIC</span><strong>Bring every channel into tune.</strong><small>Add the Music bot to your server.</small></div>
+                        <button class="product-demo-primary" type="button" data-demo-add>Add Music to server</button>
+                      </div>
+                    </section>
+
+                    <section class="product-demo-view" data-demo-view="authorize" aria-label="Authorize Aurex" aria-hidden="true">
+                      <div class="product-demo-permission-card">
+                        <div class="product-demo-card-heading"><span class="product-demo-kicker">DISCORD / PERMISSIONS</span><strong>Authorize Aurex</strong></div>
+                        <ul class="product-demo-permissions">
+                          <li><i data-demo-permission-check></i> Read messages</li>
+                          <li><i data-demo-permission-check></i> Connect to voice</li>
+                          <li><i data-demo-permission-check></i> Manage server roles</li>
+                        </ul>
+                        <div class="product-demo-authorize-row"><button class="product-demo-secondary" type="button" data-demo-authorize>Authorize</button><span class="product-demo-authorized" data-demo-authorized>Authorized</span></div>
+                      </div>
+                    </section>
+
+                    <section class="product-demo-view" data-demo-view="configure" aria-label="Configure Music" aria-hidden="true">
+                      <div class="product-demo-settings-card">
+                        <div class="product-demo-card-heading"><span class="product-demo-kicker">BOT / MUSIC</span><strong>Fine-tune your setup</strong></div>
+                        <div class="product-demo-setting"><span><b>DJ role</b><small>Who can manage playback?</small></span><div class="product-demo-role-wrap"><button class="product-demo-dropdown" type="button" data-demo-role-button><span data-demo-role-value>Select a role</span><i aria-hidden="true">⌄</i></button><div class="product-demo-role-menu" data-demo-role-menu><button type="button" data-demo-role-option>@DJ</button><button type="button">@Moderator</button></div></div></div>
+                        <div class="product-demo-setting product-demo-volume-setting"><span><b>Default volume</b><small data-demo-volume-value>0%</small></span><div class="product-demo-slider" data-demo-slider><span class="product-demo-slider-track"></span><span class="product-demo-slider-fill" data-demo-volume-fill></span><i class="product-demo-slider-thumb" data-demo-volume-thumb></i></div></div>
+                        <div class="product-demo-setting product-demo-toggle-setting"><span><b>Auto-leave when empty</b><small>Leave the voice channel when no one is listening.</small></span><button class="product-demo-switch" type="button" role="switch" aria-checked="false" aria-label="Auto-leave when empty" data-demo-auto-leave><i></i></button></div>
+                      </div>
+                    </section>
+                  </div>
+                </main>
+
+                <aside class="product-demo-discord" aria-label="Discord channel demo">
+                  <div class="product-demo-channel-head"><span class="product-demo-hash">#</span><strong>listening-room</strong><span class="product-demo-channel-live"><i></i> 8 online</span></div>
+                  <div class="product-demo-chat-feed">
+                    <div class="product-demo-user-message" data-demo-user-message aria-hidden="true"><span class="product-demo-avatar">Y</span><div><b>You</b><code data-demo-user-command></code></div></div>
+                    <article class="product-demo-reply" data-demo-reply aria-label="Music bot reply" aria-hidden="true">
+                      <div class="product-demo-reply-head"><span class="product-demo-bot-avatar">A</span><span><b>Aurex Music</b><small>APP</small></span><time>now</time></div>
+                      <strong class="product-demo-now-playing">Now playing <span>·</span> Midnight City</strong>
+                      <div class="product-demo-track" role="progressbar" aria-label="Track progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62"><span data-demo-track-fill></span></div>
+                      <div class="product-demo-track-meta"><span>1:42</span><span>4:04</span><span class="product-demo-equalizer" data-demo-equalizer aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+                    </article>
+                  </div>
+                  <div class="product-demo-message-box" role="textbox" aria-label="Message in listening-room"><span class="product-demo-plus" aria-hidden="true">+</span><span class="product-demo-typed-wrap"><span data-demo-typed></span><span class="product-demo-placeholder" data-demo-placeholder>Message #listening-room</span><i class="product-demo-caret" data-demo-caret></i></span><span class="product-demo-send" aria-hidden="true">↑</span></div>
+                </aside>
+              </div>
+            </div>
+            <svg class="product-demo-cursor" data-demo-cursor aria-hidden="true" viewBox="0 0 24 30"><path d="M3 2v23l6.5-6.2 4.2 9 3.2-1.6-4.2-9H22L3 2z" fill="#F4F4F0" stroke="#050505" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <button class="product-demo-replay" type="button" data-demo-replay aria-label="Replay the product demo"><span aria-hidden="true">↻</span> Replay</button>
         </div>
-        <p class="demo-caption" data-demo-caption>Click Add to server to invite a bot.</p>
-        <div class="demo-controls"><button type="button" data-demo-prev aria-label="Previous demo step">←</button><div class="demo-dots" data-demo-dots></div><button type="button" data-demo-next aria-label="Next demo step">→</button><button type="button" data-demo-toggle>Pause</button></div>
       </section>
 
       <section class="compare-section" aria-labelledby="compare-title">
