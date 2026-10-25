@@ -113,10 +113,6 @@ const mobileMenu = document.querySelector('#mobile-menu');
 const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link, .mobile-connect');
 const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 const bgVideo = document.querySelector('.bg-video');
-const bgCanvas = document.querySelector('.bg-canvas');
-const bgContext = bgCanvas?.getContext('2d');
-const isAppleTouch = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-document.documentElement.classList.toggle('ios-canvas-bg', isAppleTouch);
 
 let scrollFrame = 0;
 function updateScrollMotion() {
@@ -138,62 +134,60 @@ window.setTimeout(() => {
     element.style.filter = 'none';
   });
 }, 1600);
-function resizeBackgroundCanvas() {
-  if (!bgCanvas || !bgContext) return;
-  const ratio = Math.min(window.devicePixelRatio || 1, 2);
-  bgCanvas.width = Math.max(1, Math.round(bgCanvas.clientWidth * ratio));
-  bgCanvas.height = Math.max(1, Math.round(bgCanvas.clientHeight * ratio));
-}
-
-function drawBackgroundFrame() {
-  if (bgCanvas && bgContext && bgVideo && bgVideo.readyState >= 2 && !bgVideo.paused) {
-    const sourceWidth = bgVideo.videoWidth || 1;
-    const sourceHeight = bgVideo.videoHeight || 1;
-    const scale = Math.max(bgCanvas.width / sourceWidth, bgCanvas.height / sourceHeight);
-    const drawWidth = sourceWidth * scale;
-    const drawHeight = sourceHeight * scale;
-    bgContext.drawImage(bgVideo, (bgCanvas.width - drawWidth) / 2, (bgCanvas.height - drawHeight) / 2, drawWidth, drawHeight);
-  }
-  window.requestAnimationFrame(drawBackgroundFrame);
-}
-
 if (bgVideo) {
-  if (isAppleTouch && bgCanvas) bgCanvas.style.opacity = '0';
   bgVideo.muted = true;
   bgVideo.defaultMuted = true;
   bgVideo.autoplay = true;
   bgVideo.loop = true;
   bgVideo.playsInline = true;
-  bgVideo.setAttribute('muted', '');
-  bgVideo.setAttribute('autoplay', '');
-  bgVideo.setAttribute('playsinline', '');
-  bgVideo.setAttribute('webkit-playsinline', '');
-  bgVideo.setAttribute('preload', 'auto');
-  bgVideo.setAttribute('disablepictureinpicture', '');
-  bgVideo.removeAttribute('controls');
   bgVideo.controls = false;
-  bgVideo.addEventListener('playing', () => {
-    if (isAppleTouch && bgCanvas) bgCanvas.style.opacity = '1';
+  ['muted', 'autoplay', 'loop', 'playsinline', 'webkit-playsinline', 'preload', 'disablepictureinpicture'].forEach((name) => {
+    bgVideo.setAttribute(name, name === 'preload' ? 'auto' : '');
   });
-  bgVideo.addEventListener('pause', () => {
-    if (isAppleTouch && bgCanvas) bgCanvas.style.opacity = '0';
-  });
-  const startBackground = () => {
-    if (bgVideo.paused) bgVideo.play().catch(() => {});
-  };
-  ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'].forEach((eventName) => {
-    bgVideo.addEventListener(eventName, startBackground);
-  });
-  document.addEventListener('touchstart', startBackground, { once: true, passive: true });
-  document.addEventListener('visibilitychange', startBackground);
-  window.addEventListener('pageshow', startBackground);
-  window.setTimeout(startBackground, 250);
-  startBackground();
+  bgVideo.removeAttribute('controls');
+  const playBackground = () => { if (bgVideo.paused) bgVideo.play().catch(() => {}); };
+  window.addEventListener('load', playBackground, { once: true });
+  document.addEventListener('touchstart', playBackground, { once: true, passive: true });
+  document.addEventListener('pointerdown', playBackground, { once: true, passive: true });
+  document.addEventListener('visibilitychange', playBackground);
+  window.addEventListener('pageshow', playBackground);
+  playBackground();
 }
 
-resizeBackgroundCanvas();
-window.addEventListener('resize', resizeBackgroundCanvas, { passive: true });
-window.requestAnimationFrame(drawBackgroundFrame);
+// A single sticky story stage swaps one module at a time as the page scrolls.
+const story = document.querySelector('[data-module-story]');
+if (story) {
+  const panels = [...story.querySelectorAll('[data-story-panel]')];
+  const dots = [...story.querySelectorAll('[data-story-dot]')];
+  let storyFrame = 0;
+  const renderStory = () => {
+    storyFrame = 0;
+    const total = Math.max(story.offsetHeight - window.innerHeight, 1);
+    const progress = Math.min(1, Math.max(0, -story.getBoundingClientRect().top / total));
+    const active = Math.min(panels.length - 1, Math.floor(progress * panels.length));
+    panels.forEach((panel, index) => {
+      const selected = index === active;
+      panel.classList.toggle('is-active', selected);
+      panel.setAttribute('aria-hidden', String(!selected));
+    });
+    dots.forEach((dot, index) => {
+      if (index === active) dot.setAttribute('aria-current', 'step');
+      else dot.removeAttribute('aria-current');
+    });
+  };
+  const requestStoryRender = () => {
+    if (!storyFrame) storyFrame = requestAnimationFrame(renderStory);
+  };
+  window.addEventListener('scroll', requestStoryRender, { passive: true });
+  window.addEventListener('resize', requestStoryRender, { passive: true });
+  dots.forEach((dot) => dot.addEventListener('click', () => {
+    const index = Number(dot.dataset.storyDot);
+    const total = Math.max(story.offsetHeight - window.innerHeight, 1);
+    const top = window.scrollY + story.getBoundingClientRect().top + total * ((index + 0.12) / panels.length);
+    window.scrollTo({ top, behavior: 'smooth' });
+  }));
+  renderStory();
+}
 
 function setMenu(open) {
   if (!menuToggle || !mobileMenu) return;

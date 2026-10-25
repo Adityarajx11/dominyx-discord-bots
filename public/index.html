@@ -9,20 +9,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Unbounded:wght@800&display=swap" rel="stylesheet" />
     <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <div class="page-shell">
-      <div class="bg" aria-hidden="true">
-        <video class="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture poster="/assets/bg-poster.jpg" aria-hidden="true">
-          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4" type="video/mp4" />
-        </video>
-        <canvas class="bg-canvas" aria-hidden="true"></canvas>
-        <div class="bg-veil"></div>
-        <div class="bg-grid"></div>
-      </div>
+    <div class="site-background" aria-hidden="true">
+      <video class="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture poster="/assets/aurex-fluid-poster.jpg">
+        <source src="/assets/aurex-fluid-bg.webm" type="video/webm" />
+        <source src="/assets/aurex-fluid-bg.mp4" type="video/mp4" />
+      </video>
+      <div class="bg-top-shade"></div>
+      <div class="bg-global-shade"></div>
+    </div>
 
       <header class="site-header">
         <a class="brand-lockup" href="#top" aria-label="Aurex home">
@@ -70,7 +71,7 @@
 
           <h1 class="hero-title" id="hero-title">
             <span class="headline-line anim" style="--d: 0.12s">Six bots.</span>
-            <span class="headline-line headline-line-accent anim" style="--d: 0.3s">Each one does one thing properly.</span>
+            <span class="headline-line headline-line-accent anim" style="--d: 0.3s">Each one does one thing <em class="script-accent">properly.</em></span>
           </h1>
 
           <div class="hero-rotator anim" style="--d: 0.34s" aria-live="polite">
@@ -83,14 +84,72 @@
           <div class="hero-actions anim" style="--d: 0.47s" id="connect">
             <a class="primary-button" href="#modules">Explore the bots <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
             <a class="text-button" href="#connect">Built for Discord <span class="text-button-mark"><i class="fa-brands fa-discord"></i></span></a>
+            <a class="text-button hero-dashboard-link" href="/dashboard.html" data-auth-cta>Open dashboard</a>
           </div>
 
         </section>
       </main>
 
+      <section class="module-story" id="modules" aria-labelledby="module-story-title" data-module-story>
+        <div class="module-story-track" aria-hidden="true"></div>
+        <div class="module-story-stage">
+          <div class="module-story-heading"><span class="section-kicker">THE AUREX MODULES / 06</span><h2 id="module-story-title">One layer at a time. <em class="script-accent">In sync.</em></h2></div>
+          <div class="story-panels" aria-live="polite">
+          <article class="story-panel is-active" data-story-panel="0" aria-hidden="false">
+            <div class="story-module-meta"><span>MODULE / 01</span><span>MUSIC</span></div>
+            <h3 class="story-module-title"><span data-story-name>Music</span><em class="story-script">mode</em></h3>
+            <p class="story-module-copy">Let every voice channel find its rhythm.</p>
+            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>01 — 06</span></div><div class="story-command"><b>›</b> /play midnight mix</div><div class="story-reply"><span>↳</span> Queued Midnight City — now playing in #listening-room</div></div>
+          </article>
+          <article class="story-panel" data-story-panel="1" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE / 02</span><span>MODERATION</span></div>
+            <h3 class="story-module-title"><span data-story-name>Moderation</span><em class="story-script">mode</em></h3>
+            <p class="story-module-copy">Keep the noise out and the good energy in.</p>
+            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>02 — 06</span></div><div class="story-command"><b>›</b> /guard scan @newcomer</div><div class="story-reply"><span>↳</span> Scan complete — 0 risks found · member verified</div></div>
+          </article>
+          <article class="story-panel" data-story-panel="2" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE / 03</span><span>WELCOME</span></div>
+            <h3 class="story-module-title"><span data-story-name>Welcome</span><em class="story-script">mode</em></h3>
+            <p class="story-module-copy">Make every first hello feel like it belongs.</p>
+            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>03 — 06</span></div><div class="story-command"><b>›</b> /welcome preview</div><div class="story-reply"><span>↳</span> Welcome card ready — role @newcomer assigned</div></div>
+          </article>
+          <article class="story-panel" data-story-panel="3" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE / 04</span><span>TICKETS</span></div>
+            <h3 class="story-module-title"><span data-story-name>Tickets</span><em class="story-script">mode</em></h3>
+            <p class="story-module-copy">Turn a question into a private conversation.</p>
+            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>04 — 06</span></div><div class="story-command"><b>›</b> /ticket open billing</div><div class="story-reply"><span>↳</span> Ticket #204 created — your team has been notified</div></div>
+          </article>
+          <article class="story-panel" data-story-panel="4" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE / 05</span><span>LEVELS</span></div>
+            <h3 class="story-module-title"><span data-story-name>Levels</span><em class="story-script">mode</em></h3>
+            <p class="story-module-copy">Give every bit of participation a little momentum.</p>
+            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>05 — 06</span></div><div class="story-command"><b>›</b> /rank @you</div><div class="story-reply"><span>↳</span> LEVEL 18 · 42% to next rank · reward unlocked</div></div>
+          </article>
+          <article class="story-panel" data-story-panel="5" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE / 06</span><span>LOGS</span></div>
+            <h3 class="story-module-title"><span data-story-name>Logs</span><em class="story-script">mode</em></h3>
+            <p class="story-module-copy">Know what changed, when, and who made it happen.</p>
+            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>06 — 06</span></div><div class="story-command"><b>›</b> /logs latest</div><div class="story-reply"><span>↳</span> Role update · #design-lab · 2 minutes ago</div></div>
+          </article>
+          </div>
+          <nav class="story-progress" aria-label="Module story progress">
+            <button type="button" aria-label="Music, module 1 of 6" aria-current="step" data-story-dot="0"></button>
+            <button type="button" aria-label="Moderation, module 2 of 6" data-story-dot="1"></button>
+            <button type="button" aria-label="Welcome, module 3 of 6" data-story-dot="2"></button>
+            <button type="button" aria-label="Tickets, module 4 of 6" data-story-dot="3"></button>
+            <button type="button" aria-label="Levels, module 5 of 6" data-story-dot="4"></button>
+            <button type="button" aria-label="Logs, module 6 of 6" data-story-dot="5"></button>
+          </nav>
+          <span class="story-scroll-note">SCROLL TO EXPLORE <span>↓</span></span>
+        </div>
+      </section>
+      <section id="reviews-gallery" aria-label="Server reviews">
+        <div id="reviews-gallery-root"></div>
+      </section>
+
 
       <section class="showcase-section" id="see-it-in-discord" aria-labelledby="showcase-title">
-        <div class="showcase-heading"><span class="section-kicker">AUREX / IN DISCORD</span><h2 id="showcase-title">See it in <span>Discord.</span></h2></div>
+        <div class="showcase-heading"><span class="section-kicker">AUREX / IN DISCORD</span><h2 id="showcase-title">See it in <span class="script-accent">Discord.</span></h2></div>
         <div class="showcase-grid">
           <figure class="showcase-card"><img src="/assets/shot-1.png" alt="Temporary Aurex dashboard preview" /><figcaption>One place to see what your server needs.</figcaption></figure>
           <figure class="showcase-card"><img src="/assets/shot-2.png" alt="Temporary Aurex controls preview" /><figcaption>Focused controls for each bot.</figcaption></figure>
@@ -100,31 +159,10 @@
         <div class="why-built"><span class="section-kicker">WHY I BUILT THIS</span><p data-why-line="0"></p><p data-why-line="1"></p><p data-why-line="2"></p></div>
       </section>
 
-      <section class="modules-slide" id="modules" aria-labelledby="modules-title">
-        <div class="module-slide-heading"><span class="section-kicker">AUREX BOTS</span><h2 id="modules-title">Choose your<br /><span>community layer.</span></h2><p>Six focused bots. One shared operating rhythm. Select a bot to see how Aurex keeps your server moving.</p></div>
-        <div class="module-console" id="bots">
-          <div class="module-console-header"><span>SELECT BOT / 06</span><span class="launcher-status"><i></i> SIX BOTS LIVE</span></div>
-          <div class="module-console-grid">
-            <div class="bot-tabs" role="tablist" aria-label="Explore Aurex bots">
-              <button class="bot-tab is-selected" type="button" role="tab" aria-selected="true" aria-controls="bot-readout" data-bot="music"><span class="bot-tab-mark">MU</span><span class="bot-tab-copy"><strong>Music</strong><small>voice + playlists</small></span><i class="bot-tab-live"></i></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="security"><span class="bot-tab-mark">SE</span><span class="bot-tab-copy"><strong>Security</strong><small>trust + control</small></span><i class="bot-tab-live"></i></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="greet"><span class="bot-tab-mark">GR</span><span class="bot-tab-copy"><strong>Greet</strong><small>join + belong</small></span><i class="bot-tab-live"></i></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="ping"><span class="bot-tab-mark">PI</span><span class="bot-tab-copy"><strong>Ping</strong><small>signal + route</small></span><i class="bot-tab-live"></i></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="ticket"><span class="bot-tab-mark">TI</span><span class="bot-tab-copy"><strong>Ticket</strong><small>help + resolve</small></span><i class="bot-tab-live"></i></button>
-              <button class="bot-tab" type="button" role="tab" aria-selected="false" aria-controls="bot-readout" data-bot="level"><span class="bot-tab-mark">LV</span><span class="bot-tab-copy"><strong>Level</strong><small>xp + progress</small></span><i class="bot-tab-live"></i></button>
-            </div>
-            <div class="bot-readout" id="bot-readout" role="tabpanel" aria-live="polite">
-              <div class="readout-main"><span class="readout-label" id="readout-label">BOT / MUSIC</span><strong id="readout-title">Keep the room moving.</strong><p id="readout-description">Bring a clean listening layer to every voice channel. Queue a playlist, hand off the controls, and let the room stay in rhythm.</p><div class="readout-tags" id="readout-tags"><span>PLAYLISTS</span><span>QUEUE CONTROL</span><span>VOICE CHANNELS</span></div><a class="readout-cta auth-cta" href="/dashboard.html" data-auth-cta>Open dashboard <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>
-              <div class="readout-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
-              <p class="module-live-line">All six bots live — last updated 2026-10-25</p>
-            </div>
-          </div>
-          <span class="module-console-footer">AUREX / BOTS</span>
-        </div>
-      </section>
+
 
       <section class="demo-section" id="see-it-work" aria-labelledby="demo-title">
-        <div class="section-heading"><span class="section-kicker">AUREX CONTROL / LIVE WALKTHROUGH</span><h2 id="demo-title">See how it <span>works.</span></h2><p>From adding a bot to controlling it from your server dashboard.</p></div>
+        <div class="section-heading"><span class="section-kicker">AUREX CONTROL / LIVE WALKTHROUGH</span><h2 id="demo-title">See how it <span class="script-accent">works.</span></h2><p>From adding a bot to controlling it from your server dashboard.</p></div>
         <div class="dashboard-demo" data-demo><span class="demo-cursor" data-demo-cursor aria-hidden="true"></span>
           <div class="dashboard-demo-top"><span class="demo-brand">AUREX <small>/ CONTROL</small></span><span class="demo-status"><i></i> SYSTEM ONLINE</span></div>
           <div class="dashboard-demo-body">
@@ -143,7 +181,7 @@
       </section>
 
       <section class="compare-section" aria-labelledby="compare-title">
-        <div class="section-heading"><span class="section-kicker">AUREX VS A TYPICAL ALL-IN-ONE BOT</span><h2 id="compare-title">Focused by <span>design.</span></h2></div>
+        <div class="section-heading"><span class="section-kicker">AUREX VS A TYPICAL ALL-IN-ONE BOT</span><h2 id="compare-title">Focused by <span class="script-accent">design.</span></h2></div>
         <div class="compare-table"><div class="compare-table-head"><span>WHAT CHANGES</span><strong>AUREX</strong><strong>OTHER BOTS</strong></div><div class="compare-row"><span>Add only the bots you need</span><b>✓</b><b>×</b></div><div class="compare-row"><span>One bot, one job</span><b>✓</b><b>×</b></div><div class="compare-row"><span>Separate settings per bot</span><b>✓</b><b>×</b></div></div>
       </section>
 
@@ -157,7 +195,7 @@
       <section class="suite-section" id="bot-suite" aria-labelledby="suite-title">
         <div class="section-heading">
           <span class="section-kicker">THE AUREX SUITE</span>
-          <h2 id="suite-title">Pick your <span>bots.</span></h2>
+          <h2 id="suite-title">Pick your <span class="script-accent">bots.</span></h2>
           <p>Every bot is focused, fast, and ready to make your server feel like it has a real operating system.</p>
         </div>
         <div class="suite-grid">
@@ -171,21 +209,19 @@
       </section>
 
       <section class="why-section" id="why-story" aria-labelledby="why-title">
-        <div class="why-copy"><span class="section-kicker">WHY AUREX</span><h2 id="why-title">We got tired of bots that do everything badly.</h2><p>Aurex is made for communities that have outgrown duct-taped commands. Start with one bot, stack the full suite, and keep the experience unmistakably yours.</p><a class="outline-button" href="#connect">Build your stack <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="why-copy"><span class="section-kicker">WHY AUREX</span><h2 id="why-title">We got tired of bots that do everything <span class="script-accent">badly.</span></h2><p>Aurex is made for communities that have outgrown duct-taped commands. Start with one bot, stack the full suite, and keep the experience unmistakably yours.</p><a class="outline-button" href="#connect">Build your stack <i class="fa-solid fa-arrow-right"></i></a></div>
         <div class="principles" aria-label="Aurex principles"><div class="principle"><span>01</span><strong>Modular</strong><p>Use only what your community needs today.</p></div><div class="principle"><span>02</span><strong>Instant</strong><p>Fast commands that never get in the way.</p></div><div class="principle"><span>03</span><strong>Human</strong><p>Better rituals for the people behind the usernames.</p></div></div>
       </section>
 
       <section class="connect-section" id="connect" aria-labelledby="connect-title">
         <div class="connect-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
         <span class="section-kicker">READY WHEN YOU ARE</span>
-        <h2 id="connect-title">Pick a bot, add it, done.</h2>
+        <h2 id="connect-title">Pick a bot, add it, <span class="script-accent">done.</span></h2>
         <p>Choose a bot, connect it to Discord, and let Aurex handle the heavy lifting.</p>
         <a class="primary-button primary-button-large" href="#bot-suite">Choose your bots <i class="fa-solid fa-arrow-down"></i></a>
       </section>
 
-      <section id="reviews-gallery" aria-label="Server reviews">
-        <div id="reviews-gallery-root"></div>
-      </section>
+
 
       <div class="site-footer"><a class="footer-brand" href="#top"><span class="brand-mark"><img src="/assets/aurex-logo.jpg" alt="" /></span><span>AUREX</span></a><span>Discord bots. Made by people who use Discord.</span><span>© 2026 AUREX SYSTEMS</span></div>
     </div>
