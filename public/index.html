@@ -8,9 +8,7 @@
     <title>Aurex — Discord Bots That Run The Server</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Unbounded:wght@800&display=swap" rel="stylesheet" />
-    <link href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
@@ -27,7 +25,7 @@
 
       <header class="site-header">
         <a class="brand-lockup" href="#top" aria-label="Aurex home">
-          <span class="brand-mark" aria-hidden="true"><img src="/assets/aurex-logo.jpg" alt="" /></span>
+          <img class="brand-logo" src="/assets/aurex-mark-white.png" alt="" aria-hidden="true" />
           <span class="brand-word">AUREX</span>
         </a>
 
@@ -38,7 +36,7 @@
           <a class="nav-link" href="#connect">Connect</a>
         </nav>
 
-        <a class="header-cta desktop-cta auth-cta" href="/dashboard.html" data-auth-cta>Login with Discord <i class="fa-brands fa-discord" aria-hidden="true"></i></a>
+        <a class="header-cta desktop-cta auth-cta" href="/dashboard.html" data-auth-cta>Login with Discord <svg class="discord-mark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.54 5.34A19.8 19.8 0 0 0 14.66 3.8l-.6 1.22a18.1 18.1 0 0 0-5.12 0l-.6-1.22a19.8 19.8 0 0 0-4.88 1.54C.38 9.95-.46 14.45-.04 18.9a19.9 19.9 0 0 0 5.98 3.02l1.3-2.1a12.9 12.9 0 0 1-2.05-.98l.5-.39a14.2 14.2 0 0 0 12.62 0l.5.39c-.66.39-1.35.72-2.06.98l1.3 2.1a19.9 19.9 0 0 0 5.98-3.02c.5-5.17-.86-9.63-4.49-13.56ZM8.6 15.47c-1.17 0-2.13-1.07-2.13-2.39s.94-2.4 2.13-2.4 2.15 1.08 2.13 2.4c0 1.32-.94 2.39-2.13 2.39Zm6.8 0c-1.17 0-2.13-1.07-2.13-2.39s.94-2.4 2.13-2.4 2.15 1.08 2.13 2.4c0 1.32-.94 2.39-2.13 2.39Z"/></svg></a>
 
         <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-menu">
           <span></span><span></span><span></span>
@@ -59,34 +57,19 @@
 
       <main class="main-content" id="top">
         <section class="hero" aria-labelledby="hero-title">
-          <div class="hero-kicker anim" style="--d: 0.05s">
-            <span class="trust-avatars" aria-hidden="true">
-              <span class="trust-avatar"><i class="fa-brands fa-discord"></i></span>
-              <span class="trust-avatar"><i class="fa-solid fa-shield-halved"></i></span>
-              <span class="trust-avatar"><i class="fa-solid fa-bolt"></i></span>
-            </span>
-            <span class="trust-copy">Built for servers that actually have people in them.</span>
-            <span class="signal-bars" aria-hidden="true"><i></i><i></i><i></i></span>
-          </div>
-
+          <div class="hero-kicker"><span class="trust-copy">Built for servers with real people in them.</span></div>
           <h1 class="hero-title" id="hero-title">
-            <span class="headline-line anim" style="--d: 0.12s">Six bots.</span>
-            <span class="headline-line headline-line-accent anim" style="--d: 0.3s">Each one does one thing <em class="script-accent">properly.</em></span>
+            <span class="headline-line"><span class="hero-word" style="--word-index:0">Six</span> <span class="hero-word" style="--word-index:1">bots.</span></span>
+            <span class="headline-line"><span class="hero-word" style="--word-index:2">Each</span> <span class="hero-word" style="--word-index:3">built</span> <span class="hero-word" style="--word-index:4">to</span> <span class="hero-word" style="--word-index:5">do</span> <span class="hero-word" style="--word-index:6">one</span> <span class="hero-word" style="--word-index:7">thing</span> <em class="script-accent hero-word" style="--word-index:8">exceptionally.</em></span>
           </h1>
-
-          <div class="hero-rotator anim" style="--d: 0.34s" aria-live="polite">
-            <span class="hero-rotator-line is-active">Play a song, join a voice channel, and manage the queue.</span>
-            <span class="hero-rotator-line">Spam, link, caps, mention, emoji, bad-word and scam filters.</span>
-            <span class="hero-rotator-line">Music, security, greetings, pings, tickets and levels. Add only what your server needs.</span>
-            <span class="hero-rotator-line">Welcome messages, auto-roles, cards, goodbye messages, and DM welcomes.</span>
+          <p class="hero-copy">Music, security, welcomes, alerts, tickets and levels. Add only what your server needs, and run it all from one dashboard.</p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#modules">Explore the bots</a>
+            <a class="text-button hero-secondary-button auth-cta" href="/dashboard.html" data-auth-cta>Open dashboard</a>
           </div>
-
-          <div class="hero-actions anim" style="--d: 0.47s" id="connect">
-            <a class="primary-button" href="#modules">Explore the bots <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
-            <a class="text-button" href="#connect">Built for Discord <span class="text-button-mark"><i class="fa-brands fa-discord"></i></span></a>
-            <a class="text-button hero-dashboard-link" href="/dashboard.html" data-auth-cta>Open dashboard</a>
+          <div class="hero-module-chips" aria-label="Available bots">
+            <span>Music</span><span>Security</span><span>Greet</span><span>Ping</span><span>Ticket</span><span>Level</span>
           </div>
-
         </section>
       </main>
 
