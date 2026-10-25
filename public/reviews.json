@@ -1,0 +1,114 @@
+[
+  {
+    "name": "SAMPLE / LunaByte",
+    "server": "Night Shift",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Music",
+    "text": "The queue stays out of the way and our DJs can hand off control without breaking the vibe."
+  },
+  {
+    "name": "SAMPLE / KaiRin",
+    "server": "Orbit Lounge",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Moderation",
+    "text": "The audit trail makes it obvious what happened and who handled it."
+  },
+  {
+    "name": "SAMPLE / Miko",
+    "server": "Cloud Garden",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Tickets",
+    "text": "Private support threads feel much calmer now, and transcripts are easy to find."
+  },
+  {
+    "name": "SAMPLE / Juno",
+    "server": "After Hours",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Welcome",
+    "text": "New members get the right role and a warm hello without three bots talking at once."
+  },
+  {
+    "name": "SAMPLE / Rook",
+    "server": "The Workshop",
+    "avatarUrl": "",
+    "rating": 4,
+    "bot": "Economy",
+    "text": "The commands are focused, quick, and much easier to explain to new members."
+  },
+  {
+    "name": "SAMPLE / Nera",
+    "server": "Pixel Harbor",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Music",
+    "text": "A clean queue and simple DJ controls were exactly what our voice channels needed."
+  },
+  {
+    "name": "SAMPLE / Vale",
+    "server": "Common Room",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Moderation",
+    "text": "Verification is clear for members and the mod logs are actually useful."
+  },
+  {
+    "name": "SAMPLE / Sora",
+    "server": "Maple Street",
+    "avatarUrl": "",
+    "rating": 4,
+    "bot": "Tickets",
+    "text": "Our helpers can keep conversations private without losing the history."
+  },
+  {
+    "name": "SAMPLE / Dax",
+    "server": "Low Orbit",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Welcome",
+    "text": "The welcome flow feels intentional instead of like an automated wall of text."
+  },
+  {
+    "name": "SAMPLE / Bea",
+    "server": "Signal House",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Economy",
+    "text": "The progression tools give our community something to return to every day."
+  },
+  {
+    "name": "SAMPLE / Ivo",
+    "server": "Mosslight",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Music",
+    "text": "It feels like one dependable layer instead of a pile of unrelated commands."
+  },
+  {
+    "name": "SAMPLE / Tali",
+    "server": "Arcade 404",
+    "avatarUrl": "",
+    "rating": 4,
+    "bot": "Moderation",
+    "text": "The focused controls make routine moderation faster for the whole team."
+  },
+  {
+    "name": "SAMPLE / Ren",
+    "server": "Blue Hour",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Tickets",
+    "text": "A ticket becomes a real conversation, not another noisy channel to babysit."
+  },
+  {
+    "name": "SAMPLE / Uma",
+    "server": "Lantern Club",
+    "avatarUrl": "",
+    "rating": 5,
+    "bot": "Welcome",
+    "text": "The first impression is smoother and the server stays focused on people."
+  }
+]
