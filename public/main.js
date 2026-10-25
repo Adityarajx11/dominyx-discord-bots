@@ -1,14 +1,3 @@
-// Invite links are built server-side from the bot application IDs and loaded
-// from /api/invites. The placeholder map below is only a fallback.
-const botInviteLinks = {
-  music: 'PASTE_MUSIC_OAUTH_URL_HERE',
-  security: 'PASTE_SECURITY_OAUTH_URL_HERE',
-  greet: 'PASTE_GREET_OAUTH_URL_HERE',
-  ping: 'PASTE_PING_OAUTH_URL_HERE',
-  ticket: 'PASTE_TICKET_OAUTH_URL_HERE',
-  level: 'PASTE_LEVEL_OAUTH_URL_HERE'
-};
-
 function applyInviteLinks(links) {
   document.querySelectorAll('[data-bot-invite]').forEach((link) => {
     const key = link.dataset.botInvite;
@@ -16,8 +5,6 @@ function applyInviteLinks(links) {
     if (invite && invite.startsWith('http')) link.href = invite;
   });
 }
-
-applyInviteLinks(botInviteLinks);
 
 fetch('/api/invites')
   .then((response) => (response.ok ? response.json() : null))

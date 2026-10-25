@@ -4,32 +4,32 @@ export type Review = {
   name: string;
   server: string;
   rating: number; // 1 to 5
-  bot: string; // Music, Moderation, Tickets, Welcome, Economy
+  bot: string; // Music, Security, Greet, Ping, Ticket, Level
   text: string;
 };
 
 // Replace these sample reviews with real ones.
 const DEFAULT_REVIEWS: Review[] = [
   { name: "LunaByte", server: "Night Shift", rating: 5, bot: "Music", text: "The queue stays out of the way and our DJs can hand off control without breaking the vibe." },
-  { name: "KaiRin", server: "Orbit Lounge", rating: 5, bot: "Moderation", text: "The audit trail makes it obvious what happened and who handled it." },
-  { name: "Miko", server: "Cloud Garden", rating: 5, bot: "Tickets", text: "Private support threads feel much calmer now, and transcripts are easy to find." },
-  { name: "Juno", server: "After Hours", rating: 5, bot: "Welcome", text: "New members get the right role and a warm hello without three bots talking at once." },
-  { name: "Rook", server: "The Workshop", rating: 4, bot: "Economy", text: "The commands are focused, quick, and much easier to explain to new staff." },
+  { name: "KaiRin", server: "Orbit Lounge", rating: 5, bot: "Security", text: "The audit trail makes it obvious what happened and who handled it." },
+  { name: "Miko", server: "Cloud Garden", rating: 5, bot: "Ticket", text: "Private support threads feel much calmer now, and transcripts are easy to find." },
+  { name: "Juno", server: "After Hours", rating: 5, bot: "Greet", text: "New members get the right role and a warm hello without three bots talking at once." },
+  { name: "Rook", server: "The Workshop", rating: 4, bot: "Level", text: "The commands are focused, quick, and much easier to explain to new staff." },
   { name: "Nera", server: "Pixel Harbor", rating: 5, bot: "Music", text: "A clean queue and simple DJ controls were exactly what our voice channels needed." },
-  { name: "Vex", server: "Common Room", rating: 5, bot: "Moderation", text: "Verification is clear for members and the mod logs are actually useful." },
-  { name: "Sable", server: "Maple Street", rating: 4, bot: "Tickets", text: "Our helpers can keep conversations private without losing the history." },
-  { name: "Dax", server: "Low Orbit", rating: 5, bot: "Welcome", text: "The welcome flow feels intentional instead of like an automated wall of text." },
-  { name: "Bryn", server: "Signal Room", rating: 5, bot: "Economy", text: "The progression tools give our community something to return to every day." },
+  { name: "Vex", server: "Common Room", rating: 5, bot: "Security", text: "Verification is clear for members and the mod logs are actually useful." },
+  { name: "Sable", server: "Maple Street", rating: 4, bot: "Ticket", text: "Our helpers can keep conversations private without losing the history." },
+  { name: "Dax", server: "Low Orbit", rating: 5, bot: "Greet", text: "The welcome flow feels intentional instead of like an automated wall of text." },
+  { name: "Bryn", server: "Signal Room", rating: 5, bot: "Level", text: "The progression tools give our community something to return to every day." },
   { name: "Ines", server: "Moss Light", rating: 5, bot: "Music", text: "It feels like one dependable layer instead of a pile of unrelated bots." },
-  { name: "Tomo", server: "Arcade 404", rating: 4, bot: "Moderation", text: "The focused controls make routine moderation faster for the whole team." },
-  { name: "Rhea", server: "Blue Hour", rating: 5, bot: "Tickets", text: "A ticket becomes a real conversation, not another noisy channel to babysit." },
-  { name: "Ulric", server: "Lantern Club", rating: 5, bot: "Welcome", text: "The first impression is smoother and the server stays focused on people." },
+  { name: "Tomo", server: "Arcade 404", rating: 4, bot: "Security", text: "The focused controls make routine moderation faster for the whole team." },
+  { name: "Rhea", server: "Blue Hour", rating: 5, bot: "Ticket", text: "A ticket becomes a real conversation, not another noisy channel to babysit." },
+  { name: "Ulric", server: "Lantern Club", rating: 5, bot: "Greet", text: "The first impression is smoother and the server stays focused on people." },
 ];
 
 type Props = {
   reviews?: Review[];
   heading?: string;
-  /** Pass your site's ORIGINAL pixel heading class here so the font matches. */
+  /** Pass a site heading class here to match the surrounding typography. */
   headingClassName?: string;
   /** Stage background. Keep "transparent" so your video background shows through. */
   background?: string;
@@ -207,7 +207,7 @@ const CSS = `
 .ag-wrap{position:relative;height:560vh;--ag-cw:250px;--ag-ch:146px;--ag-line:rgba(255,255,255,.14);--ag-mute:#9aa0b4;color:#f3f4f8}
 .ag-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;perspective:1000px;perspective-origin:50% 50%}
 .ag-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;pointer-events:none;z-index:200;will-change:transform,opacity,filter}
-.ag-title{margin:0;font-size:clamp(18px,3.2vw,44px);line-height:1.1;letter-spacing:-.02em;word-spacing:.35em;max-width:44vw;min-width:200px}
+.ag-title{margin:0;font-size:clamp(18px,3.2vw,44px);line-height:1.1;letter-spacing:-.02em;word-spacing:normal;max-width:44vw;min-width:200px}
 .ag-w{display:inline-block;will-change:transform,opacity,filter}
 .ag-orb{width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#cfd5ff 55%,#7c8cff);box-shadow:0 0 40px 8px rgba(124,140,255,.45)}
 .ag-card{position:absolute;left:50%;top:50%;width:var(--ag-cw);height:var(--ag-ch);margin:calc(var(--ag-ch)/-2) 0 0 calc(var(--ag-cw)/-2);padding:14px 16px;border-radius:16px;border:1px solid var(--ag-line);background:rgba(22,24,34,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;flex-direction:column;justify-content:space-between;opacity:0;will-change:transform,opacity;backface-visibility:hidden}

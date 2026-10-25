@@ -1,9 +1,9 @@
 window.AUREX_CONFIG = {
-  // Temporary values for the showcase. Replace these when the real data is ready.
-  SERVER_COUNT: "—",
+  // No server count is currently published.
+  SERVER_COUNT: null,
   WHY_TEXT: [
-    "Temporary showcase copy — replace this line in config.js.",
-    "Aurex keeps each bot focused on one job.",
-    "Add only what your server needs."
+    "Each Aurex bot stays focused on one job.",
+    "Add only what your server needs.",
+    "Manage your stack from one dashboard."
   ]
 };
