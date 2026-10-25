@@ -509,7 +509,7 @@ function serveStatic(req, res, url) {
 
   // Only these paths are reachable. Everything else, including the .env file
   // and the lib/ directory, stays private.
-  const allowed = new Set(['/index.html', '/dashboard.html', '/styles.css', '/dashboard.css', '/main.js', '/dashboard.js', '/manus-routes.json']);
+  const allowed = new Set(['/index.html', '/dashboard.html', '/styles.css', '/dashboard.css', '/main.js', '/dashboard.js', '/reviews-gallery.js', '/manus-routes.json']);
   if (!allowed.has(requested)) return json(res, 404, { error: 'not_found' });
 
   let body;
