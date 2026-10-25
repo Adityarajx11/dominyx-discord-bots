@@ -807,3 +807,74 @@ if (productDemo) {
     syncPlayback();
   }
 }
+
+
+function initComparisonBento() {
+  const comparison = document.querySelector('[data-compare-section]');
+  const bento = document.querySelector('.stats-footer.bento-grid');
+  if (!comparison || !bento) return;
+
+  const rows = [...comparison.querySelectorAll('[data-compare-row]')];
+  const tiles = [...bento.querySelectorAll('[data-stat-tile]')];
+  const countNodes = [...bento.querySelectorAll('[data-bento-count]')];
+  const setFinalCounts = () => countNodes.forEach((node) => {
+    node.textContent = String(Number(node.dataset.bentoCount));
+  });
+  const revealEverything = () => {
+    rows.forEach((row) => row.classList.add('is-visible'));
+    tiles.forEach((tile) => tile.classList.add('is-revealed'));
+    setFinalCounts();
+  };
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealEverything();
+  } else {
+    comparison.classList.add('has-scroll-reveal');
+    bento.classList.add('has-scroll-motion');
+    countNodes.forEach((node) => { node.textContent = '0'; });
+
+    const rowObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.16, rootMargin: '0px 0px -5% 0px' });
+    rows.forEach((row) => rowObserver.observe(row));
+
+    const countUp = (node) => {
+      const target = Number(node.dataset.bentoCount);
+      const start = performance.now();
+      const duration = 900;
+      const tick = (now) => {
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        node.textContent = String(Math.round(target * eased));
+        if (progress < 1) window.requestAnimationFrame(tick);
+      };
+      window.requestAnimationFrame(tick);
+    };
+    const tileObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const tile = entry.target;
+        tile.classList.add('is-revealed');
+        const count = tile.querySelector('[data-bento-count]');
+        if (count) countUp(count);
+        observer.unobserve(tile);
+      });
+    }, { threshold: 0.22, rootMargin: '0px 0px -28px 0px' });
+    tiles.forEach((tile) => tileObserver.observe(tile));
+  }
+
+  tiles.forEach((tile) => {
+    tile.addEventListener('pointermove', (event) => {
+      if (event.pointerType && event.pointerType !== 'mouse') return;
+      const rect = tile.getBoundingClientRect();
+      tile.style.setProperty('--spot-x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
+      tile.style.setProperty('--spot-y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+    }, { passive: true });
+  });
+}
+
+initComparisonBento();
