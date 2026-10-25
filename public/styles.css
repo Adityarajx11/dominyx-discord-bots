@@ -11,7 +11,7 @@
   --signal: #ffffff;
   --font-sans: "Geist", system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
-  --font-pixel: "BubbledotICG-FinePos", monospace;
+  --font-pixel: "Pixelify Sans", monospace;
   --nav-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
 }
 
@@ -22,7 +22,7 @@ body.menu-open { overflow: hidden; }
 a { color: inherit; text-decoration: none; }
 button { color: inherit; font: inherit; }
 
-.page-shell { position: relative; isolation: isolate; min-height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; padding: clamp(16px, 2.5vh, 28px) clamp(18px, 4.6vw, 64px) clamp(18px, 3vh, 32px); }
+.page-shell { position: relative; isolation: isolate; min-height: 100vh; height: auto; overflow: visible; display: flex; flex-direction: column; padding: clamp(16px, 2.5vh, 28px) clamp(18px, 4.6vw, 64px) clamp(18px, 3vh, 32px); }
 .bg { position: absolute; inset: 0; z-index: -3; overflow: hidden; background: #050505; }
 .bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; opacity: 0.58; filter: saturate(0.24) contrast(1.12) brightness(0.46); z-index: 0; }
 .bg-veil { position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.54) 65%, rgba(0, 0, 0, 0.92) 100%), linear-gradient(180deg, rgba(0,0,0,.32) 0%, rgba(0,0,0,.08) 38%, rgba(0,0,0,.7) 100%); }
@@ -65,7 +65,7 @@ button { color: inherit; font: inherit; }
 .signal-bars { display: inline-flex; align-items: end; gap: 2px; height: 13px; margin-left: 4px; }
 .signal-bars i { display: block; width: 2px; background: var(--signal); border-radius: 2px; }
 .signal-bars i:nth-child(1) { height: 5px; opacity: .45; }.signal-bars i:nth-child(2) { height: 9px; opacity: .7; }.signal-bars i:nth-child(3) { height: 13px; }
-.hero-title { margin: clamp(19px, 3vh, 32px) auto 0; font-family: var(--font-pixel); font-weight: 400; line-height: .98; font-size: clamp(46px, 8.4vw, 112px); }
+.hero-title { margin: clamp(19px, 3vh, 32px) auto 0; font-family: var(--font-pixel); font-weight: 400; letter-spacing: 0; word-spacing: .15em; line-height: .95; font-size: clamp(46px, 8.4vw, 112px); }
 .headline-line { display: block; }
 .headline-line-accent { color: #fff; }
 .hero-copy { width: min(590px, 92%); margin: clamp(18px, 2.4vh, 25px) auto 0; color: rgba(235,235,235,.73); font-size: clamp(13px, 1.35vw, 15px); line-height: 1.62; letter-spacing: -.012em; }
@@ -785,6 +785,7 @@ button,
   position: relative;
   z-index: 2;
   height: 500vh;
+  overflow: visible;
   border-top: 1px solid rgba(255,255,255,.16);
   background: linear-gradient(180deg, rgba(4,4,8,.18), rgba(0,0,0,.72));
 }
@@ -792,7 +793,7 @@ button,
   position: sticky;
   top: 0;
   height: 100vh;
-  min-height: 620px;
+  min-height: 0;
   overflow: hidden;
   perspective: 1000px;
   isolation: isolate;
@@ -809,11 +810,11 @@ button,
 }
 .reviews-gallery-header {
   position: absolute;
-  top: 13vh;
+  top: 50%;
   left: 50%;
   z-index: 10;
   width: min(620px, calc(100% - 40px));
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   text-align: center;
   pointer-events: none;
 }
@@ -821,14 +822,15 @@ button,
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: .06em .22em;
+  gap: 0 .15em;
   margin: 0;
   color: #fff;
   font-family: var(--font-pixel);
   font-size: clamp(34px, 5.4vw, 70px);
   font-weight: 400;
-  letter-spacing: -.035em;
-  line-height: .98;
+  letter-spacing: 0;
+  word-spacing: .15em;
+  line-height: .95;
 }
 .reviews-gallery-title span {
   display: inline-block;
@@ -860,9 +862,10 @@ button,
   position: absolute;
   top: 50%;
   left: 50%;
-  width: clamp(218px, 22vw, 310px);
-  min-height: 178px;
-  padding: 17px 18px 16px;
+  width: 240px;
+  height: 140px;
+  min-height: 0;
+  padding: 13px 14px 12px;
   border: 1px solid rgba(255,255,255,.22);
   border-radius: 12px;
   background: linear-gradient(145deg, rgba(28,28,32,.76), rgba(8,8,12,.58));
@@ -887,7 +890,7 @@ button,
 .reviews-name { overflow: hidden; color: #fff; font-size: 11px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .reviews-server { margin-top: 3px; overflow: hidden; color: #85858d; font-family: var(--font-mono); font-size: 8px; letter-spacing: .04em; text-overflow: ellipsis; white-space: nowrap; }
 .reviews-rating { margin-left: auto; color: #fff; font-size: 10px; letter-spacing: 1px; white-space: nowrap; }
-.reviews-card-text { position: relative; z-index: 1; min-height: 51px; margin: 18px 0 14px; color: rgba(255,255,255,.78); font-size: 12px; line-height: 1.5; }
+.reviews-card-text { position: relative; z-index: 1; min-height: 42px; margin: 10px 0 8px; color: rgba(255,255,255,.78); font-size: 12px; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .reviews-card-foot { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #8e8e96; font-family: var(--font-mono); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
 .reviews-bot-tag { padding: 5px 7px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: #fff; }
 .reviews-counter { position: absolute; left: clamp(18px, 5vw, 68px); bottom: 9vh; z-index: 10; display: flex; align-items: baseline; gap: 7px; color: #67676e; font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; }
@@ -899,14 +902,20 @@ button,
 .reviews-cta.is-visible { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 @media (max-width: 720px) {
   .reviews-gallery { height: 500vh; }
-  .reviews-stage { min-height: 560px; }
-  .reviews-gallery-header { top: 11vh; width: calc(100% - 32px); }
+  .reviews-stage { min-height: 0; }
+  .reviews-gallery-header { top: 50%; width: calc(100% - 32px); }
   .reviews-gallery-title { font-size: clamp(29px, 9vw, 48px); }
   .reviews-orb { width: 38px; height: 38px; margin-top: 18px; }
   .reviews-orb img { width: 25px; height: 25px; }
-  .reviews-card { width: min(278px, 68vw); min-height: 166px; padding: 14px 15px; }
-  .reviews-card:nth-child(n+7) { display: none; }
-  .reviews-card-text { margin-block: 14px 11px; font-size: 11px; }
+  .reviews-card { width: 170px; height: 110px; min-height: 0; padding: 9px 10px; }
+  .reviews-card-text { min-height: 27px; margin-block: 6px 5px; font-size: 10px; line-height: 1.35; }
+  .reviews-card-head { gap: 6px; }
+  .reviews-avatar { flex-basis: 24px; width: 24px; height: 24px; }
+  .reviews-name { font-size: 9px; }
+  .reviews-server { font-size: 7px; }
+  .reviews-rating { font-size: 8px; letter-spacing: 0; }
+  .reviews-card-foot { font-size: 6px; }
+  .reviews-bot-tag { padding: 3px 5px; }
   .reviews-rail { right: -28px; font-size: 8px; }
   .reviews-counter { bottom: 6vh; left: 16px; }
   .reviews-cta { bottom: 5vh; font-size: 10px; }
@@ -916,7 +925,7 @@ button,
   .reviews-stage { position: relative; top: auto; height: auto; min-height: 0; overflow: visible; padding: 0 0 32px; }
   .reviews-gallery-header { position: relative; top: auto; left: auto; width: 100%; transform: none; }
   .reviews-gallery-title span { opacity: 1; filter: none; transform: none; animation: none; }
-  .reviews-cards { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 50px; }
+  .reviews-cards { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 50px; }
   .reviews-card { position: relative; inset: auto; width: auto; min-height: 0; transform: none !important; opacity: 1 !important; }
   .reviews-counter, .reviews-rail { display: none; }
   .reviews-cta { position: relative; left: auto; bottom: auto; display: inline-flex; margin: 28px auto 0; opacity: 1; transform: none; }
@@ -924,3 +933,7 @@ button,
 @media (prefers-reduced-motion: reduce) and (max-width: 560px) {
   .reviews-cards { grid-template-columns: 1fr; }
 }
+
+/* Pixelify Sans rhythm: consistent tracking, word spacing and compact line height. */
+.hero-title, .section-heading h2, .module-slide-heading h2, .showcase-heading h2, .why-copy h2, .connect-section h2, .reviews-gallery-title { letter-spacing: 0; word-spacing: .15em; line-height: .95; }
+.bg-video::-webkit-media-controls, .bg-video::-webkit-media-controls-enclosure, .bg-video::-webkit-media-controls-panel, .bg-video::-webkit-media-controls-play-button, .bg-video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; }

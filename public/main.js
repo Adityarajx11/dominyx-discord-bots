@@ -170,8 +170,8 @@ if (bgVideo) {
   bgVideo.setAttribute('webkit-playsinline', '');
   bgVideo.setAttribute('preload', 'auto');
   bgVideo.setAttribute('disablepictureinpicture', '');
-  bgVideo.setAttribute('controlslist', 'nodownload noplaybackrate');
   bgVideo.removeAttribute('controls');
+  bgVideo.controls = false;
   bgVideo.addEventListener('playing', () => {
     if (isAppleTouch && bgCanvas) bgCanvas.style.opacity = '1';
   });
@@ -184,6 +184,7 @@ if (bgVideo) {
   ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'].forEach((eventName) => {
     bgVideo.addEventListener(eventName, startBackground);
   });
+  document.addEventListener('touchstart', startBackground, { once: true, passive: true });
   document.addEventListener('visibilitychange', startBackground);
   window.addEventListener('pageshow', startBackground);
   window.setTimeout(startBackground, 250);
@@ -378,7 +379,7 @@ renderDemo();
 startDemo();
 
 
-/* ReviewsGallery: one isolated scroll-progress controller; no new animation library or global scroll system. */
+/* ReviewsGallery: scroll-driven Z-depth cards inside one sticky stage. */
 (() => {
   const gallery = document.querySelector('[data-reviews-cards]');
   const wrapper = document.querySelector('.reviews-gallery');
@@ -386,112 +387,83 @@ startDemo();
   const title = document.querySelector('.reviews-gallery-title');
   const counter = document.querySelector('[data-reviews-counter]');
   const progressBar = document.querySelector('[data-reviews-progress]');
-  const cta = document.querySelector('.reviews-cta');
   if (!gallery || !wrapper || !stage || !title) return;
 
   const positions = [
-    [-41, -18, -7], [39, -15, 8], [-46, 20, -11], [46, 23, 10],
-    [-51, -42, -13], [52, -38, 12], [-24, 43, -8], [27, 45, 9],
-    [-58, 3, -15], [58, 5, 14], [-17, -48, -5], [18, -46, 6],
-    [-56, 32, -12], [55, 31, 13]
+    [-46, -34, -18, 6], [46, -32, 18, -6], [-48, 2, -18, 6], [48, 4, 18, -6],
+    [-45, 35, -18, 6], [45, 34, 18, -6], [25, -43, 12, -4],
+    [-25, 43, -12, 4], [-50, -17, -18, 6], [50, -15, 18, -6],
+    [-49, 18, -18, 6], [49, 19, 18, -6], [-25, 43, -12, 4], [25, -43, 12, -4]
   ];
   let cards = [];
-  let galleryProgress = 0;
+  let reviews = [];
+  let targetProgress = 0;
+  let currentProgress = 0;
   let frame = 0;
-
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
-  const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
   const initials = (name) => String(name || 'A').replace(/^SAMPLE\s*\/\s*/i, '').split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
+  const mobile = () => window.matchMedia('(max-width: 720px)').matches;
 
-  const renderTitle = () => {
-    title.innerHTML = '';
-    'What servers say about Aurex'.split(' ').forEach((word, index) => {
-      const span = document.createElement('span');
-      span.textContent = word;
-      span.style.setProperty('--word-index', index);
-      title.appendChild(span);
-    });
-  };
+  title.innerHTML = '';
+  'What servers say about Aurex'.split(' ').forEach((word, index) => {
+    const span = document.createElement('span');
+    span.textContent = word;
+    span.style.setProperty('--word-index', index);
+    title.appendChild(span);
+  });
 
-  const renderCards = (reviews) => {
-    gallery.innerHTML = reviews.map((review, index) => {
+  const renderCards = () => {
+    const shown = mobile() ? reviews.slice(0, 7) : reviews.slice(0, 14);
+    gallery.innerHTML = shown.map((review, index) => {
       const safeName = escapeHtml(review.name);
       const avatar = review.avatarUrl
         ? `<img src="${escapeHtml(review.avatarUrl)}" alt="" loading="lazy">`
         : `<span>${escapeHtml(initials(review.name))}</span>`;
       const rating = '★'.repeat(Math.max(0, Math.min(5, Number(review.rating) || 0)));
       return `<article class="reviews-card" data-review-index="${index}" aria-label="${safeName} review">
-        <div class="reviews-card-head">
-          <div class="reviews-avatar">${avatar}</div>
-          <div class="reviews-person"><div class="reviews-name">${safeName}</div><div class="reviews-server">${escapeHtml(review.server)}</div></div>
-          <div class="reviews-rating" aria-label="${Number(review.rating) || 0} out of 5 stars">${rating}</div>
-        </div>
+        <div class="reviews-card-head"><div class="reviews-avatar">${avatar}</div><div class="reviews-person"><div class="reviews-name">${safeName}</div><div class="reviews-server">${escapeHtml(review.server)}</div></div><div class="reviews-rating" aria-label="${Number(review.rating) || 0} out of 5 stars">${rating}</div></div>
         <p class="reviews-card-text">${escapeHtml(review.text)}</p>
-        <div class="reviews-card-foot"><span class="reviews-bot-tag">${escapeHtml(review.bot)}</span><span>SAMPLE REVIEW</span></div>
+        <div class="reviews-card-foot"><span class="reviews-bot-tag">${escapeHtml(review.bot)}</span><span>SERVER REVIEW</span></div>
       </article>`;
     }).join('');
     cards = [...gallery.querySelectorAll('.reviews-card')];
     cards.forEach((card, index) => {
-      const [x, y, rotation] = positions[index % positions.length];
-      card.dataset.baseX = String(x);
-      card.dataset.baseY = String(y);
-      card.dataset.rotation = String(rotation);
+      const [x, y, rotateY, rotateX] = positions[index % positions.length];
+      card.dataset.x = x;
+      card.dataset.y = y;
+      card.dataset.rotateY = rotateY;
+      card.dataset.rotateX = rotateX;
+      card.dataset.z0 = -2000 + index * (1600 / Math.max(cards.length - 1, 1));
     });
+    requestUpdate();
   };
 
   const updateGallery = () => {
     frame = 0;
-    const scrollable = Math.max(wrapper.offsetHeight - window.innerHeight, 1);
-    galleryProgress = clamp(-wrapper.getBoundingClientRect().top / scrollable);
-    const count = cards.length || 14;
-    const isCompactViewport = window.innerWidth < 721;
-    const viewportScale = isCompactViewport
-      ? Math.min((window.innerWidth / 100) * .48, 5)
-      : Math.min(window.innerWidth / 100, 14);
-    const verticalScale = isCompactViewport
-      ? Math.min((window.innerHeight / 100) * .55, 6)
-      : Math.min(window.innerHeight / 100, 9);
-    cards.forEach((card, index) => {
-      const baseX = Number(card.dataset.baseX) * viewportScale;
-      const baseY = Number(card.dataset.baseY) * verticalScale;
-      const rotation = Number(card.dataset.rotation);
-      if (reduceMotion) {
-        card.style.opacity = '1';
-        card.style.transform = `translate3d(${baseX}px, ${baseY}px, -160px) rotateY(${rotation}deg) rotateZ(${rotation * .22}deg) scale(.94)`;
-        return;
-      }
-      const travel = galleryProgress * (count + 2.4) - index;
-      const cardProgress = clamp((travel + 1.5) / 3.1);
-      const fadeIn = clamp(cardProgress / .22);
-      const fadeOut = clamp((1 - cardProgress) / .2);
-      const opacity = Math.min(fadeIn, fadeOut);
-      const z = -980 + cardProgress * 1300;
-      const x = baseX * (1 - cardProgress * .34);
-      const y = baseY * (1 - cardProgress * .4);
-      const rotateY = rotation * (1 - cardProgress * .18);
-      const rotateZ = rotation * .22 * (1 - cardProgress * .24);
-      const scale = .76 + cardProgress * .3;
-      card.style.opacity = opacity.toFixed(3);
-      card.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${z.toFixed(1)}px) rotateY(${rotateY.toFixed(2)}deg) rotateZ(${rotateZ.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+    const range = Math.max(wrapper.offsetHeight - window.innerHeight, 1);
+    targetProgress = reduceMotion ? 0 : clamp(-wrapper.getBoundingClientRect().top / range);
+    if (!reduceMotion) currentProgress += (targetProgress - currentProgress) * 0.08;
+    else currentProgress = targetProgress;
+    cards.forEach((card) => {
+      const x = Number(card.dataset.x) * window.innerWidth / 100;
+      const y = Number(card.dataset.y) * window.innerHeight / 100;
+      const z = Number(card.dataset.z0) + currentProgress * 2400;
+      const fadeIn = clamp((z + 1600) / 600);
+      const fadeOut = clamp((300 - z) / 300);
+      card.style.opacity = String(Math.min(fadeIn, fadeOut));
+      card.style.transform = `translate3d(calc(${x.toFixed(1)}px - 50%), calc(${y.toFixed(1)}px - 50%), ${z.toFixed(1)}px) rotateY(${card.dataset.rotateY}deg) rotateX(${card.dataset.rotateX}deg)`;
     });
-    const percent = Math.round(galleryProgress * 100);
+    const percent = Math.round(currentProgress * 100);
     if (counter) counter.textContent = String(percent).padStart(2, '0');
     if (progressBar) progressBar.style.width = `${percent}%`;
-    if (cta) cta.classList.toggle('is-visible', reduceMotion || galleryProgress > .87);
+    if (Math.abs(targetProgress - currentProgress) > 0.001) frame = requestAnimationFrame(updateGallery);
   };
-  const requestGalleryUpdate = () => { if (!frame) frame = window.requestAnimationFrame(updateGallery); };
-
-  renderTitle();
+  const requestUpdate = () => { if (!frame) frame = requestAnimationFrame(updateGallery); };
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', () => { renderCards(); requestUpdate(); }, { passive: true });
   fetch('/reviews.json', { credentials: 'same-origin' })
     .then((response) => response.ok ? response.json() : Promise.reject(new Error('reviews.json unavailable')))
-    .then((reviews) => {
-      renderCards(Array.isArray(reviews) ? reviews : []);
-      updateGallery();
-    })
-    .catch(() => {
-      renderCards([]);
-      updateGallery();
-    });
-  window.addEventListener('scroll', requestGalleryUpdate, { passive: true });
-  window.addEventListener('resize', requestGalleryUpdate, { passive: true });
+    .then((data) => { reviews = Array.isArray(data) ? data.slice(0, 14) : []; renderCards(); })
+    .catch(() => { reviews = []; renderCards(); });
 })();
