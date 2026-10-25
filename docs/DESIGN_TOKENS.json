@@ -1,0 +1,381 @@
+{
+  "project": "Aurex Discord Bots / Aurex Control",
+  "snapshot": "2026-10-25; source at preview-redesign commit 873f0a93298b39f43956aff328b65677ac98bf74 before documentation-only commit",
+  "provenance": "Values transcribed from tracked source. CSS has repeated and historical overrides; sourceHexInventory is exhaustive by listed file but not a declaration that every color is semantically active.",
+  "colors": {
+    "core": {
+      "background": {
+        "hex": "#050505",
+        "use": "landing page and dashboard canvas"
+      },
+      "surface": {
+        "hex": "#0B0D12",
+        "use": "dark glass/panels/navigation"
+      },
+      "text": {
+        "hex": "#F4F4F0",
+        "use": "primary text and light button surfaces"
+      },
+      "muted": {
+        "hex": "#8A8F98",
+        "use": "secondary/body copy"
+      },
+      "accent": {
+        "hex": "#5CE1E6",
+        "use": "primary cyan signal, focus, active navigation, progress"
+      },
+      "mutedStrong": {
+        "hex": "#c8c8c8",
+        "use": "legacy root token"
+      },
+      "line": {
+        "value": "rgba(255,255,255,0.16)",
+        "use": "default border token"
+      },
+      "lineBright": {
+        "value": "rgba(255,255,255,0.34)",
+        "use": "bright border token"
+      },
+      "glass": {
+        "value": "rgba(16,16,16,0.72)",
+        "use": "glass surface token"
+      },
+      "glassSoft": {
+        "value": "rgba(255,255,255,0.08)",
+        "use": "soft glass surface token"
+      }
+    },
+    "botAccents": {
+      "Music": "#5CE1E6",
+      "Security": "#FF6B6B",
+      "Greet": "#5CF2A0",
+      "Ping": "#FFB547",
+      "Ticket": "#A78BFA",
+      "Level": "#FF7AC6"
+    },
+    "bentoAccents": {
+      "Specialist bots": "#5CE1E6",
+      "Control console": "#A78BFA",
+      "Modular": "#FFB547",
+      "Discord-native": "#5CF2A0"
+    },
+    "otherObservedColors": {
+      "galleryHeadingAccent": "#78F4FF (competing cyan-blue override; differs from canonical accent)",
+      "galleryOrb": "#7C8CFF with #CFD5FF highlight and rgba(124,140,255,.45) glow",
+      "galleryCardText": "#F3F4F8 foreground; #D9DCEA review text; #9AA0B4 muted labels",
+      "errorWarning": "#E5484D, #FF9A9A, #FFB27A",
+      "legacyAccents": "older blue, violet, green, amber and pink palette values remain in public/styles.css; see exhaustive per-file inventory"
+    },
+    "sourceHexInventory": {
+      "public/styles.css": [
+        "#000",
+        "#000000",
+        "#020812",
+        "#050505",
+        "#070707",
+        "#080808",
+        "#08080b",
+        "#0B0D12",
+        "#101010",
+        "#10141A",
+        "#111",
+        "#22b8cf",
+        "#242424",
+        "#2fb87a",
+        "#3b82f6",
+        "#4aa3ff",
+        "#4d77ff",
+        "#555",
+        "#55525c",
+        "#5CE1E6",
+        "#5CF2A0",
+        "#5d85ff",
+        "#5ed8ff",
+        "#5ee7ff",
+        "#61c89a",
+        "#65e2b6",
+        "#666",
+        "#6e6b77",
+        "#6fa8ff",
+        "#707070",
+        "#737981",
+        "#747982",
+        "#767676",
+        "#777",
+        "#77747c",
+        "#777480",
+        "#78f4ff",
+        "#85828f",
+        "#888",
+        "#8a8794",
+        "#8A8F98",
+        "#8b5cf6",
+        "#8e8e8e",
+        "#8f899f",
+        "#8f8cff",
+        "#8f8d97",
+        "#8f8f8f",
+        "#919191",
+        "#929292",
+        "#92ffd0",
+        "#939393",
+        "#999",
+        "#9d9d9d",
+        "#9dffd0",
+        "#A0A4AC",
+        "#a2a2a2",
+        "#A45E68",
+        "#a56dff",
+        "#a5a5a5",
+        "#A78BFA",
+        "#a8a8a8",
+        "#a9a9a9",
+        "#aaa",
+        "#ada8ba",
+        "#b0adb8",
+        "#b1b1b1",
+        "#b3b0b8",
+        "#b4b4b4",
+        "#b9afc7",
+        "#BBC1C8",
+        "#bcb8bf",
+        "#c2c2c2",
+        "#C6B5FF",
+        "#c8c8c8",
+        "#C9F9DC",
+        "#D3D6D8",
+        "#d4a24c",
+        "#D8DBDD",
+        "#D8DEE2",
+        "#d9d9d9",
+        "#e3e3e3",
+        "#e5484d",
+        "#e889b8",
+        "#e8e8e8",
+        "#e9bd60",
+        "#eee",
+        "#f0b36a",
+        "#f16f68",
+        "#f1f1f1",
+        "#F4F4F0",
+        "#f5eee4",
+        "#f5fbff",
+        "#f7fdff",
+        "#ff7c9a",
+        "#ff8f9c",
+        "#FFB547",
+        "#fff"
+      ],
+      "public/dashboard.css": [
+        "#000",
+        "#050505",
+        "#0a090e",
+        "#0b0910",
+        "#0B0D12",
+        "#0c0b10",
+        "#100e14",
+        "#292530",
+        "#5CE1E6",
+        "#6d6775",
+        "#6e6877",
+        "#6f6a78",
+        "#777",
+        "#77717e",
+        "#77717f",
+        "#807a88",
+        "#88828f",
+        "#8A8F98",
+        "#8b8493",
+        "#8b8592",
+        "#8d8795",
+        "#8e8796",
+        "#98919f",
+        "#9a94a2",
+        "#a09aa8",
+        "#a09ba8",
+        "#a6a1ac",
+        "#aaa",
+        "#bdbdbd",
+        "#d6d0dd",
+        "#d8d3de",
+        "#d9d3df",
+        "#e6e1ec",
+        "#F4F4F0",
+        "#ff9a9a",
+        "#ffb27a",
+        "#fff",
+        "#ffffff"
+      ],
+      "src/components/ReviewsGallery.tsx": [
+        "#7c8cff",
+        "#9aa0b4",
+        "#cfd5ff",
+        "#d9dcea",
+        "#f3f4f8",
+        "#fff"
+      ],
+      "public/index.html": [
+        "#050505",
+        "#204",
+        "#5CE1E6",
+        "#5CF2A0",
+        "#A78BFA",
+        "#F4F4F0",
+        "#FF6B6B",
+        "#FF7AC6",
+        "#FFB547"
+      ],
+      "public/dashboard.html": [
+        "#050505"
+      ],
+      "public/main.js": []
+    }
+  },
+  "fonts": {
+    "source": "Google Fonts stylesheet links in public/index.html and public/dashboard.html; fonts are not stored locally",
+    "stylesheet": "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap",
+    "families": {
+      "Space Grotesk": {
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "role": "display/headings and brand wordmark; current final headline weight 600"
+      },
+      "Instrument Serif": {
+        "style": "italic",
+        "role": "cyan italic emphasis and signature styling"
+      },
+      "Inter": {
+        "weights": [
+          400,
+          500,
+          600,
+          700
+        ],
+        "role": "body/interface copy and controls"
+      },
+      "JetBrains Mono": {
+        "weights": [
+          400,
+          500,
+          600
+        ],
+        "role": "commands, counters and compact system labels"
+      }
+    },
+    "iconFont": {
+      "family": "Font Awesome Free",
+      "version": "6.5.2",
+      "source": "cdnjs stylesheet in both page heads"
+    },
+    "pixelFont": "None found in active source."
+  },
+  "typeScale": {
+    "heroDesktop": "clamp(42px, 7vw, 92px); weight 600; line-height 1.02; letter-spacing -0.055em",
+    "heroMobile720": "clamp(36px, 9vw, 64px)",
+    "heroMobile390": "clamp(34px, 9.2vw, 44px)",
+    "heroBody": "clamp(14px, 1.55vw, 16px); mobile 14px",
+    "sectionHeading": "clamp(42px, 6.2vw, 79px) in base rule; later selector overrides may apply",
+    "moduleName": "clamp(70px, 10vw, 132px); tablet/mobile override blocks exist",
+    "productDemoHeading": "clamp(36px, 5vw, 62px)",
+    "scaling": "CSS clamp() and local component values; no centralized type-token scale"
+  },
+  "spacingAndGeometry": {
+    "scale": "No named spacing scale; values are local px/clamp()/vw/vh declarations.",
+    "minimumPageWidth": "320px",
+    "headerHeight": "64px",
+    "navButtonHeightDesktop": "38px",
+    "navButtonHeightMobile": "36px",
+    "heroMaxWidth": "1080px",
+    "productDemoMaxWidth": "1120px",
+    "dashboardMaxWidth": "1400px",
+    "reviewWrapperHeight": "560vh",
+    "reviewStickyStage": "100svh (with 100vh fallback)",
+    "reviewPerspective": "1000px",
+    "reviewCards": {
+      "desktop": "250x146px",
+      "maxWidth640": "176x122px"
+    },
+    "moduleStory": "pinned desktop section; scroll proportion maps across six panels",
+    "radii": {
+      "pills": "999px",
+      "reviewCard": "16px",
+      "demoStepLabel": "8px",
+      "dashboardPanels": "mostly 5-10px; component-specific"
+    },
+    "commonGapExamples": "7px, 8px, 9px, 10px, 12px; no global gap token"
+  },
+  "breakpoints": {
+    "landingMaxWidthPx": [
+      1100,
+      900,
+      860,
+      850,
+      767,
+      760,
+      720,
+      600,
+      420,
+      390,
+      360
+    ],
+    "dashboardMaxWidthPx": [
+      800,
+      480
+    ],
+    "reviewsMaxWidthPx": [
+      640
+    ],
+    "note": "Multiple/overlapping landing CSS blocks exist; order matters. Some min-width combined rules also exist."
+  },
+  "shadowsAndSurfaces": {
+    "nav": "0 4px 14px rgba(0,0,0,0.16)",
+    "glass": "Translucent backgrounds, local backdrop blur and per-bot accent glows; no centralized shadow scale."
+  },
+  "motion": {
+    "heroWordReveal": {
+      "duration": "0.44s",
+      "stagger": "60ms",
+      "ease": "cubic-bezier(.2,.8,.2,1)",
+      "reducedMotion": "animation disabled; words visible"
+    },
+    "moduleStory": {
+      "library": "GSAP 3.12.5 + ScrollTrigger 3.12.5",
+      "desktop": "scrub 0.6; snap 0.5s; delay 0.04s; ease power1.inOut",
+      "mobile": "stacked ScrollTrigger reveals at <=767px",
+      "reducedMotion": "desktop pinned mode excluded; static/mobile reveal behavior"
+    },
+    "reviews": {
+      "progressInterpolation": "lerp factor 0.1 per RAF frame; factor 1 when reduced motion is requested",
+      "cardDuration": "0.36 progress units",
+      "note": "Reduced motion still scrolls/transforms cards; it is not a static list."
+    },
+    "productDemo": {
+      "cycle": "18s, four steps, GSAP repeat:-1",
+      "pauseConditions": [
+        "offscreen",
+        "hover",
+        "touch",
+        "focus",
+        "hidden document"
+      ],
+      "reducedMotion": "renders final state, no autoplay"
+    },
+    "generalTransitions": "Common local 0.2s-0.3s transitions; ease curves vary by component."
+  },
+  "externalLibraries": {
+    "GSAP": "3.12.5 CDN",
+    "ScrollTrigger": "3.12.5 CDN",
+    "Lenis": "Not referenced or installed; no Lenis sync code exists.",
+    "FontAwesome": "6.5.2 CDN"
+  },
+  "assetPaths": {
+    "logo": "public/assets/aurex-mark-white.png",
+    "backgroundWebM": "public/assets/aurex-fluid-bg.webm",
+    "backgroundMP4": "public/assets/aurex-fluid-bg.mp4",
+    "videoPoster": "public/assets/aurex-fluid-poster.jpg",
+    "cssPoster": "public/assets/bg-poster.jpg"
+  }
+}
