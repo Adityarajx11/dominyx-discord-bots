@@ -55,6 +55,11 @@
         </nav>
       </div>
 
+      <nav class="page-scroll-rail" aria-label="Page progress" aria-hidden="true" data-page-scroll-rail>
+        <span class="page-scroll-rail-track"><span data-page-scroll-fill></span></span>
+        <span class="page-scroll-rail-dots" data-page-scroll-dots></span>
+      </nav>
+
       <main class="main-content" id="top">
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-kicker"><span class="trust-copy">Built for servers with real people in them.</span></div>
@@ -74,56 +79,110 @@
       </main>
 
       <section class="module-story" id="modules" aria-labelledby="module-story-title" data-module-story>
-        <div class="module-story-track" aria-hidden="true"></div>
         <div class="module-story-stage">
-          <div class="module-story-heading"><span class="section-kicker">THE AUREX MODULES / 06</span><h2 id="module-story-title">One layer at a time. <em class="script-accent">In sync.</em></h2></div>
-          <div class="story-panels" aria-live="polite">
-          <article class="story-panel is-active" data-story-panel="0" aria-hidden="false">
-            <div class="story-module-meta"><span>MODULE / 01</span><span>MUSIC</span></div>
-            <h3 class="story-module-title"><span data-story-name>Music</span><em class="story-script">mode</em></h3>
-            <p class="story-module-copy">Let every voice channel find its rhythm.</p>
-            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>01 — 06</span></div><div class="story-command"><b>›</b> /play midnight mix</div><div class="story-reply"><span>↳</span> Queued Midnight City — now playing in #listening-room</div></div>
+          <div class="module-story-heading">
+            <span class="section-kicker">THE AUREX SUITE</span>
+            <h2 id="module-story-title">Six bots. <em class="script-accent">Zero clutter.</em></h2>
+          </div>
+          <div class="story-step-progress" role="progressbar" aria-label="Bot suite story progress" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1"><span data-story-progress-fill></span></div>
+          <div class="story-navigation">
+            <div class="story-counter" aria-label="Module 01 of 06"><span class="story-counter-window"><span class="story-counter-reel" data-story-counter aria-hidden="true"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span></span></span><span class="story-counter-total">/ 06</span></div>
+            <span class="story-scroll-note">SCROLL TO EXPLORE <span>↓</span></span>
+          </div>
+          <div class="story-panels">
+          <article class="story-panel is-active" data-story-panel="0" data-bot="music" style="--bot-accent:#5CE1E6" aria-hidden="false">
+            <div class="story-module-meta"><span>MODULE 01</span><span class="story-meta-divider">/</span><span>MUSIC</span></div>
+            <div class="story-panel-layout">
+              <div class="story-editorial">
+                <h3 class="story-module-title"><span data-story-name>Music</span></h3>
+                <p class="story-module-copy">Every voice channel, perfectly in tune.</p>
+              </div>
+              <div class="story-command-card">
+                <div class="story-card-top"><span><i aria-hidden="true"></i> AUREX / LIVE PREVIEW</span><span>BOT 01 / 06</span></div>
+                <div class="story-command"><b aria-hidden="true">›</b><span data-command-text>/play midnight mix</span></div>
+                <div class="story-reply"><span aria-hidden="true">↳</span><span data-story-result>Now playing: Midnight City · 3 tracks queued</span></div>
+              </div>
+            </div>
           </article>
-          <article class="story-panel" data-story-panel="1" aria-hidden="true">
-            <div class="story-module-meta"><span>MODULE / 02</span><span>MODERATION</span></div>
-            <h3 class="story-module-title"><span data-story-name>Moderation</span><em class="story-script">mode</em></h3>
-            <p class="story-module-copy">Keep the noise out and the good energy in.</p>
-            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>02 — 06</span></div><div class="story-command"><b>›</b> /guard scan @newcomer</div><div class="story-reply"><span>↳</span> Scan complete — 0 risks found · member verified</div></div>
+          <article class="story-panel" data-story-panel="1" data-bot="security" style="--bot-accent:#FF6B6B" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE 02</span><span class="story-meta-divider">/</span><span>SECURITY</span></div>
+            <div class="story-panel-layout">
+              <div class="story-editorial">
+                <h3 class="story-module-title"><span data-story-name>Security</span></h3>
+                <p class="story-module-copy">Quiet protection. Complete control.</p>
+              </div>
+              <div class="story-command-card">
+                <div class="story-card-top"><span><i aria-hidden="true"></i> AUREX / LIVE PREVIEW</span><span>BOT 02 / 06</span></div>
+                <div class="story-command"><b aria-hidden="true">›</b><span data-command-text>/verify @newcomer</span></div>
+                <div class="story-reply"><span aria-hidden="true">↳</span><span data-story-result>Verified · 0 risks found · role granted</span></div>
+              </div>
+            </div>
           </article>
-          <article class="story-panel" data-story-panel="2" aria-hidden="true">
-            <div class="story-module-meta"><span>MODULE / 03</span><span>WELCOME</span></div>
-            <h3 class="story-module-title"><span data-story-name>Welcome</span><em class="story-script">mode</em></h3>
-            <p class="story-module-copy">Make every first hello feel like it belongs.</p>
-            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>03 — 06</span></div><div class="story-command"><b>›</b> /welcome preview</div><div class="story-reply"><span>↳</span> Welcome card ready — role @newcomer assigned</div></div>
+          <article class="story-panel" data-story-panel="2" data-bot="greet" style="--bot-accent:#5CF2A0" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE 03</span><span class="story-meta-divider">/</span><span>GREET</span></div>
+            <div class="story-panel-layout">
+              <div class="story-editorial">
+                <h3 class="story-module-title"><span data-story-name>Greet</span></h3>
+                <p class="story-module-copy">A first impression worth designing.</p>
+              </div>
+              <div class="story-command-card">
+                <div class="story-card-top"><span><i aria-hidden="true"></i> AUREX / LIVE PREVIEW</span><span>BOT 03 / 06</span></div>
+                <div class="story-command"><b aria-hidden="true">›</b><span data-command-text>/welcome preview</span></div>
+                <div class="story-reply"><span aria-hidden="true">↳</span><span data-story-result>Welcome card ready · @newcomer given Member</span></div>
+              </div>
+            </div>
           </article>
-          <article class="story-panel" data-story-panel="3" aria-hidden="true">
-            <div class="story-module-meta"><span>MODULE / 04</span><span>TICKETS</span></div>
-            <h3 class="story-module-title"><span data-story-name>Tickets</span><em class="story-script">mode</em></h3>
-            <p class="story-module-copy">Turn a question into a private conversation.</p>
-            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>04 — 06</span></div><div class="story-command"><b>›</b> /ticket open billing</div><div class="story-reply"><span>↳</span> Ticket #204 created — your team has been notified</div></div>
+          <article class="story-panel" data-story-panel="3" data-bot="ping" style="--bot-accent:#FFB547" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE 04</span><span class="story-meta-divider">/</span><span>PING</span></div>
+            <div class="story-panel-layout">
+              <div class="story-editorial">
+                <h3 class="story-module-title"><span data-story-name>Ping</span></h3>
+                <p class="story-module-copy">Your community knows the moment you go live.</p>
+              </div>
+              <div class="story-command-card">
+                <div class="story-card-top"><span><i aria-hidden="true"></i> AUREX / LIVE PREVIEW</span><span>BOT 04 / 06</span></div>
+                <div class="story-command"><b aria-hidden="true">›</b><span data-command-text>/alert test</span></div>
+                <div class="story-reply"><span aria-hidden="true">↳</span><span data-story-result>Live alert sent · role mentioned · checking every 2 min</span></div>
+              </div>
+            </div>
           </article>
-          <article class="story-panel" data-story-panel="4" aria-hidden="true">
-            <div class="story-module-meta"><span>MODULE / 05</span><span>LEVELS</span></div>
-            <h3 class="story-module-title"><span data-story-name>Levels</span><em class="story-script">mode</em></h3>
-            <p class="story-module-copy">Give every bit of participation a little momentum.</p>
-            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>05 — 06</span></div><div class="story-command"><b>›</b> /rank @you</div><div class="story-reply"><span>↳</span> LEVEL 18 · 42% to next rank · reward unlocked</div></div>
+          <article class="story-panel" data-story-panel="4" data-bot="ticket" style="--bot-accent:#A78BFA" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE 05</span><span class="story-meta-divider">/</span><span>TICKET</span></div>
+            <div class="story-panel-layout">
+              <div class="story-editorial">
+                <h3 class="story-module-title"><span data-story-name>Ticket</span></h3>
+                <p class="story-module-copy">Private support, handled properly.</p>
+              </div>
+              <div class="story-command-card">
+                <div class="story-card-top"><span><i aria-hidden="true"></i> AUREX / LIVE PREVIEW</span><span>BOT 05 / 06</span></div>
+                <div class="story-command"><b aria-hidden="true">›</b><span data-command-text>/ticket open billing</span></div>
+                <div class="story-reply"><span aria-hidden="true">↳</span><span data-story-result>Ticket #204 opened · your team has been notified</span></div>
+              </div>
+            </div>
           </article>
-          <article class="story-panel" data-story-panel="5" aria-hidden="true">
-            <div class="story-module-meta"><span>MODULE / 06</span><span>LOGS</span></div>
-            <h3 class="story-module-title"><span data-story-name>Logs</span><em class="story-script">mode</em></h3>
-            <p class="story-module-copy">Know what changed, when, and who made it happen.</p>
-            <div class="story-command-card"><div class="story-card-top"><span><i></i> AUREX / LIVE PREVIEW</span><span>06 — 06</span></div><div class="story-command"><b>›</b> /logs latest</div><div class="story-reply"><span>↳</span> Role update · #design-lab · 2 minutes ago</div></div>
+          <article class="story-panel" data-story-panel="5" data-bot="level" style="--bot-accent:#FF7AC6" aria-hidden="true">
+            <div class="story-module-meta"><span>MODULE 06</span><span class="story-meta-divider">/</span><span>LEVEL</span></div>
+            <div class="story-panel-layout">
+              <div class="story-editorial">
+                <h3 class="story-module-title"><span data-story-name>Level</span></h3>
+                <p class="story-module-copy">Turn every message into momentum.</p>
+              </div>
+              <div class="story-command-card">
+                <div class="story-card-top"><span><i aria-hidden="true"></i> AUREX / LIVE PREVIEW</span><span>BOT 06 / 06</span></div>
+                <div class="story-command"><b aria-hidden="true">›</b><span data-command-text>/rank @you</span></div>
+                <div class="story-reply"><span aria-hidden="true">↳</span><span data-story-result>Level 18 · 42% to level 19 · reward unlocked</span></div>
+              </div>
+            </div>
           </article>
           </div>
-          <nav class="story-progress" aria-label="Module story progress">
-            <button type="button" aria-label="Music, module 1 of 6" aria-current="step" data-story-dot="0"></button>
-            <button type="button" aria-label="Moderation, module 2 of 6" data-story-dot="1"></button>
-            <button type="button" aria-label="Welcome, module 3 of 6" data-story-dot="2"></button>
-            <button type="button" aria-label="Tickets, module 4 of 6" data-story-dot="3"></button>
-            <button type="button" aria-label="Levels, module 5 of 6" data-story-dot="4"></button>
-            <button type="button" aria-label="Logs, module 6 of 6" data-story-dot="5"></button>
-          </nav>
-          <span class="story-scroll-note">SCROLL TO EXPLORE <span>↓</span></span>
+<nav class="story-progress" aria-label="Choose a bot module">
+              <button type="button" aria-label="Music, module 1 of 6" aria-current="step" data-story-dot="0"></button>
+              <button type="button" aria-label="Security, module 2 of 6" data-story-dot="1"></button>
+              <button type="button" aria-label="Greet, module 3 of 6" data-story-dot="2"></button>
+              <button type="button" aria-label="Ping, module 4 of 6" data-story-dot="3"></button>
+              <button type="button" aria-label="Ticket, module 5 of 6" data-story-dot="4"></button>
+              <button type="button" aria-label="Level, module 6 of 6" data-story-dot="5"></button>
+            </nav>
         </div>
       </section>
       <section id="reviews-gallery" aria-label="Server reviews">
@@ -209,6 +268,8 @@
       <div class="site-footer"><a class="footer-brand" href="#top"><span class="brand-mark"><img src="/assets/aurex-logo.jpg" alt="" /></span><span>AUREX</span></a><span>Discord bots. Made by people who use Discord.</span><span>© 2026 AUREX SYSTEMS</span></div>
     </div>
     <script src="/config.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
     <script src="/main.js" defer></script>
     <script type="module" src="/reviews-gallery.js"></script>
   </body>

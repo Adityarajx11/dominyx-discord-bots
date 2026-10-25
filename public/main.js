@@ -154,41 +154,210 @@ if (bgVideo) {
   playBackground();
 }
 
-// A single sticky story stage swaps one module at a time as the page scrolls.
+// The six real bot modules are driven by scroll position (not a timer).
 const story = document.querySelector('[data-module-story]');
 if (story) {
   const panels = [...story.querySelectorAll('[data-story-panel]')];
   const dots = [...story.querySelectorAll('[data-story-dot]')];
-  let storyFrame = 0;
-  const renderStory = () => {
-    storyFrame = 0;
-    const total = Math.max(story.offsetHeight - window.innerHeight, 1);
-    const progress = Math.min(1, Math.max(0, -story.getBoundingClientRect().top / total));
-    const active = Math.min(panels.length - 1, Math.floor(progress * panels.length));
-    panels.forEach((panel, index) => {
-      const selected = index === active;
-      panel.classList.toggle('is-active', selected);
-      panel.setAttribute('aria-hidden', String(!selected));
+  const stage = story.querySelector('.module-story-stage');
+  const commandNodes = panels.map((panel) => panel.querySelector('[data-command-text]'));
+  const resultNodes = panels.map((panel) => panel.querySelector('[data-story-result]'));
+  const nameNodes = panels.map((panel) => panel.querySelector('[data-story-name]'));
+  const progressFill = story.querySelector('[data-story-progress-fill]');
+  const counterReel = story.querySelector('[data-story-counter]');
+  const progressBar = story.querySelector('.story-step-progress');
+  const accentColors = panels.map((panel) => panel.style.getPropertyValue('--bot-accent').trim());
+  const pageRail = document.querySelector('[data-page-scroll-rail]');
+
+  const makeWordSpans = (node) => {
+    const words = node.textContent.trim().split(/\s+/);
+    node.textContent = '';
+    words.forEach((word, index) => {
+      if (index) node.append(document.createTextNode(' '));
+      const span = document.createElement('span');
+      span.className = 'story-word';
+      span.textContent = word;
+      node.append(span);
     });
-    dots.forEach((dot, index) => {
-      if (index === active) dot.setAttribute('aria-current', 'step');
+    return [...node.querySelectorAll('.story-word')];
+  };
+  const nameWordNodes = nameNodes.map(makeWordSpans);
+  const commandCharNodes = commandNodes.map((node) => {
+    const command = node.textContent;
+    node.setAttribute('aria-label', command);
+    node.textContent = '';
+    const spans = Array.from(command, (character) => {
+      const span = document.createElement('span');
+      span.className = 'story-command-char';
+      span.setAttribute('aria-hidden', 'true');
+      span.textContent = character === ' ' ? '\u00a0' : character;
+      node.append(span);
+      return span;
+    });
+    return spans;
+  });
+  const setActiveStoryStep = (index, hideOtherPanels = true) => {
+    panels.forEach((panel, i) => {
+      panel.classList.toggle('is-active', i === index);
+      panel.setAttribute('aria-hidden', String(hideOtherPanels && i !== index));
+    });
+    dots.forEach((dot, i) => {
+      if (i === index) dot.setAttribute('aria-current', 'step');
       else dot.removeAttribute('aria-current');
     });
+    const counter = story.querySelector('.story-counter');
+    if (counter) counter.setAttribute('aria-label', `Module ${String(index + 1).padStart(2, '0')} of 06`);
+    if (progressBar) progressBar.setAttribute('aria-valuenow', String(index + 1));
   };
-  const requestStoryRender = () => {
-    if (!storyFrame) storyFrame = requestAnimationFrame(renderStory);
-  };
-  window.addEventListener('scroll', requestStoryRender, { passive: true });
-  window.addEventListener('resize', requestStoryRender, { passive: true });
-  dots.forEach((dot) => dot.addEventListener('click', () => {
-    const index = Number(dot.dataset.storyDot);
-    const total = Math.max(story.offsetHeight - window.innerHeight, 1);
-    const top = window.scrollY + story.getBoundingClientRect().top + total * ((index + 0.12) / panels.length);
-    window.scrollTo({ top, behavior: 'smooth' });
-  }));
-  renderStory();
-}
 
+  if (!window.gsap || !window.ScrollTrigger) {
+    story.classList.add('is-stacked');
+    panels.forEach((panel) => { panel.style.visibility = 'visible'; panel.style.opacity = '1'; panel.style.transform = 'none'; panel.setAttribute('aria-hidden', 'false'); });
+  } else {
+    gsap.registerPlugin(ScrollTrigger);
+    const storyMedia = gsap.matchMedia();
+
+    storyMedia.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      story.classList.remove('is-stacked');
+      gsap.set(panels, { autoAlpha: 0, y: 34 });
+      gsap.set(panels[0], { autoAlpha: 1, y: 0 });
+      gsap.set(nameWordNodes[0], { autoAlpha: 1, y: 0 });
+      gsap.set(commandCharNodes[0], { autoAlpha: 1 });
+      gsap.set(resultNodes[0], { autoAlpha: 1, y: 0 });
+      panels.forEach((panel, index) => {
+        if (index === 0) return;
+        gsap.set(nameWordNodes[index], { autoAlpha: 0, y: 16 });
+        gsap.set(commandCharNodes[index], { autoAlpha: 0 });
+        gsap.set(resultNodes[index], { autoAlpha: 0, y: 8 });
+      });
+
+      const storyTimeline = gsap.timeline({
+        scrollTrigger: {
+          id: 'aurex-module-story',
+          trigger: story,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+          snap: { snapTo: 1 / (panels.length - 1), duration: 0.5, delay: 0.04, ease: 'power1.inOut' },
+          onUpdate: (self) => {
+            const scaled = self.progress * (panels.length - 1);
+            const active = Math.min(panels.length - 1, Math.round(scaled));
+            setActiveStoryStep(active);
+            if (stage) stage.style.setProperty('--stage-accent', gsap.utils.interpolate(accentColors[Math.floor(scaled)], accentColors[Math.min(panels.length - 1, Math.floor(scaled) + 1)], scaled % 1));
+          }
+        }
+      });
+
+      storyTimeline.to(progressFill, { scaleX: 1, duration: panels.length, ease: 'none' }, 0);
+      storyTimeline.to(counterReel, { yPercent: -83.333333, duration: panels.length, ease: 'none' }, 0);
+      panels.forEach((panel, index) => {
+        const at = index;
+        if (index > 0) {
+          storyTimeline.to(panels[index - 1], { autoAlpha: 0, y: -36, duration: 0.28, ease: 'power1.in' }, at);
+          storyTimeline.fromTo(panel, { autoAlpha: 0, y: 36 }, { autoAlpha: 1, y: 0, duration: 0.30, ease: 'power2.out' }, at);
+        }
+        storyTimeline.to(nameWordNodes[index], { autoAlpha: 1, y: 0, duration: 0.2, stagger: 0.075, ease: 'power2.out' }, at + 0.08);
+        storyTimeline.to(commandCharNodes[index], { autoAlpha: 1, duration: 0.01, stagger: 0.009, ease: 'none' }, at + 0.34);
+        storyTimeline.to(resultNodes[index], { autoAlpha: 1, y: 0, duration: 0.18, ease: 'power1.out' }, at + 0.78);
+      });
+      storyTimeline.to({}, { duration: 1 }, panels.length - 1);
+
+      dots.forEach((dot) => dot.addEventListener('click', () => {
+        const trigger = ScrollTrigger.getById('aurex-module-story');
+        if (!trigger) return;
+        const index = Number(dot.dataset.storyDot);
+        const destination = trigger.start + ((trigger.end - trigger.start) * index / (panels.length - 1));
+        window.scrollTo({ top: destination, behavior: 'smooth' });
+      }));
+
+      return () => { story.classList.remove('is-stacked'); };
+    });
+
+    storyMedia.add('(max-width: 767px) and (prefers-reduced-motion: no-preference)', () => {
+      story.classList.add('is-stacked');
+      panels.forEach((panel, index) => {
+        gsap.set(panel, { autoAlpha: 1, y: 0, clearProps: 'transform' });
+        const reveal = gsap.timeline({ scrollTrigger: { trigger: panel, start: 'top 82%', toggleActions: 'play none none reverse' } });
+        reveal.fromTo(nameWordNodes[index], { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.3, stagger: 0.06, ease: 'power2.out' }, 0);
+        reveal.to(commandCharNodes[index], { autoAlpha: 1, duration: 0.008, stagger: 0.006, ease: 'none' }, 0.12);
+        reveal.fromTo(resultNodes[index], { autoAlpha: 0, y: 5 }, { autoAlpha: 1, y: 0, duration: 0.18 }, 0.38);
+      });
+      panels.forEach((panel) => panel.setAttribute('aria-hidden', 'false'));
+      const activeObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const index = Math.max(0, panels.indexOf(entry.target));
+          setActiveStoryStep(index, false);
+          if (counterReel) gsap.set(counterReel, { yPercent: -(100 * index / panels.length) });
+          if (progressFill) gsap.set(progressFill, { scaleX: index / (panels.length - 1) });
+        });
+      }, { threshold: 0.35 });
+      panels.forEach((panel) => activeObserver.observe(panel));
+      dots.forEach((dot) => dot.addEventListener('click', () => {
+        panels[Number(dot.dataset.storyDot)]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }));
+      return () => { activeObserver.disconnect(); story.classList.remove('is-stacked'); };
+    });
+
+    storyMedia.add('(prefers-reduced-motion: reduce)', () => {
+      story.classList.add('is-stacked');
+      gsap.set(panels, { clearProps: 'all', autoAlpha: 1, y: 0 });
+      gsap.set(nameWordNodes.flat(), { clearProps: 'all', autoAlpha: 1, y: 0 });
+      gsap.set(commandCharNodes.flat(), { clearProps: 'all', autoAlpha: 1 });
+      gsap.set(resultNodes, { clearProps: 'all', autoAlpha: 1, y: 0 });
+      panels.forEach((panel) => panel.setAttribute('aria-hidden', 'false'));
+      setActiveStoryStep(0, false);
+      if (progressFill) gsap.set(progressFill, { scaleX: 0 });
+    });
+  }
+
+  if (pageRail) {
+    const targets = [
+      ['#modules', 'Bot suite'], ['#reviews-gallery', 'Reviews'], ['#see-it-in-discord', 'In Discord'],
+      ['#see-it-work', 'Walkthrough'], ['.compare-section', 'Comparison'], ['#bot-suite', 'The Aurex suite'],
+      ['#why-story', 'Why Aurex'], ['#connect', 'Get started']
+    ].map(([selector, label]) => ({ element: document.querySelector(selector), label })).filter((item) => item.element);
+    const dotsHost = pageRail.querySelector('[data-page-scroll-dots]');
+    const railDots = targets.map(({label}, index) => {
+      const dot = document.createElement('span');
+      dot.className = 'page-scroll-rail-dot';
+      dot.dataset.pageRailDot = String(index);
+      dot.setAttribute('role', 'img');
+      dot.setAttribute('aria-label', label);
+      dotsHost.append(dot);
+      return dot;
+    });
+    const railFill = pageRail.querySelector('[data-page-scroll-fill]');
+    let railFrame = 0;
+    const updatePageRail = () => {
+      railFrame = 0;
+      if (!targets.length) return;
+      const scrollY = window.scrollY;
+      const markerY = window.innerHeight * 0.5;
+      const firstRect = targets[0].element.getBoundingClientRect();
+      const lastRect = targets[targets.length - 1].element.getBoundingClientRect();
+      const rangeStart = firstRect.top + scrollY - markerY;
+      const rangeEnd = lastRect.bottom + scrollY - markerY;
+      const progress = Math.max(0, Math.min(1, (scrollY - rangeStart) / Math.max(1, rangeEnd - rangeStart)));
+      pageRail.classList.toggle('is-visible', scrollY >= rangeStart && scrollY <= rangeEnd);
+      if (railFill) railFill.style.transform = `scaleY(${progress})`;
+      let active = 0;
+      targets.forEach(({element}, index) => {
+        if (element.getBoundingClientRect().top <= markerY) active = index;
+      });
+      railDots.forEach((dot, index) => dot.classList.toggle('is-active', index === active));
+    };
+    const requestPageRailUpdate = () => { if (!railFrame) railFrame = window.requestAnimationFrame(updatePageRail); };
+    window.addEventListener('scroll', requestPageRailUpdate, { passive: true });
+    window.addEventListener('resize', requestPageRailUpdate, { passive: true });
+    if ('ResizeObserver' in window) {
+      const railResizeObserver = new ResizeObserver(requestPageRailUpdate);
+      railResizeObserver.observe(document.querySelector('.page-shell') || document.body);
+    }
+    requestPageRailUpdate();
+  }
+}
 function setMenu(open) {
   if (!menuToggle || !mobileMenu) return;
   menuToggle.classList.toggle('is-open', open);
