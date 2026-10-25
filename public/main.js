@@ -100,14 +100,6 @@ async function syncAuthCtas() {
 }
 syncAuthCtas();
 
-const aurexConfig = window.AUREX_CONFIG || {};
-const serverCountNode = document.querySelector('[data-server-count]');
-if (serverCountNode && aurexConfig.SERVER_COUNT != null) serverCountNode.textContent = aurexConfig.SERVER_COUNT;
-document.querySelectorAll('[data-why-line]').forEach((node) => {
-  const line = aurexConfig.WHY_TEXT?.[Number(node.dataset.whyLine)] || '';
-  node.textContent = line;
-});
-
 const menuToggle = document.querySelector('.menu-toggle');
 const mobileMenu = document.querySelector('#mobile-menu');
 const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link, .mobile-connect');
@@ -314,7 +306,7 @@ if (story) {
 
   if (pageRail) {
     const targets = [
-      ['#modules', 'Bot suite'], ['#reviews-gallery', 'Reviews'], ['#see-it-in-discord', 'In Discord'],
+      ['#modules', 'Bot suite'], ['#reviews-gallery', 'Reviews'], ['#founder-note', 'Why I built this'],
       ['#see-it-work', 'Walkthrough'], ['.compare-section', 'Comparison'], ['#bot-suite', 'The Aurex suite'],
       ['#why-story', 'Why Aurex'], ['#connect', 'Get started']
     ].map(([selector, label]) => ({ element: document.querySelector(selector), label })).filter((item) => item.element);
@@ -358,6 +350,55 @@ if (story) {
     requestPageRailUpdate();
   }
 }
+
+function initFounderNote() {
+  const note = document.querySelector('#founder-note');
+  if (!note) return;
+  const body = note.querySelector('.founder-note-body');
+  const paragraphs = [...note.querySelectorAll('[data-founder-note-paragraph]')];
+  const line = note.querySelector('[data-founder-note-line]');
+  if (!body) return;
+  const motionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  let animationFrame = 0;
+  const showAll = () => {
+    paragraphs.forEach((paragraph) => {
+      paragraph.style.opacity = '1';
+      paragraph.style.visibility = 'visible';
+      paragraph.style.transform = 'none';
+    });
+    if (line) line.style.transform = 'scaleY(1)';
+  };
+  const update = () => {
+    animationFrame = 0;
+    if (motionPreference?.matches) { showAll(); return; }
+    const rect = body.getBoundingClientRect();
+    const scrollY = window.scrollY;
+    const start = rect.top + scrollY - window.innerHeight * 0.78;
+    const end = rect.bottom + scrollY - window.innerHeight * 0.42;
+    const progress = Math.max(0, Math.min(1, (scrollY - start) / Math.max(1, end - start)));
+    if (line) line.style.transform = `scaleY(${progress.toFixed(4)})`;
+    paragraphs.forEach((paragraph, index) => {
+      const revealStart = 0.06 + index * 0.23;
+      const revealProgress = Math.max(0, Math.min(1, (progress - revealStart) / 0.2));
+      const eased = 1 - (1 - revealProgress) ** 2;
+      paragraph.style.opacity = eased.toFixed(4);
+      paragraph.style.visibility = revealProgress > 0 ? 'visible' : 'hidden';
+      paragraph.style.transform = `translate3d(0, ${(18 * (1 - eased)).toFixed(2)}px, 0)`;
+    });
+  };
+  const requestUpdate = () => { if (!animationFrame) animationFrame = window.requestAnimationFrame(update); };
+  if (motionPreference?.matches) showAll(); else requestUpdate();
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate, { passive: true });
+  window.addEventListener('load', requestUpdate, { once: true });
+  motionPreference?.addEventListener?.('change', requestUpdate);
+  if ('ResizeObserver' in window) {
+    const noteObserver = new ResizeObserver(requestUpdate);
+    noteObserver.observe(note);
+  }
+}
+initFounderNote();
+
 function setMenu(open) {
   if (!menuToggle || !mobileMenu) return;
   menuToggle.classList.toggle('is-open', open);
