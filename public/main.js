@@ -379,42 +379,41 @@ renderDemo();
 startDemo();
 
 
-/* ReviewsGallery: scroll-driven Z-depth cards inside one sticky stage. */
+/* ReviewsGallery: one scroll progress drives the elliptical card orbit and center copy. */
 (() => {
   const gallery = document.querySelector('[data-reviews-cards]');
   const wrapper = document.querySelector('.reviews-gallery');
   const stage = document.querySelector('.reviews-stage');
   const title = document.querySelector('.reviews-gallery-title');
+  const titleBlock = document.querySelector('.reviews-gallery-header');
   const counter = document.querySelector('[data-reviews-counter]');
   const progressBar = document.querySelector('[data-reviews-progress]');
-  if (!gallery || !wrapper || !stage || !title) return;
+  const cta = document.querySelector('.reviews-cta');
+  if (!gallery || !wrapper || !stage || !title || !titleBlock) return;
 
-  const positions = [
-    [-46, -34, -18, 6], [46, -32, 18, -6], [-48, 2, -18, 6], [48, 4, 18, -6],
-    [-45, 35, -18, 6], [45, 34, 18, -6], [25, -43, 12, -4],
-    [-25, 43, -12, 4], [-50, -17, -18, 6], [50, -15, 18, -6],
-    [-49, 18, -18, 6], [49, 19, 18, -6], [-25, 43, -12, 4], [25, -43, 12, -4]
-  ];
   let cards = [];
   let reviews = [];
-  let targetProgress = 0;
-  let currentProgress = 0;
+  let p = 0;
+  let targetP = 0;
   let frame = 0;
+  let wasMobile = null;
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
   const initials = (name) => String(name || 'A').replace(/^SAMPLE\s*\/\s*/i, '').split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
   const mobile = () => window.matchMedia('(max-width: 720px)').matches;
 
-  title.innerHTML = '';
+  title.replaceChildren();
   'What servers say about Aurex'.split(' ').forEach((word, index) => {
     const span = document.createElement('span');
     span.textContent = word;
-    span.style.setProperty('--word-index', index);
+    span.dataset.wordIndex = String(index);
     title.appendChild(span);
   });
 
   const renderCards = () => {
-    const shown = mobile() ? reviews.slice(0, 7) : reviews.slice(0, 14);
+    const isMobile = mobile();
+    wasMobile = isMobile;
+    const shown = isMobile ? reviews.slice(0, 7) : reviews.slice(0, 14);
     gallery.innerHTML = shown.map((review, index) => {
       const safeName = escapeHtml(review.name);
       const avatar = review.avatarUrl
@@ -428,42 +427,64 @@ startDemo();
       </article>`;
     }).join('');
     cards = [...gallery.querySelectorAll('.reviews-card')];
-    cards.forEach((card, index) => {
-      const [x, y, rotateY, rotateX] = positions[index % positions.length];
-      card.dataset.x = x;
-      card.dataset.y = y;
-      card.dataset.rotateY = rotateY;
-      card.dataset.rotateX = rotateX;
-      card.dataset.z0 = -2000 + index * (1600 / Math.max(cards.length - 1, 1));
-    });
-    requestUpdate();
+    cards.forEach((card) => { card.dataset.ringScale = String(.8 + Math.random() * .35); });
   };
 
   const updateGallery = () => {
     frame = 0;
+    if (reduceMotion) return;
     const range = Math.max(wrapper.offsetHeight - window.innerHeight, 1);
-    targetProgress = reduceMotion ? 0 : clamp(-wrapper.getBoundingClientRect().top / range);
-    if (!reduceMotion) currentProgress += (targetProgress - currentProgress) * 0.08;
-    else currentProgress = targetProgress;
-    cards.forEach((card) => {
-      const x = Number(card.dataset.x) * window.innerWidth / 100;
-      const y = Number(card.dataset.y) * window.innerHeight / 100;
-      const z = Number(card.dataset.z0) + currentProgress * 2400;
-      const fadeIn = clamp((z + 1600) / 600);
-      const fadeOut = clamp((300 - z) / 300);
+    targetP = clamp(-wrapper.getBoundingClientRect().top / range);
+    p += (targetP - p) * .08;
+
+    const stageWidth = stage.clientWidth;
+    const stageHeight = stage.clientHeight;
+    const radiusX = stageWidth * (mobile() ? .56 : .46);
+    const radiusY = stageHeight * (mobile() ? .30 : .36);
+    cards.forEach((card, index) => {
+      const t = clamp(p * 1.6 - index * .09);
+      const leftArc = index % 2 === 0;
+      const angle = (90 + (leftArc ? t * 200 : -t * 200)) * Math.PI / 180;
+      const ringScale = Number(card.dataset.ringScale);
+      const x = Math.cos(angle) * radiusX * ringScale;
+      const y = Math.sin(angle) * radiusY * ringScale;
+      const z = 350 * Math.sin(angle);
+      const rotateY = -Math.cos(angle) * 35;
+      const rotateX = 8;
+      const fadeIn = clamp(t / .1);
+      const fadeOut = clamp((1 - t) / .2);
       card.style.opacity = String(Math.min(fadeIn, fadeOut));
-      card.style.transform = `translate3d(calc(${x.toFixed(1)}px - 50%), calc(${y.toFixed(1)}px - 50%), ${z.toFixed(1)}px) rotateY(${card.dataset.rotateY}deg) rotateX(${card.dataset.rotateX}deg)`;
+      card.style.transform = `translate3d(calc(${x.toFixed(1)}px - 50%), calc(${y.toFixed(1)}px - 50%), ${z.toFixed(1)}px) rotateY(${rotateY.toFixed(2)}deg) rotateX(${rotateX}deg)`;
     });
-    const percent = Math.round(currentProgress * 100);
+
+    const centerEntry = clamp(p / .16);
+    const centerExit = 1 - clamp((p - .9) / .1);
+    titleBlock.style.opacity = String(centerEntry * centerExit);
+    titleBlock.style.filter = `blur(${(12 * (1 - centerEntry)).toFixed(2)}px)`;
+    titleBlock.style.transform = `translate(-50%, calc(-50% + ${(60 * (1 - centerEntry)).toFixed(1)}px)) scale(${(.96 + .04 * centerEntry).toFixed(3)})`;
+    title.querySelectorAll('span').forEach((word, index) => {
+      const wordProgress = clamp((p - (.12 + index * .07)) / .08);
+      word.style.opacity = String(wordProgress);
+      word.style.filter = `blur(${(12 * (1 - wordProgress)).toFixed(2)}px)`;
+      word.style.transform = `translateY(${(24 * (1 - wordProgress)).toFixed(1)}px)`;
+    });
+
+    const percent = Math.round(p * 100);
     if (counter) counter.textContent = String(percent).padStart(2, '0');
     if (progressBar) progressBar.style.width = `${percent}%`;
-    if (Math.abs(targetProgress - currentProgress) > 0.001) frame = requestAnimationFrame(updateGallery);
+    if (cta) cta.classList.toggle('is-visible', p > .94);
+    if (Math.abs(targetP - p) > .001) frame = requestAnimationFrame(updateGallery);
   };
-  const requestUpdate = () => { if (!frame) frame = requestAnimationFrame(updateGallery); };
+  const requestUpdate = () => { if (!frame && !reduceMotion) frame = requestAnimationFrame(updateGallery); };
+
   window.addEventListener('scroll', requestUpdate, { passive: true });
-  window.addEventListener('resize', () => { renderCards(); requestUpdate(); }, { passive: true });
+  window.addEventListener('resize', () => {
+    const isMobile = mobile();
+    if (isMobile !== wasMobile) renderCards();
+    requestUpdate();
+  }, { passive: true });
   fetch('/reviews.json', { credentials: 'same-origin' })
     .then((response) => response.ok ? response.json() : Promise.reject(new Error('reviews.json unavailable')))
-    .then((data) => { reviews = Array.isArray(data) ? data.slice(0, 14) : []; renderCards(); })
-    .catch(() => { reviews = []; renderCards(); });
+    .then((data) => { reviews = Array.isArray(data) ? data.slice(0, 14) : []; renderCards(); requestUpdate(); })
+    .catch(() => { reviews = []; renderCards(); requestUpdate(); });
 })();
