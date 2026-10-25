@@ -903,3 +903,28 @@ function initSuiteCardReveals() {
 }
 
 initSuiteCardReveals();
+
+
+function initWhyPrincipleReveals() {
+  const group = document.querySelector('.why-principles');
+  if (!group) return;
+  const cards = [...group.querySelectorAll('[data-why-card]')];
+  if (!cards.length) return;
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    cards.forEach((card) => card.classList.add('is-visible'));
+    return;
+  }
+
+  group.classList.add('has-scroll-reveal');
+  const observer = new IntersectionObserver((entries, currentObserver) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      currentObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.16, rootMargin: '0px 0px -24px 0px' });
+  cards.forEach((card) => observer.observe(card));
+}
+
+initWhyPrincipleReveals();
