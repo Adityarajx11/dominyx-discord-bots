@@ -2074,3 +2074,15 @@ code, pre, .story-command, .story-reply, .readout-command { font-family: var(--f
   .footer-signal-field { animation: none; }
   .footer-social, .footer-column a { transition: none; }
 }
+
+
+/* Use the exact supplied Porsche scene as the footer's closing visual and remove the old blank field. */
+.footer-signal-field { display: none; }
+.footer-main { padding-bottom: 38px; }
+.footer-visual { position: relative; z-index: 1; width: 100%; height: clamp(220px, 27vw, 380px); margin-left: 0; overflow: hidden; background: #050505; }
+.footer-visual::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, #050505 0%, rgba(5,5,5,.08) 16%, transparent 34%, rgba(5,5,5,.12) 72%, #050505 100%); pointer-events: none; }
+.footer-visual img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: saturate(.96) contrast(1.04); }
+@media (max-width: 720px) {
+  .footer-main { padding-bottom: 28px; }
+  .footer-visual { height: 225px; }
+}
