@@ -499,6 +499,7 @@ const ASSET_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.png': 'image/png',
   '.webp': 'image/webp',
 };
 
@@ -510,7 +511,7 @@ function serveStatic(req, res, url) {
 
   // Only these paths are reachable. Everything else, including the .env file
   // and the lib/ directory, stays private.
-  const allowed = new Set(['/index.html', '/dashboard.html', '/styles.css', '/dashboard.css', '/main.js', '/dashboard.js', '/reviews-gallery.js', '/manus-routes.json', '/assets/aurex-footer-porsche.webp']);
+  const allowed = new Set(['/index.html', '/dashboard.html', '/styles.css', '/dashboard.css', '/main.js', '/dashboard.js', '/reviews-gallery.js', '/manus-routes.json', '/assets/aurex-mark-white.png', '/assets/aurex-footer-porsche.webp']);
   if (!allowed.has(requested)) return json(res, 404, { error: 'not_found' });
 
   let body;

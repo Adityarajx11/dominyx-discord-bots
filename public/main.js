@@ -1,4 +1,5 @@
 function applyInviteLinks(links) {
+  window.aurexInviteLinks = links || {};
   document.querySelectorAll('[data-bot-invite]').forEach((link) => {
     const key = link.dataset.botInvite;
     const invite = links?.[key];
@@ -145,8 +146,13 @@ if (story) {
   const progressFill = story.querySelector('[data-story-progress-fill]');
   const counterReel = story.querySelector('[data-story-counter]');
   const progressBar = story.querySelector('.story-step-progress');
+  const storyInvite = story.querySelector('[data-story-invite]');
   const accentColors = panels.map((panel) => panel.style.getPropertyValue('--bot-accent').trim());
   const pageRail = document.querySelector('[data-page-scroll-rail]');
+  const storyVisibility = new IntersectionObserver(([entry]) => {
+    story.classList.toggle('is-in-view', entry.isIntersecting);
+  }, { threshold: 0.16 });
+  storyVisibility.observe(story);
 
   const makeWordSpans = (node) => {
     const words = node.textContent.trim().split(/\s+/);
@@ -187,7 +193,21 @@ if (story) {
     const counter = story.querySelector('.story-counter');
     if (counter) counter.setAttribute('aria-label', `Module ${String(index + 1).padStart(2, '0')} of 06`);
     if (progressBar) progressBar.setAttribute('aria-valuenow', String(index + 1));
+    if (storyInvite) {
+      const bot = panels[index]?.dataset.bot || 'music';
+      const name = panels[index]?.querySelector('[data-story-name]')?.textContent?.trim() || bot;
+      storyInvite.dataset.botInvite = bot;
+      storyInvite.textContent = `Add ${name} to Discord `;
+      const icon = document.createElement('i');
+      icon.className = 'fa-solid fa-arrow-up-right-from-square';
+      icon.setAttribute('aria-hidden', 'true');
+      storyInvite.append(icon);
+      storyInvite.href = window.aurexInviteLinks?.[bot] || '#connect';
+      storyInvite.target = window.aurexInviteLinks?.[bot] ? '_blank' : '';
+      storyInvite.rel = window.aurexInviteLinks?.[bot] ? 'noreferrer' : '';
+    }
   };
+  setActiveStoryStep(0, false);
 
   if (!window.gsap || !window.ScrollTrigger) {
     story.classList.add('is-stacked');
@@ -299,11 +319,13 @@ if (story) {
     ].map(([selector, label]) => ({ element: document.querySelector(selector), label })).filter((item) => item.element);
     const dotsHost = pageRail.querySelector('[data-page-scroll-dots]');
     const railDots = targets.map(({label}, index) => {
-      const dot = document.createElement('span');
+      const dot = document.createElement('button');
+      dot.type = 'button';
       dot.className = 'page-scroll-rail-dot';
       dot.dataset.pageRailDot = String(index);
-      dot.setAttribute('role', 'img');
       dot.setAttribute('aria-label', label);
+      dot.setAttribute('title', label);
+      dot.addEventListener('click', () => targets[index].element.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }));
       dotsHost.append(dot);
       return dot;
     });
@@ -325,7 +347,11 @@ if (story) {
       targets.forEach(({element}, index) => {
         if (element.getBoundingClientRect().top <= markerY) active = index;
       });
-      railDots.forEach((dot, index) => dot.classList.toggle('is-active', index === active));
+      railDots.forEach((dot, index) => {
+        dot.classList.toggle('is-active', index === active);
+        if (index === active) dot.setAttribute('aria-current', 'location');
+        else dot.removeAttribute('aria-current');
+      });
     };
     const requestPageRailUpdate = () => { if (!railFrame) railFrame = window.requestAnimationFrame(updatePageRail); };
     window.addEventListener('scroll', requestPageRailUpdate, { passive: true });

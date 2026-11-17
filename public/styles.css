@@ -2086,3 +2086,46 @@ code, pre, .story-command, .story-reply, .readout-command { font-family: var(--f
   .footer-main { padding-bottom: 28px; }
   .footer-visual { height: 225px; }
 }
+
+
+/* Phase one reliability pass: keep navigation and controls usable over the long scroll story. */
+:root { --muted: #B8BDC5; --muted-strong: #D3D7DC; }
+html { scroll-padding-top: 84px; }
+section[id], footer[id] { scroll-margin-top: 84px; }
+.site-header { z-index: 50; background-color: #050505; background: rgba(5,5,5,.94); }
+.hero-copy, .story-module-copy, .product-demo-heading p, .why-copy > p, .connect-section > p, .footer-tagline, .footer-column-note p { color: #C8CDD2; }
+.section-kicker, .story-scroll-note, .footer-column a, .footer-nav a, .footer-bottom, .footer-copyright { color: #B8BDC5; }
+
+/* Dots retain a small visual mark but receive a 44px keyboard/touch target. */
+.module-story .story-progress { opacity: 0; pointer-events: none; transition: opacity .24s ease; }
+.module-story.is-in-view .story-progress { opacity: 1; pointer-events: auto; }
+.story-progress button,
+.story-progress button[aria-current="step"] { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0 !important; border-radius: 50%; background: transparent !important; box-shadow: none !important; transform: none !important; }
+.story-progress button::before { content: ""; display: block; width: 8px; height: 8px; border: 1px solid rgba(244,244,240,.62); border-radius: 50%; background: #0B0D12; transition: transform .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.story-progress button:hover::before, .story-progress button:focus-visible::before { transform: scale(1.28); border-color: var(--bot-accent, #5CE1E6); }
+.story-progress button[aria-current="step"]::before { border-color: #5CE1E6; background: #5CE1E6; box-shadow: 0 0 12px rgba(92,225,230,.58); transform: scale(1.22); }
+.story-suite-cta { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; margin: 10px auto 0; padding: 0 16px; border: 1px solid rgba(244,244,240,.26); border-radius: 999px; color: #F4F4F0; background: rgba(11,13,18,.72); font: 600 11px/1 Inter, sans-serif; text-decoration: none; transition: border-color .2s ease, color .2s ease, background-color .2s ease, transform .2s ease; }
+.story-suite-cta:hover, .story-suite-cta:focus-visible { border-color: #5CE1E6; color: #5CE1E6; background: rgba(92,225,230,.08); transform: translateY(-2px); }
+
+/* Rail dots are buttons, not decorative images. */
+.page-scroll-rail { z-index: 55; width: 44px; }
+.page-scroll-rail-track { left: 21px; }
+.page-scroll-rail-dots { width: 44px; }
+.page-scroll-rail-dot { appearance: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.page-scroll-rail-dot::before { content: ""; display: block; width: 7px; height: 7px; border: 1px solid #B8BDC5; border-radius: 50%; background: #050505; transition: transform .2s ease, border-color .2s ease, background-color .2s ease, box-shadow .2s ease; }
+.page-scroll-rail-dot:hover::before, .page-scroll-rail-dot:focus-visible::before { transform: scale(1.35); border-color: #5CE1E6; }
+.page-scroll-rail-dot.is-active::before { width: 9px; height: 9px; border-color: #5CE1E6; background: #5CE1E6; box-shadow: 0 0 12px rgba(92,225,230,.62); }
+
+/* The principles should read as compact editorial cards instead of tall empty slabs. */
+.why-card { min-height: 178px; padding: clamp(22px, 3vw, 30px); }
+.why-card h3 { margin-top: 32px; }
+.why-card p { max-width: 31ch; color: #C8CDD2; }
+@media (max-width: 720px) {
+  .why-card, .why-card:nth-child(3) { min-height: 176px; padding: 20px; }
+  .why-card h3 { margin-top: 22px; }
+  .story-suite-cta { width: min(100%, 260px); margin-top: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .module-story .story-progress { opacity: 1; pointer-events: auto; transition: none; }
+  .story-suite-cta, .page-scroll-rail-dot::before { transition: none; }
+}
