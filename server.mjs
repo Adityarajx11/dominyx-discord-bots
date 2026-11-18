@@ -499,7 +499,11 @@ const ASSET_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.svg': 'image/svg+xml',
   '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
   '.webp': 'image/webp',
 };
 
@@ -511,7 +515,7 @@ function serveStatic(req, res, url) {
 
   // Only these paths are reachable. Everything else, including the .env file
   // and the lib/ directory, stays private.
-  const allowed = new Set(['/index.html', '/dashboard.html', '/styles.css', '/dashboard.css', '/main.js', '/dashboard.js', '/reviews-gallery.js', '/manus-routes.json', '/assets/aurex-mark-white.png', '/assets/aurex-footer-porsche.webp']);
+  const allowed = new Set(['/index.html', '/dashboard.html', '/styles.css', '/dashboard.css', '/main.js', '/dashboard.js', '/reviews-gallery.js', '/manus-routes.json', '/assets/aurex-mark-white.png', '/assets/aurex-mark-white.svg', '/assets/aurex-mark-cyan.svg', '/assets/aurex-favicon.svg', '/assets/aurex-apple-touch-icon.png', '/assets/aurex-icon-32.png', '/assets/aurex-icon-512.png', '/assets/aurex-og.png', '/assets/aurex-fluid-bg.mp4', '/assets/aurex-fluid-bg.webm', '/assets/aurex-fluid-poster.jpg', '/assets/aurex-footer-porsche.webp']);
   if (!allowed.has(requested)) return json(res, 404, { error: 'not_found' });
 
   let body;

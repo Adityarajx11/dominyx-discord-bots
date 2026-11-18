@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Aurex mark</title>
+  <desc id="desc">A stylized A monogram with a four-point sparkle.</desc>
+  <g fill="currentColor">
+    <path d="M8.5 52.5c10.5-1.8 16.1-6.3 17.8-16.1 1-5.7 1.4-11.5 2.4-18.6 2.7 8.4 6.8 12.7 14.5 15.2 8.7 2.8 13.3 10.9 18.4 19.5H43.3c-8 0-12.5-3.9-14.1-10.9-2.5 7.5-8.9 10.9-20.7 10.9Z"/>
+    <path d="M31.4 18.7C32.2 9.9 37.7 4.2 46.7 1.8c-1.1 8.6 3.4 15.1 10.5 22.1-9.8-2.1-18-2.8-25.8-5.2Z"/>
+    <path d="m27.2 27.1 2.2 5.2 5.2 2.2-5.2 2.2-2.2 5.2-2.2-5.2-5.2-2.2 5.2-2.2 2.2-5.2Z"/>
+  </g>
+</svg>

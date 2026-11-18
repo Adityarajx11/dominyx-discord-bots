@@ -41,3 +41,8 @@ a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}.
 .field-suffix{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:#6d6775;font-family:var(--mono);font-size:8px;pointer-events:none}
 @media(max-width:800px){.dashboard-page{padding-inline:14px}.dashboard-topbar{align-items:flex-start}.topbar-right{gap:8px}.live-state{display:none}.dashboard-shell{grid-template-columns:1fr;gap:16px}.server-rail{min-height:auto;padding:12px}.server-list{display:flex;overflow-x:auto;padding-bottom:2px}.server-button{min-width:170px}.rail-foot{display:none}.bot-switcher{grid-template-columns:repeat(3,1fr)}.control-heading{display:block}.server-status{padding-top:16px}.settings-form{grid-template-columns:1fr}.field.full{grid-column:auto}.settings-actions{align-items:flex-start;flex-direction:column}.save-button{width:100%;justify-content:center}}
 @media(max-width:480px){.dashboard-topbar{flex-wrap:wrap}.topbar-right{width:100%;justify-content:flex-end}.dashboard-brand{font-size:10px}.auth-gate{padding-top:40px}.auth-gate h1{font-size:42px}.settings-panel{padding:16px}.settings-top h2{font-size:29px}.bot-switch{font-size:9px}.bot-switch i{font-size:9px}.dashboard-footnote{align-items:flex-start;line-height:1.5}}
+
+
+/* Phase 2 brand asset alignment. */
+.dashboard-brand-logo { display: block; width: 35px; height: 35px; object-fit: contain; }
+.auth-mark { overflow: hidden; }
