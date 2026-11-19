@@ -7,7 +7,8 @@
     "dev": "node server.mjs",
     "start": "node server.mjs",
     "test": "node --test test/*.test.mjs",
-    "build:reviews-gallery": "esbuild src/mount-reviews-gallery.tsx --bundle --minify --format=esm --target=es2020 --jsx=automatic --outfile=public/reviews-gallery.js"
+    "build:reviews-gallery": "esbuild src/mount-reviews-gallery.tsx --bundle --minify --format=esm --target=es2020 --jsx=automatic --outfile=public/reviews-gallery.js",
+    "build:wayglim": "vite build"
   },
   "dependencies": {
     "dotenv": "^18.0.8",
@@ -20,6 +21,7 @@
     "esbuild": "^0.28.2",
     "pg-mem": "^3.0.14",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "vite": "^7.3.8"
   }
 }

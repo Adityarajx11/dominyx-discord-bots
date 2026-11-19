@@ -92,7 +92,6 @@ const menuToggle = document.querySelector('.menu-toggle');
 const mobileMenu = document.querySelector('#mobile-menu');
 const closeTargets = document.querySelectorAll('[data-menu-close], .mobile-link, .mobile-connect');
 const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-const bgVideo = document.querySelector('.bg-video');
 
 let scrollFrame = 0;
 function updateScrollMotion() {
@@ -114,25 +113,6 @@ window.setTimeout(() => {
     element.style.filter = 'none';
   });
 }, 1600);
-if (bgVideo) {
-  bgVideo.muted = true;
-  bgVideo.defaultMuted = true;
-  bgVideo.autoplay = true;
-  bgVideo.loop = true;
-  bgVideo.playsInline = true;
-  bgVideo.controls = false;
-  ['muted', 'autoplay', 'loop', 'playsinline', 'webkit-playsinline', 'preload', 'disablepictureinpicture'].forEach((name) => {
-    bgVideo.setAttribute(name, name === 'preload' ? 'auto' : '');
-  });
-  bgVideo.removeAttribute('controls');
-  const playBackground = () => { if (bgVideo.paused) bgVideo.play().catch(() => {}); };
-  window.addEventListener('load', playBackground, { once: true });
-  document.addEventListener('touchstart', playBackground, { once: true, passive: true });
-  document.addEventListener('pointerdown', playBackground, { once: true, passive: true });
-  document.addEventListener('visibilitychange', playBackground);
-  window.addEventListener('pageshow', playBackground);
-  playBackground();
-}
 
 // The six real bot modules are driven by scroll position (not a timer).
 const story = document.querySelector('[data-module-story]');
