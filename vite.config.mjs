@@ -4,6 +4,10 @@ export default defineConfig({
   define: {
     'process.env.NODE_ENV': JSON.stringify('production'),
   },
+  esbuild: {
+    jsx: 'automatic',
+    jsxImportSource: 'react',
+  },
   build: {
     lib: {
       entry: 'src/wayglim-entry.tsx',
