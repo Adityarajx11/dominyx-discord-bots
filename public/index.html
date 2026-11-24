@@ -16,9 +16,12 @@
     <title>Aurex — Discord Bots That Run The Server</title>
     <link rel="icon" href="/assets/aurex-favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/assets/aurex-apple-touch-icon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="https://cdn.fontshare.com/wf/2GQIT54GKQY3JRFTSHS4ARTRNRQISSAA/3CIP5EBHRRHE5FVQU3VFROPUERNDSTDF/JTSL5QESUXATU47LCPUNHZQBDDIWDOSW.woff2" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=general-sans@400,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
@@ -70,11 +73,11 @@
       <main class="main-content" id="top">
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-kicker"><span class="trust-copy">Built for servers with real people in them.</span></div>
-          <h1 class="hero-title" id="hero-title">
+          <h1 class="hero-title text-shade" id="hero-title">
             <span class="headline-line"><span class="hero-word" style="--word-index:0">Six</span> <span class="hero-word" style="--word-index:1">bots.</span></span>
             <span class="headline-line"><span class="hero-word" style="--word-index:2">Each</span> <span class="hero-word" style="--word-index:3">built</span> <span class="hero-word" style="--word-index:4">to</span> <span class="hero-word" style="--word-index:5">do</span> <span class="hero-word" style="--word-index:6">one</span> <span class="hero-word" style="--word-index:7">thing</span> <em class="script-accent hero-word" style="--word-index:8">exceptionally.</em></span>
           </h1>
-          <p class="hero-copy">Music, security, welcomes, alerts, tickets and levels. Add only what your server needs, and run it all from one dashboard.</p>
+          <p class="hero-copy text-shade">Music, security, welcomes, alerts, tickets and levels. Add only what your server needs, and run it all from one dashboard.</p>
           <div class="hero-actions">
             <a class="primary-button" href="#modules">Explore the bots</a>
             <a class="text-button hero-secondary-button auth-cta" href="/dashboard.html" data-auth-cta>Open dashboard</a>
@@ -87,9 +90,9 @@
 
       <section class="module-story" id="modules" aria-labelledby="module-story-title" data-module-story>
         <div class="module-story-stage">
-          <div class="module-story-heading">
+          <div class="module-story-heading text-shade">
             <span class="section-kicker">THE AUREX SUITE</span>
-            <h2 id="module-story-title">Six bots. <em class="script-accent">Zero clutter.</em></h2>
+            <h2 id="module-story-title">Six bots. Zero clutter.</h2>
           </div>
           <div class="story-step-progress" role="progressbar" aria-label="Bot suite story progress" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1"><span data-story-progress-fill></span></div>
           <div class="story-navigation">
@@ -100,7 +103,7 @@
           <article class="story-panel is-active" data-story-panel="0" data-bot="music" style="--bot-accent:#5CE1E6" aria-hidden="false">
             <div class="story-module-meta"><span>MODULE 01</span><span class="story-meta-divider">/</span><span>MUSIC</span></div>
             <div class="story-panel-layout">
-              <div class="story-editorial">
+              <div class="story-editorial text-shade">
                 <h3 class="story-module-title"><span data-story-name>Music</span></h3>
                 <p class="story-module-copy">Every voice channel, perfectly in tune.</p>
               </div>
@@ -114,7 +117,7 @@
           <article class="story-panel" data-story-panel="1" data-bot="security" style="--bot-accent:#FF6B6B" aria-hidden="true">
             <div class="story-module-meta"><span>MODULE 02</span><span class="story-meta-divider">/</span><span>SECURITY</span></div>
             <div class="story-panel-layout">
-              <div class="story-editorial">
+              <div class="story-editorial text-shade">
                 <h3 class="story-module-title"><span data-story-name>Security</span></h3>
                 <p class="story-module-copy">Quiet protection. Complete control.</p>
               </div>
@@ -128,7 +131,7 @@
           <article class="story-panel" data-story-panel="2" data-bot="greet" style="--bot-accent:#5CF2A0" aria-hidden="true">
             <div class="story-module-meta"><span>MODULE 03</span><span class="story-meta-divider">/</span><span>GREET</span></div>
             <div class="story-panel-layout">
-              <div class="story-editorial">
+              <div class="story-editorial text-shade">
                 <h3 class="story-module-title"><span data-story-name>Greet</span></h3>
                 <p class="story-module-copy">A first impression worth designing.</p>
               </div>
@@ -142,7 +145,7 @@
           <article class="story-panel" data-story-panel="3" data-bot="ping" style="--bot-accent:#FFB547" aria-hidden="true">
             <div class="story-module-meta"><span>MODULE 04</span><span class="story-meta-divider">/</span><span>PING</span></div>
             <div class="story-panel-layout">
-              <div class="story-editorial">
+              <div class="story-editorial text-shade">
                 <h3 class="story-module-title"><span data-story-name>Ping</span></h3>
                 <p class="story-module-copy">Your community knows the moment you go live.</p>
               </div>
@@ -156,7 +159,7 @@
           <article class="story-panel" data-story-panel="4" data-bot="ticket" style="--bot-accent:#A78BFA" aria-hidden="true">
             <div class="story-module-meta"><span>MODULE 05</span><span class="story-meta-divider">/</span><span>TICKET</span></div>
             <div class="story-panel-layout">
-              <div class="story-editorial">
+              <div class="story-editorial text-shade">
                 <h3 class="story-module-title"><span data-story-name>Ticket</span></h3>
                 <p class="story-module-copy">Private support, handled properly.</p>
               </div>
@@ -170,7 +173,7 @@
           <article class="story-panel" data-story-panel="5" data-bot="level" style="--bot-accent:#FF7AC6" aria-hidden="true">
             <div class="story-module-meta"><span>MODULE 06</span><span class="story-meta-divider">/</span><span>LEVEL</span></div>
             <div class="story-panel-layout">
-              <div class="story-editorial">
+              <div class="story-editorial text-shade">
                 <h3 class="story-module-title"><span data-story-name>Level</span></h3>
                 <p class="story-module-copy">Turn every message into momentum.</p>
               </div>
@@ -199,9 +202,9 @@
 
 
       <section class="founder-note" id="founder-note" aria-labelledby="founder-note-title">
-        <div class="founder-note-column">
+        <div class="founder-note-column text-shade">
           <span class="section-kicker">WHY I BUILT THIS</span>
-          <h2 id="founder-note-title">I wanted one setup that <em class="script-accent">just worked.</em></h2>
+          <h2 id="founder-note-title">I wanted one setup that just worked.</h2>
           <div class="founder-note-body">
             <span class="founder-note-rule" aria-hidden="true"><span data-founder-note-line></span></span>
             <div class="founder-note-copy">
@@ -219,9 +222,9 @@
 
 
       <section class="compare-section" aria-labelledby="compare-title" data-compare-section>
-        <div class="section-heading compare-heading">
+        <div class="section-heading compare-heading text-shade">
           <span class="section-kicker">AUREX VS ALL-IN-ONE BOTS</span>
-          <h2 id="compare-title">Specialists beat <span class="script-accent">generalists.</span></h2>
+          <h2 id="compare-title">Specialists beat generalists.</h2>
           <p>Fewer moving parts. Fewer things that break.</p>
         </div>
         <div class="compare-pair">
@@ -264,9 +267,9 @@
       </footer>
 
       <section class="why-section" id="why-story" aria-labelledby="why-title">
-        <div class="why-copy">
+        <div class="why-copy text-shade">
           <span class="section-kicker">WHY AUREX</span>
-          <h2 id="why-title">Built for communities that have <span class="script-accent">outgrown</span> one-size-fits-all.</h2>
+          <h2 id="why-title">Built for communities that have outgrown one-size-fits-all.</h2>
           <p>Start with one bot. Add the rest when your server is ready. Everything stays yours to shape.</p>
         </div>
         <div class="why-principles" aria-label="Aurex principles">
@@ -280,8 +283,8 @@
       <section class="connect-section" id="connect" aria-labelledby="connect-title">
         <div class="connect-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
         <span class="section-kicker">READY WHEN YOU ARE</span>
-        <h2 id="connect-title">Your server, <span class="script-accent">fully equipped.</span></h2>
-        <p>Choose a bot, connect it to Discord and let Aurex take care of the rest.</p>
+        <h2 id="connect-title" class="text-shade">Your server, fully equipped.</h2>
+        <p class="text-shade">Choose a bot, connect it to Discord and let Aurex take care of the rest.</p>
         <div class="connect-actions">
           <a class="primary-button primary-button-large" href="#modules">Choose your bots</a>
           <a class="discord-outline-button" href="/dashboard.html" data-auth-cta>Login with Discord <svg class="discord-mark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.54 5.34A19.8 19.8 0 0 0 14.66 3.8l-.6 1.22a18.1 18.1 0 0 0-5.12 0l-.6-1.22a19.8 19.8 0 0 0-4.88 1.54C.38 9.95-.46 14.45-.04 18.9a19.9 19.9 0 0 0 5.98 3.02l1.3-2.1a12.9 12.9 0 0 1-2.05-.98l.5-.39a14.2 14.2 0 0 0 12.62 0l.5.39c-.66.39-1.35.72-2.06.98l1.3 2.1a19.9 19.9 0 0 0 5.98-3.02c.5-5.17-.86-9.63-4.49-13.56ZM8.6 15.47c-1.17 0-2.13-1.07-2.13-2.39s.94-2.4 2.13-2.4 2.15 1.08 2.13 2.4c0 1.32-.94 2.39-2.13 2.39Zm6.8 0c-1.17 0-2.13-1.07-2.13-2.39s.94-2.4 2.13-2.4 2.15 1.08 2.13 2.4c0 1.32-.94 2.39-2.13 2.39Z"/></svg></a>
