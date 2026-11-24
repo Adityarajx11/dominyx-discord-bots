@@ -1071,7 +1071,7 @@ code, pre, .story-command, .story-reply, .readout-command { font-family: var(--f
 .comparison-feature:nth-child(3) { --row-delay: 200ms; }
 .comparison-mark { display: grid; place-items: center; width: 22px; height: 22px; justify-self: end; color: #5CE1E6; }
 .comparison-mark svg { display: block; width: 20px; height: 20px; overflow: visible; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.comparison-mark-cross { color: #A45E68; }
+.comparison-mark-cross { color: #E5484D; }
 .compare-section.has-scroll-reveal .comparison-feature:not(.is-visible) { opacity: 0; transform: translateY(10px); }
 .compare-section.has-scroll-reveal .comparison-feature .comparison-mark:not(.comparison-mark-cross) path { stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .4s cubic-bezier(.22,1,.36,1) calc(var(--row-delay, 0ms) + 40ms); }
 .compare-section.has-scroll-reveal .comparison-feature.is-visible .comparison-mark:not(.comparison-mark-cross) path { stroke-dashoffset: 0; }
